@@ -3,6 +3,6 @@ COPY . .
 RUN mvn clean package
 
 FROM openjdk:21-jdk-slim
-COPY --from=build /target/pbgym-0.0.1-SNAPSHOT.jar pbgym.jar
+COPY --from=build /target/PBGym-0.0.1-SNAPSHOT.jar pbgym.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","pbgym.jar"]
