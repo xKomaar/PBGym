@@ -20,12 +20,12 @@ public class Address {
     @Column(name = "street_name", nullable = false)
     private String streetName;
 
-    @Column(name = "building_nr", nullable = false)
-    private Integer buildingNr;
+    @Column(name = "building_number", nullable = false)
+    private Integer buildingNumber;
 
     @Nullable
-    @Column(name = "apartment_nr")
-    private Integer apartmentNr;
+    @Column(name = "apartment_number")
+    private Integer apartmentNumber;
 
     @Column(name = "postal_code", nullable = false)
     private String postalCode;
@@ -34,12 +34,12 @@ public class Address {
     @JsonIgnore
     private AbstractUser abstractUser;
 
-    public Address(Long id, String city, String streetName, Integer buildingNr, @Nullable Integer apartmentNr, String postalCode, AbstractUser abstractUser) {
+    public Address(Long id, String city, String streetName, Integer buildingNumber, @Nullable Integer apartmentNumber, String postalCode, AbstractUser abstractUser) {
         this.id = id;
         this.city = city;
         this.streetName = streetName;
-        this.buildingNr = buildingNr;
-        this.apartmentNr = apartmentNr;
+        this.buildingNumber = buildingNumber;
+        this.apartmentNumber = apartmentNumber;
         this.postalCode = postalCode;
         this.abstractUser = abstractUser;
     }
@@ -67,21 +67,21 @@ public class Address {
         this.streetName = streetName;
     }
 
-    public Integer getBuildingNr() {
-        return buildingNr;
+    public Integer getBuildingNumber() {
+        return buildingNumber;
     }
 
-    public void setBuildingNr(Integer buildingNr) {
-        this.buildingNr = buildingNr;
+    public void setBuildingNumber(Integer buildingNr) {
+        this.buildingNumber = buildingNr;
     }
 
     @Nullable
-    public Integer getApartmentNr() {
-        return apartmentNr;
+    public Integer getApartmentNumber() {
+        return apartmentNumber;
     }
 
-    public void setApartmentNr(@Nullable Integer apartmentNr) {
-        this.apartmentNr = apartmentNr;
+    public void setApartmentNumber(@Nullable Integer apartmentNr) {
+        this.apartmentNumber = apartmentNr;
     }
 
     public String getPostalCode() {

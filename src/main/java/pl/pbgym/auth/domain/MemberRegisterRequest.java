@@ -1,10 +1,10 @@
 package pl.pbgym.auth.domain;
 
-import jakarta.annotation.Nullable;
+import pl.pbgym.domain.Address;
 
 import java.time.LocalDate;
 
-public class MemberWithAddressRegisterRequest {
+public class MemberRegisterRequest {
     private String email;
     private String password;
     private String name;
@@ -12,13 +12,9 @@ public class MemberWithAddressRegisterRequest {
     private LocalDate birthdate;
     private String pesel;
     private String phoneNumber;
-    private String city;
-    private String streetName;
-    private Integer buildingNr;
-    private Integer apartmentNr;
-    private String postalCode;
+    private Address address;
 
-    public MemberWithAddressRegisterRequest() {
+    public MemberRegisterRequest() {
     }
 
     public String getEmail() {
@@ -77,44 +73,11 @@ public class MemberWithAddressRegisterRequest {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getCity() {
-        return city;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getStreetName() {
-        return streetName;
-    }
-
-    public void setStreetName(String streetName) {
-        this.streetName = streetName;
-    }
-
-    public Integer getBuildingNr() {
-        return buildingNr;
-    }
-
-    public void setBuildingNr(Integer buildingNr) {
-        this.buildingNr = buildingNr;
-    }
-
-    @Nullable
-    public Integer getApartmentNr() {
-        return apartmentNr;
-    }
-
-    public void setApartmentNr(@Nullable Integer apartmentNr) {
-        this.apartmentNr = apartmentNr;
-    }
-
-    public String getPostalCode() {
-        return postalCode;
-    }
-
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }

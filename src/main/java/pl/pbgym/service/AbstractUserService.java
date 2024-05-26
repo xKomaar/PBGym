@@ -50,11 +50,11 @@ public class AbstractUserService {
         if(!existingAddress.getStreetName().equals(newAddress.getStreetName())) {
             existingAbstractUser.getAddress().setStreetName(newAddress.getStreetName());
         }
-        if(!existingAddress.getBuildingNr().equals(newAddress.getBuildingNr())) {
-            existingAbstractUser.getAddress().setBuildingNr(newAddress.getBuildingNr());
+        if(!existingAddress.getBuildingNumber().equals(newAddress.getBuildingNumber())) {
+            existingAbstractUser.getAddress().setBuildingNumber(newAddress.getBuildingNumber());
         }
-        if(!existingAddress.getApartmentNr().equals(newAddress.getApartmentNr())) {
-            existingAbstractUser.getAddress().setApartmentNr(newAddress.getApartmentNr());
+        if(!existingAddress.getApartmentNumber().equals(newAddress.getApartmentNumber())) {
+            existingAbstractUser.getAddress().setApartmentNumber(newAddress.getApartmentNumber());
         }
         if(!existingAddress.getPostalCode().equals(newAddress.getPostalCode())) {
             existingAbstractUser.getAddress().setPostalCode(newAddress.getPostalCode());

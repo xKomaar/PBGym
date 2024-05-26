@@ -27,19 +27,19 @@ public class AddressService {
             if(!address.getStreetName().equals(newAddress.getStreetName())) {
                 address.setStreetName(newAddress.getStreetName());
             }
-            if(!address.getBuildingNr().equals(newAddress.getBuildingNr())) {
-                address.setBuildingNr(newAddress.getBuildingNr());
+            if(!address.getBuildingNumber().equals(newAddress.getBuildingNumber())) {
+                address.setBuildingNumber(newAddress.getBuildingNumber());
             }
-            if(address.getApartmentNr() != null) {
-                if(newAddress.getApartmentNr() != null) {
-                    if(!address.getApartmentNr().equals(newAddress.getApartmentNr())) {
-                        address.setApartmentNr(newAddress.getApartmentNr());
+            if(address.getApartmentNumber() != null) {
+                if(newAddress.getApartmentNumber() != null) {
+                    if(!address.getApartmentNumber().equals(newAddress.getApartmentNumber())) {
+                        address.setApartmentNumber(newAddress.getApartmentNumber());
                     }
                 } else {
-                    address.setApartmentNr(null);
+                    address.setApartmentNumber(null);
                 }
             } else {
-                address.setApartmentNr(newAddress.getApartmentNr());
+                address.setApartmentNumber(newAddress.getApartmentNumber());
             }
             if(!address.getPostalCode().equals(newAddress.getPostalCode())) {
                 address.setPostalCode(newAddress.getPostalCode());

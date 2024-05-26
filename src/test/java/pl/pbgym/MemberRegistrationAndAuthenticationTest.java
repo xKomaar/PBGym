@@ -15,7 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.pbgym.auth.domain.MemberWithAddressRegisterRequest;
+import pl.pbgym.auth.domain.MemberRegisterRequest;
+import pl.pbgym.domain.Address;
 
 import java.time.LocalDate;
 
@@ -44,7 +45,7 @@ public class MemberRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnOkWhenRegisteringMember() throws Exception {
-        MemberWithAddressRegisterRequest memberWithAddressRegisterRequest = new MemberWithAddressRegisterRequest();
+        MemberRegisterRequest memberWithAddressRegisterRequest = new MemberRegisterRequest();
         memberWithAddressRegisterRequest.setEmail("test1@member.com");
         memberWithAddressRegisterRequest.setPassword("123456");
         memberWithAddressRegisterRequest.setName("Test");
@@ -53,17 +54,20 @@ public class MemberRegistrationAndAuthenticationTest {
         memberWithAddressRegisterRequest.setPesel("123456789");
         memberWithAddressRegisterRequest.setPhoneNumber("123123123");
 
-        memberWithAddressRegisterRequest.setCity("City");
-        memberWithAddressRegisterRequest.setStreetName("Street");
-        memberWithAddressRegisterRequest.setBuildingNr(1);
-        memberWithAddressRegisterRequest.setPostalCode("15-123");
+        Address address = new Address();
+        address.setCity("City");
+        address.setStreetName("Street");
+        address.setBuildingNumber(1);
+        address.setPostalCode("15-123");
+
+        memberWithAddressRegisterRequest.setAddress(address);
 
         String json = objectWriter.writeValueAsString(memberWithAddressRegisterRequest);
 
         mockMvc.perform(post("/auth/registerMember").contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Member registered"));
+                .andExpect(status().isCreated())
+                .andExpect(content().string("Member registered successfully"));
     }
 
 //    @Test
