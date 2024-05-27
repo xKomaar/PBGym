@@ -1,44 +1,32 @@
-package pl.pbgym.domain;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+package pl.pbgym.auth.domain;
 import jakarta.annotation.Nullable;
-import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
-@Entity
-@Table(name="address")
-public class Address {
+public class AddressRequest {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "address_seq_gen")
-    @SequenceGenerator(name="address_seq_gen", sequenceName="ADDRESS_SEQ", allocationSize = 1)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
-    @Column(name = "city", nullable = false)
+    @Size(min = 2, message = "City name can't be shorter than 2 characters long.")
+    @Size(max = 200, message = "City name can't be longer than 200 characters long.")
+    @NotBlank(message = "City name is required.")
     private String city;
 
-    @Column(name = "street_name", nullable = false)
+    @Size(min = 2, message = "Street Name can't be shorter than 2 characters long.")
+    @Size(max = 200, message = "Street Name can't be longer than 200 characters long.")
+    @NotBlank(message = "Street Name is required.")
     private String streetName;
 
-    @Column(name = "building_number", nullable = false)
+    @NotNull
+    @Digits(integer = 5, fraction = 0, message = "Building number must consist of only digits")
     private Integer buildingNumber;
 
     @Nullable
-    @Column(name = "apartment_number")
+    @Digits(integer = 5, fraction = 0, message = "Building number must consist of only digits")
     private Integer apartmentNumber;
 
-    @Column(name = "postal_code", nullable = false)
+    @NotBlank(message = "Postal Code is required.")
+    @Pattern(regexp = "^\\d{2}-\\d{3}$", message = "Postal code must be in the format dd-ddd")
     private String postalCode;
 
-    @OneToOne(mappedBy = "address")
-    @JsonIgnore
-    private AbstractUser abstractUser;
-
-    public Address() {
-    }
-
-    public Long getId() {
-        return id;
+    public AddressRequest() {
     }
 
     public String getCity() {
@@ -81,13 +69,4 @@ public class Address {
     public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
     }
-
-    public AbstractUser getAbstractUser() {
-        return abstractUser;
-    }
-
-    public void setAbstractUser(AbstractUser abstractUser) {
-        this.abstractUser = abstractUser;
-    }
 }
-

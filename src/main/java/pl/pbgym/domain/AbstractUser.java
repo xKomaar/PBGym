@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,41 +25,31 @@ public class AbstractUser implements UserDetails {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Basic
     @Column(name = "email", nullable = false)
-//    @Email
-//    @NotEmpty(message = "Email jest wymagany.")
     private String email;
 
-//    @Basic
-//    @NotEmpty(message = "Hasło jest wymagane.")
-//    @Size(min = 6, message = "Hasło musi być dłuższe niż 5 liter.")
+    @Basic
     @Column(name = "password", nullable = false)
     private String password;
 
-//    @Basic
-//    @NotEmpty(message = "Imię jest wymagane.")
+    @Basic
     @Column(name = "name", nullable = false)
-//    @Size(min = 2, message = "Imię nie może być krótsze niż 2 litery.")
-//    @Size(max = 20, message = "Imię nie może być dłuższe niż 20 liter.")
-//    @Pattern(regexp = "[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]*$", message = "Imię musi zaczynać się wielką literą i zawierać jedynie litery.")
     private String name;
 
-//    @Basic
-//    @NotEmpty(message = "Nazwisko jest wymagane.")
-//    @Size(min = 2, message = "Imię nie może być krótsze niż 2 litery.")
-//    @Size(max = 50, message = "Imię nie może być dłuższe niż 50 liter.")
-//    @Pattern(regexp = "[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]*$", message = "Nazwisko musi zaczynać się wielką literą i zawierać jedynie litery.")
+    @Basic
     @Column(name = "surname", nullable = false)
     private String surname;
 
+    @Basic
     @Column(name = "birthdate", nullable = false)
     private LocalDate birthdate;
 
+    @Basic
     @Column(name = "pesel", nullable = false)
     private String pesel;
 
-//    @NotEmpty(message = "Numer jest wymagany")
-//    @Pattern(regexp = "^[0-9]{9}$", message = "Numer telefonu powinien składać się z 9 cyfr.")
+    @Basic
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 

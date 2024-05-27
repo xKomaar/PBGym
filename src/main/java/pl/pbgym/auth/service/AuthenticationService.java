@@ -5,6 +5,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.pbgym.auth.domain.AddressRequest;
 import pl.pbgym.auth.domain.AuthenticationRequest;
 import pl.pbgym.auth.domain.AuthenticationResponse;
 import pl.pbgym.auth.domain.MemberRegisterRequest;
@@ -47,7 +48,13 @@ public class AuthenticationService {
         member.setPesel(request.getPesel());
         member.setPhoneNumber(request.getPhoneNumber());
 
-        Address address = request.getAddress();
+        AddressRequest addressRequest = request.getAddress();
+        Address address = new Address();
+        address.setCity(addressRequest.getCity());
+        address.setStreetName(addressRequest.getStreetName());
+        address.setBuildingNumber(addressRequest.getBuildingNumber());
+        address.setApartmentNumber(addressRequest.getApartmentNumber());
+        address.setPostalCode(addressRequest.getPostalCode());
         addressRepository.save(address);
 
         member.setAddress(address);

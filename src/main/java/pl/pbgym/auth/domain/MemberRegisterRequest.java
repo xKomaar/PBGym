@@ -1,18 +1,46 @@
 package pl.pbgym.auth.domain;
 
-import pl.pbgym.domain.Address;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 
 public class MemberRegisterRequest {
+    @Email
+    @NotBlank(message = "Email is required.")
     private String email;
+
+    @Size(min = 8, message = "Password can't be shorter than 8 characters long.")
+    @Size(max = 50, message = "Password can't be longer than 50 characters long.")
+    @NotBlank(message = "Password is required.")
     private String password;
+
+    @Size(min = 2, message = "Name can't be shorter than 2 characters.")
+    @Size(max = 50, message = "Name can't be longer than 50 characters.")
+    @Pattern(regexp = "^[A-ZŻŹĆĄŚĘŁÓŃ][a-zżźćńółęąś]*$", message = "Name has to begin with a capital letter and involve only letters.")
+    @NotBlank(message = "Name is required.")
     private String name;
+
+    @Size(min = 2, message = "Surname can't be shorter than 2 characters.")
+    @Size(max = 100, message = "Surname can't be longer than 100 characters.")
+    @Pattern(regexp = "^[A-ZŻŹĆĄŚĘŁÓŃ][a-zżźćńółęąś]*$", message = "Surname has to begin with a capital letter and involve only letters.")
+    @NotBlank(message = "Surname is required.")
     private String surname;
+
+    @NotNull(message = "Birthdate is required.")
     private LocalDate birthdate;
+
+    @NotBlank(message = "Pesel is required.")
+    @Pattern(regexp = "^\\d{11}$", message = "Pesel must consist of 11 digits.")
     private String pesel;
+
+    @NotBlank(message = "Phone number is required.")
+    @Pattern(regexp = "^\\d{9}$", message = "Phone number must consist of 9 digits.")
     private String phoneNumber;
-    private Address address;
+
+    @Valid
+    private AddressRequest address;
 
     public MemberRegisterRequest() {
     }
@@ -73,11 +101,11 @@ public class MemberRegisterRequest {
         this.phoneNumber = phoneNumber;
     }
 
-    public Address getAddress() {
+    public AddressRequest getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    public void setAddress(AddressRequest address) {
         this.address = address;
     }
 }

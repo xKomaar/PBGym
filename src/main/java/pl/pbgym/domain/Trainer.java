@@ -1,15 +1,13 @@
 package pl.pbgym.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name="trainer")
 @PrimaryKeyJoinColumn(name = "user_id")
 public class Trainer extends AbstractUser {
 
+    @Basic
     @Column(name="description")
     private String description;
 
