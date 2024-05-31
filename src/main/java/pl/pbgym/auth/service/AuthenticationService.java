@@ -5,10 +5,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.pbgym.auth.domain.AddressRequest;
-import pl.pbgym.auth.domain.AuthenticationRequest;
-import pl.pbgym.auth.domain.AuthenticationResponse;
-import pl.pbgym.auth.domain.MemberRegisterRequest;
+import pl.pbgym.auth.domain.*;
 import pl.pbgym.domain.AbstractUser;
 import pl.pbgym.domain.Address;
 import pl.pbgym.domain.Member;
@@ -38,7 +35,7 @@ public class AuthenticationService {
         this.authenticationManager = authenticationManager;
     }
 
-    public void registerMemberWithAddress(MemberRegisterRequest request) {
+    public void registerMember(MemberRegisterRequest request) {
         Member member = new Member();
         member.setEmail(request.getEmail());
         member.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -59,6 +56,15 @@ public class AuthenticationService {
 
         member.setAddress(address);
         memberRepository.save(member);
+    }
+
+    //TODO
+    public void registerTrainer(TrainerRegisterRequest request) {
+    }
+
+    //TODO
+    public void registerWorker(WorkerRegisterRequest request) {
+
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {

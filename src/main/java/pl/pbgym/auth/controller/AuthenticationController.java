@@ -5,10 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.pbgym.auth.domain.AuthenticationRequest;
-import pl.pbgym.auth.domain.AuthenticationResponse;
+import pl.pbgym.auth.domain.*;
 import pl.pbgym.auth.service.AuthenticationService;
-import pl.pbgym.auth.domain.MemberRegisterRequest;
 import pl.pbgym.service.AbstractUserService;
 
 @RestController
@@ -31,8 +29,30 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Email already in use");
         } else {
-            authenticationService.registerMemberWithAddress(request);
+            authenticationService.registerMember(request);
             return ResponseEntity.status(HttpStatus.CREATED).body("Member registered successfully");
+        }
+    }
+
+    @PostMapping("/registerTrainer")
+    public ResponseEntity<String> registerTrainer(@Valid @RequestBody TrainerRegisterRequest request) {
+        if (abstractUserService.userExists(request.getEmail())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Email already in use");
+        } else {
+            authenticationService.registerTrainer(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Trainer registered successfully");
+        }
+    }
+
+    @PostMapping("/registerWorker")
+    public ResponseEntity<String> registerWorker(@Valid @RequestBody WorkerRegisterRequest request) {
+        if (abstractUserService.userExists(request.getEmail())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Email already in use");
+        } else {
+            authenticationService.registerWorker(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Worker registered successfully");
         }
     }
 

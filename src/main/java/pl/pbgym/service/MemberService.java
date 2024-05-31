@@ -20,6 +20,7 @@ public class MemberService {
         this.abstractUserService = abstractUserService;
     }
 
+    //TODO: BEZ SENSU ZMIENIAC WSZYSTKIE ATRYBUTY, PO PROSTU ZASEJWUJ NOWEGO I TYLE
     public void updateMember(Member newMember) {
         Optional<Member> existingMember = memberRepository.findById(newMember.getId());
         existingMember.ifPresent(member -> {

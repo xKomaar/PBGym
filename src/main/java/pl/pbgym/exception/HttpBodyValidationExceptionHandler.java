@@ -1,4 +1,4 @@
-package pl.pbgym.exceptions;
+package pl.pbgym.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

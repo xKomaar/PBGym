@@ -22,6 +22,7 @@ public class AbstractUserService {
         return abstractUserRepository.findByEmail(email).isPresent();
     }
 
+    //TODO: BEZ SENSU ZMIENIAC WSZYSTKIE ATRYBUTY, PO PROSTU ZASEJWUJ NOWEGO I TYLE
     protected void updateAbstractUser(AbstractUser existingAbstractUser, AbstractUser newAbstractUser) {
         if(!passwordEncoder.matches(newAbstractUser.getPassword(), existingAbstractUser.getPassword())) {
             existingAbstractUser.setPassword(passwordEncoder.encode(newAbstractUser.getPassword()));

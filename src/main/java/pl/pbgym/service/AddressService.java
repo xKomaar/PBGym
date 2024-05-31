@@ -17,7 +17,8 @@ public class AddressService {
         this.addressRepository = addressRepository;
     }
 
-    protected void updateAbstractUser(Address newAddress) {
+    //TODO: BEZ SENSU ZMIENIAC WSZYSTKIE ATRYBUTY, PO PROSTU ZASEJWUJ NOWEGO I TYLE
+    protected void updateAddress(Address newAddress) {
 
         Optional<Address> existingAddress = addressRepository.findById(newAddress.getId());
         existingAddress.ifPresent(address -> {
