@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Entity
 @Table(name="abstract_user")
@@ -67,10 +68,11 @@ public class AbstractUser implements UserDetails {
         return switch (this) {
             case Member member -> Collections.singletonList(new SimpleGrantedAuthority("USER"));
             case Trainer trainer -> Collections.singletonList(new SimpleGrantedAuthority("TRAINER"));
-            case Worker worker ->
-                //TODO: Gdy worker bedzie mial liste permisji to trzeba ja tu zwrocic
-                //return (Worker)this.getPermissions()
-                    Collections.singletonList(new SimpleGrantedAuthority("WORKER"));
+            case Worker worker -> Stream.concat(
+                        Stream.of(new SimpleGrantedAuthority("WORKER")),
+                        worker.getPermissionList().stream()
+                            .map(permission -> new SimpleGrantedAuthority(permission.getName().name()))
+                    ).collect(Collectors.toList());
             default -> Collections.emptyList();
         };
     }
