@@ -13,7 +13,7 @@ public class Permission {
 
     @Column(name = "name")
     @Enumerated(EnumType.STRING)
-    private Permissions name;
+    private Permissions permission;
 
     @ManyToOne
     @JoinColumn(name = "worker_id")
@@ -27,12 +27,12 @@ public class Permission {
         return id;
     }
 
-    public Permissions getName() {
-        return name;
+    public Permissions get() {
+        return permission;
     }
 
-    public void setName(Permissions name) {
-        this.name = name;
+    public void set(Permissions permission) {
+        this.permission = permission;
     }
 
     public Worker getWorker() {
@@ -41,5 +41,5 @@ public class Permission {
 
     public void setWorker(Worker worker) {
         this.worker = worker;
-    }
+}
 }

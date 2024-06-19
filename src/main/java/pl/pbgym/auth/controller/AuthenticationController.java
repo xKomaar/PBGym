@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.pbgym.auth.domain.*;
+import pl.pbgym.auth.requests.*;
 import pl.pbgym.auth.service.AuthenticationService;
 import pl.pbgym.service.AbstractUserService;
 

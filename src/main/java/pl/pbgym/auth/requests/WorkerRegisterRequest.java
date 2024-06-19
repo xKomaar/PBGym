@@ -1,8 +1,12 @@
-package pl.pbgym.auth.domain;
+package pl.pbgym.auth.requests;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import pl.pbgym.auth.validators.PermissionSubset;
+import pl.pbgym.domain.Permissions;
+
+import java.util.List;
 
 public class WorkerRegisterRequest extends AbstractUserRequest {
     @Pattern(regexp = "^[A-Z]{3}\\d{6}$", message = "Wrong format of ID card number. Valid format example: XXX000000")
@@ -13,6 +17,26 @@ public class WorkerRegisterRequest extends AbstractUserRequest {
     @Pattern(regexp = "^[A-ZŻŹĆĄŚĘŁÓŃ][a-zżźćńółęąś]*$", message = "Position has to begin with a capital letter and involve only letters.")
     @NotBlank(message = "Position is required.")
     private String position;
+
+    @PermissionSubset(anyOf = {
+            Permissions.ADMIN,
+            Permissions.STATISTICS,
+            Permissions.USER_MANAGEMENT,
+            Permissions.NEWSLETTER,
+            Permissions.PASS_MANAGEMENT,
+            Permissions.GROUP_CLASSES_MANAGEMENT,
+            Permissions.BLOG,
+            Permissions.SHOP_MANAGEMENT
+    })
+    private List<Permissions> permissionsList;
+
+    public List<Permissions> getPermissionsList() {
+        return permissionsList;
+    }
+
+    public void setPermissionsList(List<Permissions> permissionsList) {
+        this.permissionsList = permissionsList;
+    }
 
     public WorkerRegisterRequest() {
         super();

@@ -1,4 +1,4 @@
-package pl.pbgym.auth.domain;
+package pl.pbgym.auth.requests;
 
 public class AuthenticationResponse {
 

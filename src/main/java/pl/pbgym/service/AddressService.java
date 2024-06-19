@@ -17,7 +17,7 @@ public class AddressService {
         this.addressRepository = addressRepository;
     }
 
-    //TODO: BEZ SENSU ZMIENIAC WSZYSTKIE ATRYBUTY, PO PROSTU ZASEJWUJ NOWEGO I TYLE
+    //TODO: METODY UPDATE BEDA PODZIELONE, A NIE, ŻE CALY OBIEKT NA RAZ
     protected void updateAddress(Address newAddress) {
 
         Optional<Address> existingAddress = addressRepository.findById(newAddress.getId());

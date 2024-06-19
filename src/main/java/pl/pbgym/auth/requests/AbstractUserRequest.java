@@ -1,4 +1,4 @@
-package pl.pbgym.auth.domain;
+package pl.pbgym.auth.requests;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;

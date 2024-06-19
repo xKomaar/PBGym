@@ -15,8 +15,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.pbgym.auth.domain.AddressRequest;
-import pl.pbgym.auth.domain.MemberRegisterRequest;
+import pl.pbgym.auth.requests.AddressRequest;
+import pl.pbgym.auth.requests.AuthenticationRequest;
+import pl.pbgym.auth.requests.MemberRegisterRequest;
 
 import java.time.LocalDate;
 
@@ -169,7 +170,7 @@ public class MemberRegistrationAndAuthenticationTest {
     @Test
     public void shouldReturnBadRequestWhenRegisteringValidMemberWithInvalidAddress() throws Exception {
         MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest();
-        memberRegisterRequest.setEmail("test2@member.com");
+        memberRegisterRequest.setEmail("test3@member.com");
         memberRegisterRequest.setPassword("12345678");
         memberRegisterRequest.setName("Test");
         memberRegisterRequest.setSurname("User");
@@ -191,5 +192,41 @@ public class MemberRegistrationAndAuthenticationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldAuthenticateAndReturnJwt() throws Exception {
+        MemberRegisterRequest registerRequest = new MemberRegisterRequest();
+        registerRequest.setEmail("test4@member.com");
+        registerRequest.setPassword("password");
+        registerRequest.setName("John");
+        registerRequest.setSurname("Doe");
+        registerRequest.setBirthdate(LocalDate.of(1990, 1, 1));
+        registerRequest.setPesel("12345678912");
+        registerRequest.setPhoneNumber("123456789");
+
+        AddressRequest address = new AddressRequest();
+        address.setCity("City");
+        address.setStreetName("Street");
+        address.setBuildingNumber(1);
+        address.setPostalCode("15-123");
+
+        registerRequest.setAddress(address);
+
+        String jsonRegister = objectWriter.writeValueAsString(registerRequest);
+        mockMvc.perform(post("/auth/registerMember")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRegister))
+                .andExpect(status().isCreated());
+
+        AuthenticationRequest authRequest = new AuthenticationRequest("test4@member.com", "password");
+        String jsonAuth = objectWriter.writeValueAsString(authRequest);
+
+        mockMvc.perform(post("/auth/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonAuth))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.jwt").exists())
+                .andExpect(jsonPath("$.jwt").isString());
     }
 }

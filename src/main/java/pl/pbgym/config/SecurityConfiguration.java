@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pl.pbgym.auth.util.JwtAuthenticationFilter;
 
 @Configuration
@@ -31,11 +32,19 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers((headers) -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/**")
+                        .requestMatchers("/auth/registerMember", "/auth/authenticate")
                         .permitAll()
+                        .requestMatchers("/auth/registerTrainer")
+                        .hasAnyAuthority("ADMIN", "USER_MANAGEMENT")
+                        .requestMatchers("/auth/registerWorker")
+                        .hasAuthority("ADMIN")
+                        .requestMatchers("/swagger/**", "/swagger-ui/**", "v3/api-docs/**")
+                        .permitAll()
+                        .anyRequest().authenticated()
                 ).sessionManagement(config -> config
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                );
+                ).authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

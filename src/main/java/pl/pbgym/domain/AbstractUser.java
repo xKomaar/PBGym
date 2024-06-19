@@ -17,7 +17,6 @@ import java.util.stream.Stream;
 @Entity
 @Table(name="abstract_user")
 @Inheritance(strategy = InheritanceType.JOINED)
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class AbstractUser implements UserDetails {
 
     @Id
@@ -71,7 +70,7 @@ public class AbstractUser implements UserDetails {
             case Worker worker -> Stream.concat(
                         Stream.of(new SimpleGrantedAuthority("WORKER")),
                         worker.getPermissionList().stream()
-                            .map(permission -> new SimpleGrantedAuthority(permission.getName().name()))
+                            .map(permission -> new SimpleGrantedAuthority(permission.get().name()))
                     ).collect(Collectors.toList());
             default -> Collections.emptyList();
         };
