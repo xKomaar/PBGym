@@ -1,6 +1,7 @@
 package pl.pbgym.auth.requests;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import pl.pbgym.auth.validators.PermissionSubset;
@@ -28,6 +29,7 @@ public class WorkerRegisterRequest extends AbstractUserRequest {
             Permissions.BLOG,
             Permissions.SHOP_MANAGEMENT
     })
+    @NotNull
     private List<Permissions> permissionsList;
 
     public List<Permissions> getPermissionsList() {

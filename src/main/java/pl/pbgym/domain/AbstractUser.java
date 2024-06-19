@@ -53,7 +53,7 @@ public class AbstractUser implements UserDetails {
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinColumn(name="address_id", referencedColumnName = "id", nullable = false)
     private Address address;
 

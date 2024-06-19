@@ -86,6 +86,7 @@ public class AuthenticationService {
                 Permission permission = new Permission();
                 permission.setWorker(worker);
                 permission.set(p);
+                permissionRepository.save(permission);
             }
         }
     }
