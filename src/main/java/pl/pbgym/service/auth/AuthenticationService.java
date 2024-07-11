@@ -1,11 +1,13 @@
 package pl.pbgym.service.auth;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.pbgym.domain.*;
 import pl.pbgym.dto.auth.*;
 import pl.pbgym.repository.*;
@@ -23,10 +25,12 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    private final ModelMapper modelMapper;
+
     @Autowired
     public AuthenticationService(AbstractUserRepository abstractUserRepository, MemberRepository memberRepository, TrainerRepository trainerRepository, WorkerRepository workerRepository,
                                  AddressRepository addressRepository, PermissionRepository permissionRepository, PasswordEncoder passwordEncoder,
-                                 JwtService jwtService, AuthenticationManager authenticationManager) {
+                                 JwtService jwtService, AuthenticationManager authenticationManager, ModelMapper modelMapper) {
         this.abstractUserRepository = abstractUserRepository;
         this.memberRepository = memberRepository;
         this.trainerRepository = trainerRepository;
@@ -36,53 +40,43 @@ public class AuthenticationService {
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.modelMapper = modelMapper;
     }
 
-    public void setAbstractUserFields(PostAbstractUserDto request, AbstractUser abstractUser) {
-        abstractUser.setEmail(request.getEmail());
-        abstractUser.setPassword(passwordEncoder.encode(request.getPassword()));
-        abstractUser.setName(request.getName());
-        abstractUser.setSurname(request.getSurname());
-        abstractUser.setBirthdate(request.getBirthdate());
-        abstractUser.setPesel(request.getPesel());
-        abstractUser.setPhoneNumber(request.getPhoneNumber());
-
-        PostAddressRequestDto postAddressRequestDto = request.getAddress();
-        Address address = new Address();
-        address.setCity(postAddressRequestDto.getCity());
-        address.setStreetName(postAddressRequestDto.getStreetName());
-        address.setBuildingNumber(postAddressRequestDto.getBuildingNumber());
-        address.setApartmentNumber(postAddressRequestDto.getApartmentNumber());
-        address.setPostalCode(postAddressRequestDto.getPostalCode());
+    @Transactional
+    public void registerMember(PostMemberRequestDto postMemberRequestDto) {
+        Address address = modelMapper.map(postMemberRequestDto.getAddress(), Address.class);
         addressRepository.save(address);
-
-        abstractUser.setAddress(address);
-    }
-
-    public void registerMember(PostMemberRequestDto request) {
-        Member member = new Member();
-        setAbstractUserFields(request, member);
+        Member member = modelMapper.map(postMemberRequestDto, Member.class);
+        member.setPassword(passwordEncoder.encode(member.getPassword()));
+        member.setAddress(address);
 
         memberRepository.save(member);
     }
 
-    public void registerTrainer(PostTrainerRequestDto request) {
-        Trainer trainer = new Trainer();
-        setAbstractUserFields(request, trainer);
+    @Transactional
+    public void registerTrainer(PostTrainerRequestDto postTrainerRequestDto) {
+        Address address = modelMapper.map(postTrainerRequestDto.getAddress(), Address.class);
+        addressRepository.save(address);
+        Trainer trainer = modelMapper.map(postTrainerRequestDto, Trainer.class);
+        trainer.setPassword(passwordEncoder.encode(trainer.getPassword()));
+        trainer.setAddress(address);
 
         trainerRepository.save(trainer);
     }
 
-    public void registerWorker(PostWorkerRequestDto request) {
-        Worker worker = new Worker();
-        setAbstractUserFields(request, worker);
+    @Transactional
+    public void registerWorker(PostWorkerRequestDto postWorkerRequestDto) {
+        Address address = modelMapper.map(postWorkerRequestDto.getAddress(), Address.class);
+        addressRepository.save(address);
+        Worker worker = modelMapper.map(postWorkerRequestDto, Worker.class);
+        worker.setPassword(passwordEncoder.encode(worker.getPassword()));
+        worker.setAddress(address);
 
-        worker.setPosition(request.getPosition());
-        worker.setIdCardNumber(request.getIdCardNumber());
         workerRepository.save(worker);
 
-        if(!request.getPermissionsList().isEmpty()) {
-            for(Permissions p : request.getPermissionsList()) {
+        if(!postWorkerRequestDto.getPermissionsList().isEmpty()) {
+            for(Permissions p : postWorkerRequestDto.getPermissionsList()) {
                 Permission permission = new Permission();
                 permission.setWorker(worker);
                 permission.set(p);
