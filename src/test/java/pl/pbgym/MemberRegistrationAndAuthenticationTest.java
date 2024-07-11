@@ -14,9 +14,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.pbgym.auth.requests.AddressRequest;
-import pl.pbgym.auth.requests.AuthenticationRequest;
-import pl.pbgym.auth.requests.MemberRegisterRequest;
+import pl.pbgym.dto.auth.PostAddressRequestDto;
+import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
+import pl.pbgym.dto.auth.PostMemberRequestDto;
 
 import java.time.LocalDate;
 
@@ -45,7 +45,7 @@ public class MemberRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnCreatedWhenRegisteringMember() throws Exception {
-        MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest();
+        PostMemberRequestDto memberRegisterRequest = new PostMemberRequestDto();
         memberRegisterRequest.setEmail("test1@member.com");
         memberRegisterRequest.setPassword("12345678");
         memberRegisterRequest.setName("Test");
@@ -54,7 +54,7 @@ public class MemberRegistrationAndAuthenticationTest {
         memberRegisterRequest.setPesel("12345678912");
         memberRegisterRequest.setPhoneNumber("123123123");
 
-        AddressRequest address = new AddressRequest();
+        PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
         address.setStreetName("Street");
         address.setBuildingNumber(1);
@@ -72,7 +72,7 @@ public class MemberRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnConflictWhenRegisteringMemberWithSameEmail() throws Exception {
-        MemberRegisterRequest memberRegisterRequest1 = new MemberRegisterRequest();
+        PostMemberRequestDto memberRegisterRequest1 = new PostMemberRequestDto();
         memberRegisterRequest1.setEmail("test2@member.com");
         memberRegisterRequest1.setPassword("12345678");
         memberRegisterRequest1.setName("Test");
@@ -81,7 +81,7 @@ public class MemberRegistrationAndAuthenticationTest {
         memberRegisterRequest1.setPesel("12345678912");
         memberRegisterRequest1.setPhoneNumber("123123123");
 
-        MemberRegisterRequest memberRegisterRequest2 = new MemberRegisterRequest();
+        PostMemberRequestDto memberRegisterRequest2 = new PostMemberRequestDto();
         memberRegisterRequest2.setEmail("test2@member.com");
         memberRegisterRequest2.setPassword("12345678");
         memberRegisterRequest2.setName("Test");
@@ -90,7 +90,7 @@ public class MemberRegistrationAndAuthenticationTest {
         memberRegisterRequest2.setPesel("98765432112");
         memberRegisterRequest2.setPhoneNumber("321321321");
 
-        AddressRequest address = new AddressRequest();
+        PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
         address.setStreetName("Street");
         address.setBuildingNumber(1);
@@ -114,7 +114,7 @@ public class MemberRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnBadRequestWhenRegisteringMemberWithInvalidData() throws Exception {
-        MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest();
+        PostMemberRequestDto memberRegisterRequest = new PostMemberRequestDto();
         memberRegisterRequest.setEmail("invalid-email");
         memberRegisterRequest.setPassword("123");
         memberRegisterRequest.setName("test");
@@ -123,7 +123,7 @@ public class MemberRegistrationAndAuthenticationTest {
         memberRegisterRequest.setPesel("123");
         memberRegisterRequest.setPhoneNumber("123");
 
-        AddressRequest address = new AddressRequest();
+        PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("i");
         address.setStreetName("n");
         address.setBuildingNumber(0);
@@ -141,7 +141,7 @@ public class MemberRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnBadRequestWhenRegisteringMemberWithNullOrBlankOrEmptyData() throws Exception {
-        MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest();
+        PostMemberRequestDto memberRegisterRequest = new PostMemberRequestDto();
         memberRegisterRequest.setEmail("");
         memberRegisterRequest.setPassword("123456789");
         memberRegisterRequest.setName(null);
@@ -150,7 +150,7 @@ public class MemberRegistrationAndAuthenticationTest {
         memberRegisterRequest.setPesel("123");
         memberRegisterRequest.setPhoneNumber("123");
 
-        AddressRequest address = new AddressRequest();
+        PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("");
         address.setStreetName("   ");
         address.setBuildingNumber(0);
@@ -168,7 +168,7 @@ public class MemberRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnBadRequestWhenRegisteringValidMemberWithInvalidAddress() throws Exception {
-        MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest();
+        PostMemberRequestDto memberRegisterRequest = new PostMemberRequestDto();
         memberRegisterRequest.setEmail("test3@member.com");
         memberRegisterRequest.setPassword("12345678");
         memberRegisterRequest.setName("Test");
@@ -177,7 +177,7 @@ public class MemberRegistrationAndAuthenticationTest {
         memberRegisterRequest.setPesel("12345678912");
         memberRegisterRequest.setPhoneNumber("123123123");
 
-        AddressRequest address = new AddressRequest();
+        PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity(" ");
         address.setStreetName("sdsd");
         address.setBuildingNumber(null);
@@ -195,7 +195,7 @@ public class MemberRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldAuthenticateAndReturnJwt() throws Exception {
-        MemberRegisterRequest registerRequest = new MemberRegisterRequest();
+        PostMemberRequestDto registerRequest = new PostMemberRequestDto();
         registerRequest.setEmail("test4@member.com");
         registerRequest.setPassword("password");
         registerRequest.setName("John");
@@ -204,7 +204,7 @@ public class MemberRegistrationAndAuthenticationTest {
         registerRequest.setPesel("12345678912");
         registerRequest.setPhoneNumber("123456789");
 
-        AddressRequest address = new AddressRequest();
+        PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
         address.setStreetName("Street");
         address.setBuildingNumber(1);
@@ -218,7 +218,7 @@ public class MemberRegistrationAndAuthenticationTest {
                         .content(jsonRegister))
                 .andExpect(status().isCreated());
 
-        AuthenticationRequest authRequest = new AuthenticationRequest("test4@member.com", "password");
+        PostAuthenticationRequestDto authRequest = new PostAuthenticationRequestDto("test4@member.com", "password");
         String jsonAuth = objectWriter.writeValueAsString(authRequest);
 
         mockMvc.perform(post("/auth/authenticate")

@@ -14,15 +14,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.pbgym.auth.requests.AddressRequest;
-import pl.pbgym.auth.requests.AuthenticationRequest;
-import pl.pbgym.auth.requests.WorkerRegisterRequest;
-import pl.pbgym.auth.service.AuthenticationService;
+import pl.pbgym.dto.auth.PostAddressRequestDto;
+import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
+import pl.pbgym.dto.auth.PostWorkerRequestDto;
+import pl.pbgym.service.auth.AuthenticationService;
 import pl.pbgym.domain.Permissions;
 import pl.pbgym.repository.AbstractUserRepository;
 import pl.pbgym.repository.AddressRepository;
 import pl.pbgym.repository.PermissionRepository;
-import pl.pbgym.repository.WorkerRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -69,13 +68,13 @@ public class WorkerRegistrationAndAuthenticationTest {
         addressRepository.deleteAll();
         permissionRepository.deleteAll();
 
-        AddressRequest addressRequest = new AddressRequest();
-        addressRequest.setCity("City");
-        addressRequest.setStreetName("Street");
-        addressRequest.setBuildingNumber(1);
-        addressRequest.setPostalCode("15-123");
+        PostAddressRequestDto postAddressRequestDto = new PostAddressRequestDto();
+        postAddressRequestDto.setCity("City");
+        postAddressRequestDto.setStreetName("Street");
+        postAddressRequestDto.setBuildingNumber(1);
+        postAddressRequestDto.setPostalCode("15-123");
 
-        WorkerRegisterRequest adminWorkerRequest = new WorkerRegisterRequest();
+        PostWorkerRequestDto adminWorkerRequest = new PostWorkerRequestDto();
         adminWorkerRequest.setEmail("admin@admin.com");
         adminWorkerRequest.setPassword("password");
         adminWorkerRequest.setName("John");
@@ -85,7 +84,7 @@ public class WorkerRegistrationAndAuthenticationTest {
         adminWorkerRequest.setPhoneNumber("123456789");
         adminWorkerRequest.setIdCardNumber("ABC123456");
         adminWorkerRequest.setPosition("Owner");
-        adminWorkerRequest.setAddress(addressRequest);
+        adminWorkerRequest.setAddress(postAddressRequestDto);
 
         List<Permissions> permissionsList = new ArrayList<>();
         permissionsList.add(Permissions.ADMIN);
@@ -94,12 +93,12 @@ public class WorkerRegistrationAndAuthenticationTest {
         authenticationService.registerWorker(adminWorkerRequest);
 
         jwt = authenticationService.authenticate(
-                new AuthenticationRequest("admin@admin.com", "password")).getJwt();
+                new PostAuthenticationRequestDto("admin@admin.com", "password")).getJwt();
     }
 
     @Test
     public void shouldReturnCreatedWhenRegisteringWorker() throws Exception {
-        WorkerRegisterRequest workerRegisterRequest = new WorkerRegisterRequest();
+        PostWorkerRequestDto workerRegisterRequest = new PostWorkerRequestDto();
         workerRegisterRequest.setEmail("test1@worker.com");
         workerRegisterRequest.setPassword("12345678");
         workerRegisterRequest.setName("Test");
@@ -111,7 +110,7 @@ public class WorkerRegistrationAndAuthenticationTest {
         workerRegisterRequest.setPosition("Position");
         workerRegisterRequest.setPermissionsList(new ArrayList<>());
 
-        AddressRequest address = new AddressRequest();
+        PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
         address.setStreetName("Street");
         address.setBuildingNumber(1);
@@ -131,7 +130,7 @@ public class WorkerRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnConflictWhenRegisteringWorkerWithSameEmail() throws Exception {
-        WorkerRegisterRequest workerRegisterRequest1 = new WorkerRegisterRequest();
+        PostWorkerRequestDto workerRegisterRequest1 = new PostWorkerRequestDto();
         workerRegisterRequest1.setEmail("test2@worker.com");
         workerRegisterRequest1.setPassword("12345678");
         workerRegisterRequest1.setName("Test");
@@ -143,7 +142,7 @@ public class WorkerRegistrationAndAuthenticationTest {
         workerRegisterRequest1.setPosition("Position");
         workerRegisterRequest1.setPermissionsList(new ArrayList<>());
 
-        AddressRequest address1 = new AddressRequest();
+        PostAddressRequestDto address1 = new PostAddressRequestDto();
         address1.setCity("City");
         address1.setStreetName("Street");
         address1.setBuildingNumber(1);
@@ -151,7 +150,7 @@ public class WorkerRegistrationAndAuthenticationTest {
 
         workerRegisterRequest1.setAddress(address1);
 
-        WorkerRegisterRequest workerRegisterRequest2 = new WorkerRegisterRequest();
+        PostWorkerRequestDto workerRegisterRequest2 = new PostWorkerRequestDto();
         workerRegisterRequest2.setEmail("test2@worker.com");
         workerRegisterRequest2.setPassword("12345678");
         workerRegisterRequest2.setName("Test");
@@ -163,7 +162,7 @@ public class WorkerRegistrationAndAuthenticationTest {
         workerRegisterRequest2.setPosition("Position");
         workerRegisterRequest2.setPermissionsList(new ArrayList<>());
 
-        AddressRequest address2 = new AddressRequest();
+        PostAddressRequestDto address2 = new PostAddressRequestDto();
         address2.setCity("City");
         address2.setStreetName("Street");
         address2.setBuildingNumber(1);
@@ -190,7 +189,7 @@ public class WorkerRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnBadRequestWhenRegisteringWorkerWithInvalidData() throws Exception {
-        WorkerRegisterRequest workerRegisterRequest = new WorkerRegisterRequest();
+        PostWorkerRequestDto workerRegisterRequest = new PostWorkerRequestDto();
         workerRegisterRequest.setEmail("invalid-email");
         workerRegisterRequest.setPassword("123");
         workerRegisterRequest.setName("test");
@@ -202,7 +201,7 @@ public class WorkerRegistrationAndAuthenticationTest {
         workerRegisterRequest.setPosition("Position");
         workerRegisterRequest.setPermissionsList(new ArrayList<>());
 
-        AddressRequest address = new AddressRequest();
+        PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("i");
         address.setStreetName("n");
         address.setBuildingNumber(0);
@@ -221,7 +220,7 @@ public class WorkerRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnBadRequestWhenRegisteringWorkerWithNullOrBlankOrEmptyData() throws Exception {
-        WorkerRegisterRequest workerRegisterRequest = new WorkerRegisterRequest();
+        PostWorkerRequestDto workerRegisterRequest = new PostWorkerRequestDto();
         workerRegisterRequest.setEmail("");
         workerRegisterRequest.setPassword("123456789");
         workerRegisterRequest.setName(null);
@@ -233,7 +232,7 @@ public class WorkerRegistrationAndAuthenticationTest {
         workerRegisterRequest.setPosition("Position");
         workerRegisterRequest.setPermissionsList(new ArrayList<>());
 
-        AddressRequest address = new AddressRequest();
+        PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("");
         address.setStreetName("   ");
         address.setBuildingNumber(0);
@@ -252,7 +251,7 @@ public class WorkerRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnBadRequestWhenRegisteringValidWorkerWithInvalidAddress() throws Exception {
-        WorkerRegisterRequest workerRegisterRequest = new WorkerRegisterRequest();
+        PostWorkerRequestDto workerRegisterRequest = new PostWorkerRequestDto();
         workerRegisterRequest.setEmail("test3@worker.com");
         workerRegisterRequest.setPassword("12345678");
         workerRegisterRequest.setName("Test");
@@ -264,7 +263,7 @@ public class WorkerRegistrationAndAuthenticationTest {
         workerRegisterRequest.setPosition("Position");
         workerRegisterRequest.setPermissionsList(new ArrayList<>());
 
-        AddressRequest address = new AddressRequest();
+        PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity(" ");
         address.setStreetName("sdsd");
         address.setBuildingNumber(null);
@@ -283,7 +282,7 @@ public class WorkerRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldAuthenticateAndReturnJwt() throws Exception {
-        WorkerRegisterRequest workerRegisterRequest = new WorkerRegisterRequest();
+        PostWorkerRequestDto workerRegisterRequest = new PostWorkerRequestDto();
         workerRegisterRequest.setEmail("test4@worker.com");
         workerRegisterRequest.setPassword("password");
         workerRegisterRequest.setName("John");
@@ -295,7 +294,7 @@ public class WorkerRegistrationAndAuthenticationTest {
         workerRegisterRequest.setPosition("Position");
         workerRegisterRequest.setPermissionsList(new ArrayList<>());
 
-        AddressRequest address = new AddressRequest();
+        PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
         address.setStreetName("Street");
         address.setBuildingNumber(1);
@@ -310,7 +309,7 @@ public class WorkerRegistrationAndAuthenticationTest {
                         .content(jsonRegister))
                 .andExpect(status().isCreated());
 
-        AuthenticationRequest authRequest = new AuthenticationRequest("test4@worker.com", "password");
+        PostAuthenticationRequestDto authRequest = new PostAuthenticationRequestDto("test4@worker.com", "password");
         String jsonAuth = objectWriter.writeValueAsString(authRequest);
 
         mockMvc.perform(post("/auth/authenticate")

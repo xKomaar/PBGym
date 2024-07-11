@@ -1,11 +1,11 @@
-package pl.pbgym.auth.requests;
+package pl.pbgym.dto.auth;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
-public class AbstractUserRequest {
+public abstract class PostAbstractUserDto {
     @Email
     @NotBlank(message = "Email is required.")
     private String email;
@@ -39,9 +39,9 @@ public class AbstractUserRequest {
     private String phoneNumber;
 
     @Valid
-    private AddressRequest address;
+    private PostAddressRequestDto address;
 
-    public AbstractUserRequest() {
+    public PostAbstractUserDto() {
     }
 
     public String getEmail() {
@@ -100,11 +100,11 @@ public class AbstractUserRequest {
         this.phoneNumber = phoneNumber;
     }
 
-    public AddressRequest getAddress() {
+    public PostAddressRequestDto getAddress() {
         return address;
     }
 
-    public void setAddress(AddressRequest address) {
+    public void setAddress(PostAddressRequestDto address) {
         this.address = address;
     }
 }

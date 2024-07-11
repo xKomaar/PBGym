@@ -1,12 +1,12 @@
-package pl.pbgym.auth.controller;
+package pl.pbgym.controller.auth;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.pbgym.auth.requests.*;
-import pl.pbgym.auth.service.AuthenticationService;
+import pl.pbgym.service.auth.AuthenticationService;
+import pl.pbgym.dto.auth.*;
 import pl.pbgym.service.AbstractUserService;
 
 @RestController
@@ -24,7 +24,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/registerMember")
-    public ResponseEntity<String> registerMember(@Valid @RequestBody MemberRegisterRequest request) {
+    public ResponseEntity<String> registerMember(@Valid @RequestBody PostMemberRequestDto request) {
         if (abstractUserService.userExists(request.getEmail())) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Email already in use");
@@ -35,7 +35,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/registerTrainer")
-    public ResponseEntity<String> registerTrainer(@Valid @RequestBody TrainerRegisterRequest request) {
+    public ResponseEntity<String> registerTrainer(@Valid @RequestBody PostTrainerRequestDto request) {
         if (abstractUserService.userExists(request.getEmail())) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Email already in use");
@@ -46,7 +46,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/registerWorker")
-    public ResponseEntity<String> registerWorker(@Valid @RequestBody WorkerRegisterRequest request) {
+    public ResponseEntity<String> registerWorker(@Valid @RequestBody PostWorkerRequestDto request) {
         if (abstractUserService.userExists(request.getEmail())) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Email already in use");
@@ -57,7 +57,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
+    public ResponseEntity<PostAuthenticationResponseDto> authenticate(@RequestBody PostAuthenticationRequestDto request) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 }

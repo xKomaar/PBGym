@@ -14,16 +14,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.pbgym.auth.requests.AddressRequest;
-import pl.pbgym.auth.requests.AuthenticationRequest;
-import pl.pbgym.auth.requests.TrainerRegisterRequest;
-import pl.pbgym.auth.requests.WorkerRegisterRequest;
-import pl.pbgym.auth.service.AuthenticationService;
+import pl.pbgym.dto.auth.PostAddressRequestDto;
+import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
+import pl.pbgym.dto.auth.PostTrainerRequestDto;
+import pl.pbgym.dto.auth.PostWorkerRequestDto;
+import pl.pbgym.service.auth.AuthenticationService;
 import pl.pbgym.domain.Permissions;
 import pl.pbgym.repository.AbstractUserRepository;
 import pl.pbgym.repository.AddressRepository;
 import pl.pbgym.repository.PermissionRepository;
-import pl.pbgym.repository.WorkerRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -71,13 +70,13 @@ public class TrainerRegistrationAndAuthenticationTest {
         addressRepository.deleteAll();
         permissionRepository.deleteAll();
 
-        AddressRequest addressRequest = new AddressRequest();
-        addressRequest.setCity("City");
-        addressRequest.setStreetName("Street");
-        addressRequest.setBuildingNumber(1);
-        addressRequest.setPostalCode("15-123");
+        PostAddressRequestDto postAddressRequestDto = new PostAddressRequestDto();
+        postAddressRequestDto.setCity("City");
+        postAddressRequestDto.setStreetName("Street");
+        postAddressRequestDto.setBuildingNumber(1);
+        postAddressRequestDto.setPostalCode("15-123");
 
-        WorkerRegisterRequest adminWorkerRequest = new WorkerRegisterRequest();
+        PostWorkerRequestDto adminWorkerRequest = new PostWorkerRequestDto();
         adminWorkerRequest.setEmail("admin@admin.com");
         adminWorkerRequest.setPassword("password");
         adminWorkerRequest.setName("John");
@@ -87,7 +86,7 @@ public class TrainerRegistrationAndAuthenticationTest {
         adminWorkerRequest.setPhoneNumber("123456789");
         adminWorkerRequest.setIdCardNumber("ABC123456");
         adminWorkerRequest.setPosition("Owner");
-        adminWorkerRequest.setAddress(addressRequest);
+        adminWorkerRequest.setAddress(postAddressRequestDto);
 
         List<Permissions> permissionsList = new ArrayList<>();
         permissionsList.add(Permissions.USER_MANAGEMENT);
@@ -96,11 +95,11 @@ public class TrainerRegistrationAndAuthenticationTest {
         authenticationService.registerWorker(adminWorkerRequest);
 
         jwt = authenticationService.authenticate(
-                new AuthenticationRequest("admin@admin.com", "password")).getJwt();
+                new PostAuthenticationRequestDto("admin@admin.com", "password")).getJwt();
     }
     @Test
     public void shouldReturnCreatedWhenRegisteringTrainer() throws Exception {
-        TrainerRegisterRequest trainerRegisterRequest = new TrainerRegisterRequest();
+        PostTrainerRequestDto trainerRegisterRequest = new PostTrainerRequestDto();
         trainerRegisterRequest.setEmail("test1@trainer.com");
         trainerRegisterRequest.setPassword("12345678");
         trainerRegisterRequest.setName("Test");
@@ -109,7 +108,7 @@ public class TrainerRegistrationAndAuthenticationTest {
         trainerRegisterRequest.setPesel("98765432198");
         trainerRegisterRequest.setPhoneNumber("987654321");
 
-        AddressRequest address = new AddressRequest();
+        PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
         address.setStreetName("Street");
         address.setBuildingNumber(1);
@@ -129,7 +128,7 @@ public class TrainerRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnConflictWhenRegisteringTrainerWithSameEmail() throws Exception {
-        TrainerRegisterRequest trainerRegisterRequest1 = new TrainerRegisterRequest();
+        PostTrainerRequestDto trainerRegisterRequest1 = new PostTrainerRequestDto();
         trainerRegisterRequest1.setEmail("test2@trainer.com");
         trainerRegisterRequest1.setPassword("12345678");
         trainerRegisterRequest1.setName("Test");
@@ -138,7 +137,7 @@ public class TrainerRegistrationAndAuthenticationTest {
         trainerRegisterRequest1.setPesel("98765432198");
         trainerRegisterRequest1.setPhoneNumber("987654321");
 
-        AddressRequest address1 = new AddressRequest();
+        PostAddressRequestDto address1 = new PostAddressRequestDto();
         address1.setCity("City");
         address1.setStreetName("Street");
         address1.setBuildingNumber(1);
@@ -146,7 +145,7 @@ public class TrainerRegistrationAndAuthenticationTest {
 
         trainerRegisterRequest1.setAddress(address1);
 
-        TrainerRegisterRequest trainerRegisterRequest2 = new TrainerRegisterRequest();
+        PostTrainerRequestDto trainerRegisterRequest2 = new PostTrainerRequestDto();
         trainerRegisterRequest2.setEmail("test2@trainer.com");
         trainerRegisterRequest2.setPassword("12345678");
         trainerRegisterRequest2.setName("Test");
@@ -155,7 +154,7 @@ public class TrainerRegistrationAndAuthenticationTest {
         trainerRegisterRequest2.setPesel("12345678900");
         trainerRegisterRequest2.setPhoneNumber("123456789");
 
-        AddressRequest address2 = new AddressRequest();
+        PostAddressRequestDto address2 = new PostAddressRequestDto();
         address2.setCity("City");
         address2.setStreetName("Street");
         address2.setBuildingNumber(1);
@@ -182,7 +181,7 @@ public class TrainerRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnBadRequestWhenRegisteringTrainerWithInvalidData() throws Exception {
-        TrainerRegisterRequest trainerRegisterRequest = new TrainerRegisterRequest();
+        PostTrainerRequestDto trainerRegisterRequest = new PostTrainerRequestDto();
         trainerRegisterRequest.setEmail("invalid-email");
         trainerRegisterRequest.setPassword("123");
         trainerRegisterRequest.setName("test");
@@ -191,7 +190,7 @@ public class TrainerRegistrationAndAuthenticationTest {
         trainerRegisterRequest.setPesel("123");
         trainerRegisterRequest.setPhoneNumber("123");
 
-        AddressRequest address = new AddressRequest();
+        PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("i");
         address.setStreetName("n");
         address.setBuildingNumber(0);
@@ -210,7 +209,7 @@ public class TrainerRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnBadRequestWhenRegisteringTrainerWithNullOrBlankOrEmptyData() throws Exception {
-        TrainerRegisterRequest trainerRegisterRequest = new TrainerRegisterRequest();
+        PostTrainerRequestDto trainerRegisterRequest = new PostTrainerRequestDto();
         trainerRegisterRequest.setEmail("");
         trainerRegisterRequest.setPassword("123456789");
         trainerRegisterRequest.setName(null);
@@ -219,7 +218,7 @@ public class TrainerRegistrationAndAuthenticationTest {
         trainerRegisterRequest.setPesel("123");
         trainerRegisterRequest.setPhoneNumber("123");
 
-        AddressRequest address = new AddressRequest();
+        PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("");
         address.setStreetName("   ");
         address.setBuildingNumber(0);
@@ -238,7 +237,7 @@ public class TrainerRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnBadRequestWhenRegisteringValidTrainerWithInvalidAddress() throws Exception {
-        TrainerRegisterRequest trainerRegisterRequest = new TrainerRegisterRequest();
+        PostTrainerRequestDto trainerRegisterRequest = new PostTrainerRequestDto();
         trainerRegisterRequest.setEmail("test3@trainer.com");
         trainerRegisterRequest.setPassword("12345678");
         trainerRegisterRequest.setName("Test");
@@ -247,7 +246,7 @@ public class TrainerRegistrationAndAuthenticationTest {
         trainerRegisterRequest.setPesel("98765432198");
         trainerRegisterRequest.setPhoneNumber("987654321");
 
-        AddressRequest address = new AddressRequest();
+        PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity(" ");
         address.setStreetName("sdsd");
         address.setBuildingNumber(null);
@@ -266,7 +265,7 @@ public class TrainerRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldAuthenticateAndReturnJwt() throws Exception {
-        TrainerRegisterRequest trainerRegisterRequest = new TrainerRegisterRequest();
+        PostTrainerRequestDto trainerRegisterRequest = new PostTrainerRequestDto();
         trainerRegisterRequest.setEmail("test4@trainer.com");
         trainerRegisterRequest.setPassword("password");
         trainerRegisterRequest.setName("John");
@@ -275,7 +274,7 @@ public class TrainerRegistrationAndAuthenticationTest {
         trainerRegisterRequest.setPesel("12345678912");
         trainerRegisterRequest.setPhoneNumber("123456789");
 
-        AddressRequest address = new AddressRequest();
+        PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
         address.setStreetName("Street");
         address.setBuildingNumber(1);
@@ -290,7 +289,7 @@ public class TrainerRegistrationAndAuthenticationTest {
                         .content(jsonRegister))
                 .andExpect(status().isCreated());
 
-        AuthenticationRequest authRequest = new AuthenticationRequest("test4@trainer.com", "password");
+        PostAuthenticationRequestDto authRequest = new PostAuthenticationRequestDto("test4@trainer.com", "password");
         String jsonAuth = objectWriter.writeValueAsString(authRequest);
 
         mockMvc.perform(post("/auth/authenticate")

@@ -1,15 +1,15 @@
-package pl.pbgym.auth.requests;
+package pl.pbgym.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import pl.pbgym.auth.validators.PermissionSubset;
+import pl.pbgym.validator.PermissionSubset;
 import pl.pbgym.domain.Permissions;
 
 import java.util.List;
 
-public class WorkerRegisterRequest extends AbstractUserRequest {
+public class PostWorkerRequestDto extends PostAbstractUserDto {
     @Pattern(regexp = "^[A-Z]{3}\\d{6}$", message = "Wrong format of ID card number. Valid format example: XXX000000")
     @NotBlank(message = "ID card number is required.")
     private String IdCardNumber;
@@ -40,7 +40,7 @@ public class WorkerRegisterRequest extends AbstractUserRequest {
         this.permissionsList = permissionsList;
     }
 
-    public WorkerRegisterRequest() {
+    public PostWorkerRequestDto() {
         super();
     }
 

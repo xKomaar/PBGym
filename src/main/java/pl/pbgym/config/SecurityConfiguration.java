@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pl.pbgym.auth.util.JwtAuthenticationFilter;
+import pl.pbgym.util.auth.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity

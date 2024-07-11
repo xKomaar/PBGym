@@ -1,4 +1,4 @@
-package pl.pbgym.auth.service;
+package pl.pbgym.service.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -6,8 +6,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.pbgym.auth.requests.*;
 import pl.pbgym.domain.*;
+import pl.pbgym.dto.auth.*;
 import pl.pbgym.repository.*;
 
 @Service
@@ -38,7 +38,7 @@ public class AuthenticationService {
         this.authenticationManager = authenticationManager;
     }
 
-    public void setAbstractUserFields(AbstractUserRequest request, AbstractUser abstractUser) {
+    public void setAbstractUserFields(PostAbstractUserDto request, AbstractUser abstractUser) {
         abstractUser.setEmail(request.getEmail());
         abstractUser.setPassword(passwordEncoder.encode(request.getPassword()));
         abstractUser.setName(request.getName());
@@ -47,33 +47,33 @@ public class AuthenticationService {
         abstractUser.setPesel(request.getPesel());
         abstractUser.setPhoneNumber(request.getPhoneNumber());
 
-        AddressRequest addressRequest = request.getAddress();
+        PostAddressRequestDto postAddressRequestDto = request.getAddress();
         Address address = new Address();
-        address.setCity(addressRequest.getCity());
-        address.setStreetName(addressRequest.getStreetName());
-        address.setBuildingNumber(addressRequest.getBuildingNumber());
-        address.setApartmentNumber(addressRequest.getApartmentNumber());
-        address.setPostalCode(addressRequest.getPostalCode());
+        address.setCity(postAddressRequestDto.getCity());
+        address.setStreetName(postAddressRequestDto.getStreetName());
+        address.setBuildingNumber(postAddressRequestDto.getBuildingNumber());
+        address.setApartmentNumber(postAddressRequestDto.getApartmentNumber());
+        address.setPostalCode(postAddressRequestDto.getPostalCode());
         addressRepository.save(address);
 
         abstractUser.setAddress(address);
     }
 
-    public void registerMember(MemberRegisterRequest request) {
+    public void registerMember(PostMemberRequestDto request) {
         Member member = new Member();
         setAbstractUserFields(request, member);
 
         memberRepository.save(member);
     }
 
-    public void registerTrainer(TrainerRegisterRequest request) {
+    public void registerTrainer(PostTrainerRequestDto request) {
         Trainer trainer = new Trainer();
         setAbstractUserFields(request, trainer);
 
         trainerRepository.save(trainer);
     }
 
-    public void registerWorker(WorkerRegisterRequest request) {
+    public void registerWorker(PostWorkerRequestDto request) {
         Worker worker = new Worker();
         setAbstractUserFields(request, worker);
 
@@ -91,13 +91,13 @@ public class AuthenticationService {
         }
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public PostAuthenticationResponseDto authenticate(PostAuthenticationRequestDto request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
         AbstractUser abstractUser = abstractUserRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         String jwt = jwtService.generateToken(abstractUser);
-        return new AuthenticationResponse(jwt);
+        return new PostAuthenticationResponseDto(jwt);
     }
 }

@@ -1,10 +1,10 @@
-package pl.pbgym.auth.requests;
+package pl.pbgym.dto.auth;
 
-public class AuthenticationResponse {
+public class PostAuthenticationResponseDto {
 
     private String jwt;
 
-    public AuthenticationResponse(String jwt) {
+    public PostAuthenticationResponseDto(String jwt) {
         this.jwt = jwt;
     }
 

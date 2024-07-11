@@ -1,4 +1,4 @@
-package pl.pbgym.auth.util;
+package pl.pbgym.util.auth;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import pl.pbgym.auth.service.JwtService;
+import pl.pbgym.service.auth.JwtService;
 
 import java.io.IOException;
 

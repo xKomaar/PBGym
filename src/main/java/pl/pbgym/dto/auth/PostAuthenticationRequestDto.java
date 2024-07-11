@@ -1,10 +1,10 @@
-package pl.pbgym.auth.requests;
+package pl.pbgym.dto.auth;
 
-public class AuthenticationRequest {
+public class PostAuthenticationRequestDto {
     private String email;
     private String password;
 
-    public AuthenticationRequest(String email, String password) {
+    public PostAuthenticationRequestDto(String email, String password) {
         this.email = email;
         this.password = password;
     }

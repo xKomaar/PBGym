@@ -1,8 +1,8 @@
-package pl.pbgym.auth.requests;
+package pl.pbgym.dto.auth;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 
-public class AddressRequest {
+public class PostAddressRequestDto {
 
     @Size(min = 2, message = "City name can't be shorter than 2 characters long.")
     @Size(max = 200, message = "City name can't be longer than 200 characters long.")
@@ -26,7 +26,7 @@ public class AddressRequest {
     @Pattern(regexp = "^\\d{2}-\\d{3}$", message = "Postal code must be in the format dd-ddd")
     private String postalCode;
 
-    public AddressRequest() {
+    public PostAddressRequestDto() {
     }
 
     public String getCity() {

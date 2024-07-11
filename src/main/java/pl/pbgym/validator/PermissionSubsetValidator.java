@@ -1,4 +1,4 @@
-package pl.pbgym.auth.validators;
+package pl.pbgym.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

@@ -1,4 +1,4 @@
-package pl.pbgym.auth.service;
+package pl.pbgym.service.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
