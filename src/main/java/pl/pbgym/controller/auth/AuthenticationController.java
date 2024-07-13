@@ -32,7 +32,7 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "409", description = "Email already in use")
     })
     @PostMapping("/registerMember")
-    public ResponseEntity<String> registerMember(@Valid @RequestBody PostMemberRequestRequestDto request) {
+    public ResponseEntity<String> registerMember(@Valid @RequestBody PostMemberRequestDto request) {
         if (abstractUserService.userExists(request.getEmail())) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Email already in use");
@@ -48,7 +48,7 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "409", description = "Email already in use")
     })
     @PostMapping("/registerTrainer")
-    public ResponseEntity<String> registerTrainer(@Valid @RequestBody PostTrainerRequestRequestDto request) {
+    public ResponseEntity<String> registerTrainer(@Valid @RequestBody PostTrainerRequestDto request) {
         if (abstractUserService.userExists(request.getEmail())) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Email already in use");
@@ -64,7 +64,7 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "409", description = "Email already in use")
     })
     @PostMapping("/registerWorker")
-    public ResponseEntity<String> registerWorker(@Valid @RequestBody PostWorkerRequestRequestDto request) {
+    public ResponseEntity<String> registerWorker(@Valid @RequestBody PostWorkerRequestDto request) {
         if (abstractUserService.userExists(request.getEmail())) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Email already in use");

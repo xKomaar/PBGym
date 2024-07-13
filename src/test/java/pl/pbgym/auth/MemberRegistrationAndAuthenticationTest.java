@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
-import pl.pbgym.dto.auth.PostMemberRequestRequestDto;
+import pl.pbgym.dto.auth.PostMemberRequestDto;
 
 import java.time.LocalDate;
 
@@ -45,7 +45,7 @@ public class MemberRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnCreatedWhenRegisteringMember() throws Exception {
-        PostMemberRequestRequestDto memberRegisterRequest = new PostMemberRequestRequestDto();
+        PostMemberRequestDto memberRegisterRequest = new PostMemberRequestDto();
         memberRegisterRequest.setEmail("test1@member.com");
         memberRegisterRequest.setPassword("12345678");
         memberRegisterRequest.setName("Test");
@@ -72,7 +72,7 @@ public class MemberRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnConflictWhenRegisteringMemberWithSameEmail() throws Exception {
-        PostMemberRequestRequestDto memberRegisterRequest1 = new PostMemberRequestRequestDto();
+        PostMemberRequestDto memberRegisterRequest1 = new PostMemberRequestDto();
         memberRegisterRequest1.setEmail("test2@member.com");
         memberRegisterRequest1.setPassword("12345678");
         memberRegisterRequest1.setName("Test");
@@ -81,7 +81,7 @@ public class MemberRegistrationAndAuthenticationTest {
         memberRegisterRequest1.setPesel("12345678912");
         memberRegisterRequest1.setPhoneNumber("123123123");
 
-        PostMemberRequestRequestDto memberRegisterRequest2 = new PostMemberRequestRequestDto();
+        PostMemberRequestDto memberRegisterRequest2 = new PostMemberRequestDto();
         memberRegisterRequest2.setEmail("test2@member.com");
         memberRegisterRequest2.setPassword("12345678");
         memberRegisterRequest2.setName("Test");
@@ -114,7 +114,7 @@ public class MemberRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnBadRequestWhenRegisteringMemberWithInvalidData() throws Exception {
-        PostMemberRequestRequestDto memberRegisterRequest = new PostMemberRequestRequestDto();
+        PostMemberRequestDto memberRegisterRequest = new PostMemberRequestDto();
         memberRegisterRequest.setEmail("invalid-email");
         memberRegisterRequest.setPassword("123");
         memberRegisterRequest.setName("test");
@@ -141,7 +141,7 @@ public class MemberRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnBadRequestWhenRegisteringMemberWithNullOrBlankOrEmptyData() throws Exception {
-        PostMemberRequestRequestDto memberRegisterRequest = new PostMemberRequestRequestDto();
+        PostMemberRequestDto memberRegisterRequest = new PostMemberRequestDto();
         memberRegisterRequest.setEmail("");
         memberRegisterRequest.setPassword("123456789");
         memberRegisterRequest.setName(null);
@@ -168,7 +168,7 @@ public class MemberRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnBadRequestWhenRegisteringValidMemberWithInvalidAddress() throws Exception {
-        PostMemberRequestRequestDto memberRegisterRequest = new PostMemberRequestRequestDto();
+        PostMemberRequestDto memberRegisterRequest = new PostMemberRequestDto();
         memberRegisterRequest.setEmail("test3@member.com");
         memberRegisterRequest.setPassword("12345678");
         memberRegisterRequest.setName("Test");
@@ -195,7 +195,7 @@ public class MemberRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldAuthenticateAndReturnJwt() throws Exception {
-        PostMemberRequestRequestDto registerRequest = new PostMemberRequestRequestDto();
+        PostMemberRequestDto registerRequest = new PostMemberRequestDto();
         registerRequest.setEmail("test4@member.com");
         registerRequest.setPassword("password");
         registerRequest.setName("John");

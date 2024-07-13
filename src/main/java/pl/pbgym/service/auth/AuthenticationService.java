@@ -43,7 +43,7 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public void registerMember(PostMemberRequestRequestDto postMemberRequestDto) {
+    public void registerMember(PostMemberRequestDto postMemberRequestDto) {
         Address address = modelMapper.map(postMemberRequestDto.getAddress(), Address.class);
         addressRepository.save(address);
         Member member = modelMapper.map(postMemberRequestDto, Member.class);
@@ -54,7 +54,7 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public void registerTrainer(PostTrainerRequestRequestDto postTrainerRequestDto) {
+    public void registerTrainer(PostTrainerRequestDto postTrainerRequestDto) {
         Address address = modelMapper.map(postTrainerRequestDto.getAddress(), Address.class);
         addressRepository.save(address);
         Trainer trainer = modelMapper.map(postTrainerRequestDto, Trainer.class);
@@ -65,7 +65,7 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public void registerWorker(PostWorkerRequestRequestDto postWorkerRequestDto) {
+    public void registerWorker(PostWorkerRequestDto postWorkerRequestDto) {
         Address address = modelMapper.map(postWorkerRequestDto.getAddress(), Address.class);
         addressRepository.save(address);
         Worker worker = modelMapper.map(postWorkerRequestDto, Worker.class);

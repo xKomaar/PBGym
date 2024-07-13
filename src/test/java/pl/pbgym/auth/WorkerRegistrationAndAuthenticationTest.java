@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
-import pl.pbgym.dto.auth.PostWorkerRequestRequestDto;
+import pl.pbgym.dto.auth.PostWorkerRequestDto;
 import pl.pbgym.service.auth.AuthenticationService;
 import pl.pbgym.domain.Permissions;
 import pl.pbgym.repository.AbstractUserRepository;
@@ -74,7 +74,7 @@ public class WorkerRegistrationAndAuthenticationTest {
         postAddressRequestDto.setBuildingNumber(1);
         postAddressRequestDto.setPostalCode("15-123");
 
-        PostWorkerRequestRequestDto adminWorkerRequest = new PostWorkerRequestRequestDto();
+        PostWorkerRequestDto adminWorkerRequest = new PostWorkerRequestDto();
         adminWorkerRequest.setEmail("admin@admin.com");
         adminWorkerRequest.setPassword("password");
         adminWorkerRequest.setName("John");
@@ -98,7 +98,7 @@ public class WorkerRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnCreatedWhenRegisteringWorker() throws Exception {
-        PostWorkerRequestRequestDto workerRegisterRequest = new PostWorkerRequestRequestDto();
+        PostWorkerRequestDto workerRegisterRequest = new PostWorkerRequestDto();
         workerRegisterRequest.setEmail("test1@worker.com");
         workerRegisterRequest.setPassword("12345678");
         workerRegisterRequest.setName("Test");
@@ -130,7 +130,7 @@ public class WorkerRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnConflictWhenRegisteringWorkerWithSameEmail() throws Exception {
-        PostWorkerRequestRequestDto workerRegisterRequest1 = new PostWorkerRequestRequestDto();
+        PostWorkerRequestDto workerRegisterRequest1 = new PostWorkerRequestDto();
         workerRegisterRequest1.setEmail("test2@worker.com");
         workerRegisterRequest1.setPassword("12345678");
         workerRegisterRequest1.setName("Test");
@@ -150,7 +150,7 @@ public class WorkerRegistrationAndAuthenticationTest {
 
         workerRegisterRequest1.setAddress(address1);
 
-        PostWorkerRequestRequestDto workerRegisterRequest2 = new PostWorkerRequestRequestDto();
+        PostWorkerRequestDto workerRegisterRequest2 = new PostWorkerRequestDto();
         workerRegisterRequest2.setEmail("test2@worker.com");
         workerRegisterRequest2.setPassword("12345678");
         workerRegisterRequest2.setName("Test");
@@ -189,7 +189,7 @@ public class WorkerRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnBadRequestWhenRegisteringWorkerWithInvalidData() throws Exception {
-        PostWorkerRequestRequestDto workerRegisterRequest = new PostWorkerRequestRequestDto();
+        PostWorkerRequestDto workerRegisterRequest = new PostWorkerRequestDto();
         workerRegisterRequest.setEmail("invalid-email");
         workerRegisterRequest.setPassword("123");
         workerRegisterRequest.setName("test");
@@ -220,7 +220,7 @@ public class WorkerRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnBadRequestWhenRegisteringWorkerWithNullOrBlankOrEmptyData() throws Exception {
-        PostWorkerRequestRequestDto workerRegisterRequest = new PostWorkerRequestRequestDto();
+        PostWorkerRequestDto workerRegisterRequest = new PostWorkerRequestDto();
         workerRegisterRequest.setEmail("");
         workerRegisterRequest.setPassword("123456789");
         workerRegisterRequest.setName(null);
@@ -251,7 +251,7 @@ public class WorkerRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnBadRequestWhenRegisteringValidWorkerWithInvalidAddress() throws Exception {
-        PostWorkerRequestRequestDto workerRegisterRequest = new PostWorkerRequestRequestDto();
+        PostWorkerRequestDto workerRegisterRequest = new PostWorkerRequestDto();
         workerRegisterRequest.setEmail("test3@worker.com");
         workerRegisterRequest.setPassword("12345678");
         workerRegisterRequest.setName("Test");
@@ -282,7 +282,7 @@ public class WorkerRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldAuthenticateAndReturnJwt() throws Exception {
-        PostWorkerRequestRequestDto workerRegisterRequest = new PostWorkerRequestRequestDto();
+        PostWorkerRequestDto workerRegisterRequest = new PostWorkerRequestDto();
         workerRegisterRequest.setEmail("test4@worker.com");
         workerRegisterRequest.setPassword("password");
         workerRegisterRequest.setName("John");
