@@ -1,4 +1,4 @@
-package pl.pbgym;
+package pl.pbgym.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -16,7 +16,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
-import pl.pbgym.dto.auth.PostWorkerRequestDto;
+import pl.pbgym.dto.auth.PostTrainerRequestRequestDto;
+import pl.pbgym.dto.auth.PostWorkerRequestRequestDto;
 import pl.pbgym.service.auth.AuthenticationService;
 import pl.pbgym.domain.Permissions;
 import pl.pbgym.repository.AbstractUserRepository;
@@ -34,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles(profiles = "test")
-public class WorkerRegistrationAndAuthenticationTest {
+public class TrainerRegistrationAndAuthenticationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -64,6 +65,7 @@ public class WorkerRegistrationAndAuthenticationTest {
 
         objectWriter = objectMapper.writer().withDefaultPrettyPrinter();
 
+
         abstractUserRepository.deleteAll();
         addressRepository.deleteAll();
         permissionRepository.deleteAll();
@@ -74,7 +76,7 @@ public class WorkerRegistrationAndAuthenticationTest {
         postAddressRequestDto.setBuildingNumber(1);
         postAddressRequestDto.setPostalCode("15-123");
 
-        PostWorkerRequestDto adminWorkerRequest = new PostWorkerRequestDto();
+        PostWorkerRequestRequestDto adminWorkerRequest = new PostWorkerRequestRequestDto();
         adminWorkerRequest.setEmail("admin@admin.com");
         adminWorkerRequest.setPassword("password");
         adminWorkerRequest.setName("John");
@@ -87,7 +89,7 @@ public class WorkerRegistrationAndAuthenticationTest {
         adminWorkerRequest.setAddress(postAddressRequestDto);
 
         List<Permissions> permissionsList = new ArrayList<>();
-        permissionsList.add(Permissions.ADMIN);
+        permissionsList.add(Permissions.USER_MANAGEMENT);
         adminWorkerRequest.setPermissionsList(permissionsList);
 
         authenticationService.registerWorker(adminWorkerRequest);
@@ -95,20 +97,16 @@ public class WorkerRegistrationAndAuthenticationTest {
         jwt = authenticationService.authenticate(
                 new PostAuthenticationRequestDto("admin@admin.com", "password")).getJwt();
     }
-
     @Test
-    public void shouldReturnCreatedWhenRegisteringWorker() throws Exception {
-        PostWorkerRequestDto workerRegisterRequest = new PostWorkerRequestDto();
-        workerRegisterRequest.setEmail("test1@worker.com");
-        workerRegisterRequest.setPassword("12345678");
-        workerRegisterRequest.setName("Test");
-        workerRegisterRequest.setSurname("User");
-        workerRegisterRequest.setBirthdate(LocalDate.of(2002, 5, 10));
-        workerRegisterRequest.setPesel("12345678912");
-        workerRegisterRequest.setPhoneNumber("123123123");
-        workerRegisterRequest.setIdCardNumber("XYZ987654");
-        workerRegisterRequest.setPosition("Position");
-        workerRegisterRequest.setPermissionsList(new ArrayList<>());
+    public void shouldReturnCreatedWhenRegisteringTrainer() throws Exception {
+        PostTrainerRequestRequestDto trainerRegisterRequest = new PostTrainerRequestRequestDto();
+        trainerRegisterRequest.setEmail("test1@trainer.com");
+        trainerRegisterRequest.setPassword("12345678");
+        trainerRegisterRequest.setName("Test");
+        trainerRegisterRequest.setSurname("Trainer");
+        trainerRegisterRequest.setBirthdate(LocalDate.of(1995, 8, 15));
+        trainerRegisterRequest.setPesel("98765432198");
+        trainerRegisterRequest.setPhoneNumber("987654321");
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
@@ -116,31 +114,28 @@ public class WorkerRegistrationAndAuthenticationTest {
         address.setBuildingNumber(1);
         address.setPostalCode("15-123");
 
-        workerRegisterRequest.setAddress(address);
+        trainerRegisterRequest.setAddress(address);
 
-        String json = objectWriter.writeValueAsString(workerRegisterRequest);
+        String json = objectWriter.writeValueAsString(trainerRegisterRequest);
 
-        mockMvc.perform(post("/auth/registerWorker")
+        mockMvc.perform(post("/auth/registerTrainer")
                         .header("Authorization", "Bearer " + jwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated())
-                .andExpect(content().string("Worker registered successfully"));
+                .andExpect(content().string("Trainer registered successfully"));
     }
 
     @Test
-    public void shouldReturnConflictWhenRegisteringWorkerWithSameEmail() throws Exception {
-        PostWorkerRequestDto workerRegisterRequest1 = new PostWorkerRequestDto();
-        workerRegisterRequest1.setEmail("test2@worker.com");
-        workerRegisterRequest1.setPassword("12345678");
-        workerRegisterRequest1.setName("Test");
-        workerRegisterRequest1.setSurname("User");
-        workerRegisterRequest1.setBirthdate(LocalDate.of(2002, 5, 10));
-        workerRegisterRequest1.setPesel("12345678912");
-        workerRegisterRequest1.setPhoneNumber("123123123");
-        workerRegisterRequest1.setIdCardNumber("XYZ987654");
-        workerRegisterRequest1.setPosition("Position");
-        workerRegisterRequest1.setPermissionsList(new ArrayList<>());
+    public void shouldReturnConflictWhenRegisteringTrainerWithSameEmail() throws Exception {
+        PostTrainerRequestRequestDto trainerRegisterRequest1 = new PostTrainerRequestRequestDto();
+        trainerRegisterRequest1.setEmail("test2@trainer.com");
+        trainerRegisterRequest1.setPassword("12345678");
+        trainerRegisterRequest1.setName("Test");
+        trainerRegisterRequest1.setSurname("Trainer");
+        trainerRegisterRequest1.setBirthdate(LocalDate.of(1995, 8, 15));
+        trainerRegisterRequest1.setPesel("98765432198");
+        trainerRegisterRequest1.setPhoneNumber("987654321");
 
         PostAddressRequestDto address1 = new PostAddressRequestDto();
         address1.setCity("City");
@@ -148,19 +143,16 @@ public class WorkerRegistrationAndAuthenticationTest {
         address1.setBuildingNumber(1);
         address1.setPostalCode("15-123");
 
-        workerRegisterRequest1.setAddress(address1);
+        trainerRegisterRequest1.setAddress(address1);
 
-        PostWorkerRequestDto workerRegisterRequest2 = new PostWorkerRequestDto();
-        workerRegisterRequest2.setEmail("test2@worker.com");
-        workerRegisterRequest2.setPassword("12345678");
-        workerRegisterRequest2.setName("Test");
-        workerRegisterRequest2.setSurname("User");
-        workerRegisterRequest2.setBirthdate(LocalDate.of(2003, 5, 10));
-        workerRegisterRequest2.setPesel("98765432112");
-        workerRegisterRequest2.setPhoneNumber("321321321");
-        workerRegisterRequest2.setIdCardNumber("XYZ654321");
-        workerRegisterRequest2.setPosition("Position");
-        workerRegisterRequest2.setPermissionsList(new ArrayList<>());
+        PostTrainerRequestRequestDto trainerRegisterRequest2 = new PostTrainerRequestRequestDto();
+        trainerRegisterRequest2.setEmail("test2@trainer.com");
+        trainerRegisterRequest2.setPassword("12345678");
+        trainerRegisterRequest2.setName("Test");
+        trainerRegisterRequest2.setSurname("Trainer");
+        trainerRegisterRequest2.setBirthdate(LocalDate.of(2000, 10, 20));
+        trainerRegisterRequest2.setPesel("12345678900");
+        trainerRegisterRequest2.setPhoneNumber("123456789");
 
         PostAddressRequestDto address2 = new PostAddressRequestDto();
         address2.setCity("City");
@@ -168,18 +160,18 @@ public class WorkerRegistrationAndAuthenticationTest {
         address2.setBuildingNumber(1);
         address2.setPostalCode("15-123");
 
-        workerRegisterRequest2.setAddress(address2);
+        trainerRegisterRequest2.setAddress(address2);
 
-        String json1 = objectWriter.writeValueAsString(workerRegisterRequest1);
-        String json2 = objectWriter.writeValueAsString(workerRegisterRequest2);
+        String json1 = objectWriter.writeValueAsString(trainerRegisterRequest1);
+        String json2 = objectWriter.writeValueAsString(trainerRegisterRequest2);
 
-        mockMvc.perform(post("/auth/registerWorker")
+        mockMvc.perform(post("/auth/registerTrainer")
                         .header("Authorization", "Bearer " + jwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json1))
                 .andExpect(status().isCreated())
-                .andExpect(content().string("Worker registered successfully"));
-        mockMvc.perform(post("/auth/registerWorker")
+                .andExpect(content().string("Trainer registered successfully"));
+        mockMvc.perform(post("/auth/registerTrainer")
                         .header("Authorization", "Bearer " + jwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json2))
@@ -188,18 +180,15 @@ public class WorkerRegistrationAndAuthenticationTest {
     }
 
     @Test
-    public void shouldReturnBadRequestWhenRegisteringWorkerWithInvalidData() throws Exception {
-        PostWorkerRequestDto workerRegisterRequest = new PostWorkerRequestDto();
-        workerRegisterRequest.setEmail("invalid-email");
-        workerRegisterRequest.setPassword("123");
-        workerRegisterRequest.setName("test");
-        workerRegisterRequest.setSurname("user");
-        workerRegisterRequest.setBirthdate(null);
-        workerRegisterRequest.setPesel("123");
-        workerRegisterRequest.setPhoneNumber("123");
-        workerRegisterRequest.setIdCardNumber("ABC123");
-        workerRegisterRequest.setPosition("Position");
-        workerRegisterRequest.setPermissionsList(new ArrayList<>());
+    public void shouldReturnBadRequestWhenRegisteringTrainerWithInvalidData() throws Exception {
+        PostTrainerRequestRequestDto trainerRegisterRequest = new PostTrainerRequestRequestDto();
+        trainerRegisterRequest.setEmail("invalid-email");
+        trainerRegisterRequest.setPassword("123");
+        trainerRegisterRequest.setName("test");
+        trainerRegisterRequest.setSurname("trainer");
+        trainerRegisterRequest.setBirthdate(null);
+        trainerRegisterRequest.setPesel("123");
+        trainerRegisterRequest.setPhoneNumber("123");
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("i");
@@ -207,11 +196,11 @@ public class WorkerRegistrationAndAuthenticationTest {
         address.setBuildingNumber(0);
         address.setPostalCode("1532-123");
 
-        workerRegisterRequest.setAddress(address);
+        trainerRegisterRequest.setAddress(address);
 
-        String json = objectWriter.writeValueAsString(workerRegisterRequest);
+        String json = objectWriter.writeValueAsString(trainerRegisterRequest);
 
-        mockMvc.perform(post("/auth/registerWorker")
+        mockMvc.perform(post("/auth/registerTrainer")
                         .header("Authorization", "Bearer " + jwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -219,18 +208,15 @@ public class WorkerRegistrationAndAuthenticationTest {
     }
 
     @Test
-    public void shouldReturnBadRequestWhenRegisteringWorkerWithNullOrBlankOrEmptyData() throws Exception {
-        PostWorkerRequestDto workerRegisterRequest = new PostWorkerRequestDto();
-        workerRegisterRequest.setEmail("");
-        workerRegisterRequest.setPassword("123456789");
-        workerRegisterRequest.setName(null);
-        workerRegisterRequest.setSurname("     ");
-        workerRegisterRequest.setBirthdate(null);
-        workerRegisterRequest.setPesel("123");
-        workerRegisterRequest.setPhoneNumber("123");
-        workerRegisterRequest.setIdCardNumber("ABC123");
-        workerRegisterRequest.setPosition("Position");
-        workerRegisterRequest.setPermissionsList(new ArrayList<>());
+    public void shouldReturnBadRequestWhenRegisteringTrainerWithNullOrBlankOrEmptyData() throws Exception {
+        PostTrainerRequestRequestDto trainerRegisterRequest = new PostTrainerRequestRequestDto();
+        trainerRegisterRequest.setEmail("");
+        trainerRegisterRequest.setPassword("123456789");
+        trainerRegisterRequest.setName(null);
+        trainerRegisterRequest.setSurname("     ");
+        trainerRegisterRequest.setBirthdate(null);
+        trainerRegisterRequest.setPesel("123");
+        trainerRegisterRequest.setPhoneNumber("123");
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("");
@@ -238,11 +224,11 @@ public class WorkerRegistrationAndAuthenticationTest {
         address.setBuildingNumber(0);
         address.setPostalCode("1532-123");
 
-        workerRegisterRequest.setAddress(address);
+        trainerRegisterRequest.setAddress(address);
 
-        String json = objectWriter.writeValueAsString(workerRegisterRequest);
+        String json = objectWriter.writeValueAsString(trainerRegisterRequest);
 
-        mockMvc.perform(post("/auth/registerWorker")
+        mockMvc.perform(post("/auth/registerTrainer")
                         .header("Authorization", "Bearer " + jwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -250,18 +236,15 @@ public class WorkerRegistrationAndAuthenticationTest {
     }
 
     @Test
-    public void shouldReturnBadRequestWhenRegisteringValidWorkerWithInvalidAddress() throws Exception {
-        PostWorkerRequestDto workerRegisterRequest = new PostWorkerRequestDto();
-        workerRegisterRequest.setEmail("test3@worker.com");
-        workerRegisterRequest.setPassword("12345678");
-        workerRegisterRequest.setName("Test");
-        workerRegisterRequest.setSurname("User");
-        workerRegisterRequest.setBirthdate(LocalDate.of(2002, 5, 10));
-        workerRegisterRequest.setPesel("12345678912");
-        workerRegisterRequest.setPhoneNumber("123123123");
-        workerRegisterRequest.setIdCardNumber("XYZ987654");
-        workerRegisterRequest.setPosition("Position");
-        workerRegisterRequest.setPermissionsList(new ArrayList<>());
+    public void shouldReturnBadRequestWhenRegisteringValidTrainerWithInvalidAddress() throws Exception {
+        PostTrainerRequestRequestDto trainerRegisterRequest = new PostTrainerRequestRequestDto();
+        trainerRegisterRequest.setEmail("test3@trainer.com");
+        trainerRegisterRequest.setPassword("12345678");
+        trainerRegisterRequest.setName("Test");
+        trainerRegisterRequest.setSurname("Trainer");
+        trainerRegisterRequest.setBirthdate(LocalDate.of(1995, 8, 15));
+        trainerRegisterRequest.setPesel("98765432198");
+        trainerRegisterRequest.setPhoneNumber("987654321");
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity(" ");
@@ -269,11 +252,11 @@ public class WorkerRegistrationAndAuthenticationTest {
         address.setBuildingNumber(null);
         address.setPostalCode("1534-123");
 
-        workerRegisterRequest.setAddress(address);
+        trainerRegisterRequest.setAddress(address);
 
-        String json = objectWriter.writeValueAsString(workerRegisterRequest);
+        String json = objectWriter.writeValueAsString(trainerRegisterRequest);
 
-        mockMvc.perform(post("/auth/registerWorker")
+        mockMvc.perform(post("/auth/registerTrainer")
                         .header("Authorization", "Bearer " + jwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -282,17 +265,14 @@ public class WorkerRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldAuthenticateAndReturnJwt() throws Exception {
-        PostWorkerRequestDto workerRegisterRequest = new PostWorkerRequestDto();
-        workerRegisterRequest.setEmail("test4@worker.com");
-        workerRegisterRequest.setPassword("password");
-        workerRegisterRequest.setName("John");
-        workerRegisterRequest.setSurname("Doe");
-        workerRegisterRequest.setBirthdate(LocalDate.of(1990, 1, 1));
-        workerRegisterRequest.setPesel("12345678912");
-        workerRegisterRequest.setPhoneNumber("123456789");
-        workerRegisterRequest.setIdCardNumber("ABC123456");
-        workerRegisterRequest.setPosition("Position");
-        workerRegisterRequest.setPermissionsList(new ArrayList<>());
+        PostTrainerRequestRequestDto trainerRegisterRequest = new PostTrainerRequestRequestDto();
+        trainerRegisterRequest.setEmail("test4@trainer.com");
+        trainerRegisterRequest.setPassword("password");
+        trainerRegisterRequest.setName("John");
+        trainerRegisterRequest.setSurname("Doe");
+        trainerRegisterRequest.setBirthdate(LocalDate.of(1990, 1, 1));
+        trainerRegisterRequest.setPesel("12345678912");
+        trainerRegisterRequest.setPhoneNumber("123456789");
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
@@ -300,16 +280,16 @@ public class WorkerRegistrationAndAuthenticationTest {
         address.setBuildingNumber(1);
         address.setPostalCode("15-123");
 
-        workerRegisterRequest.setAddress(address);
+        trainerRegisterRequest.setAddress(address);
 
-        String jsonRegister = objectWriter.writeValueAsString(workerRegisterRequest);
-        mockMvc.perform(post("/auth/registerWorker")
+        String jsonRegister = objectWriter.writeValueAsString(trainerRegisterRequest);
+        mockMvc.perform(post("/auth/registerTrainer")
                         .header("Authorization", "Bearer " + jwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRegister))
                 .andExpect(status().isCreated());
 
-        PostAuthenticationRequestDto authRequest = new PostAuthenticationRequestDto("test4@worker.com", "password");
+        PostAuthenticationRequestDto authRequest = new PostAuthenticationRequestDto("test4@trainer.com", "password");
         String jsonAuth = objectWriter.writeValueAsString(authRequest);
 
         mockMvc.perform(post("/auth/authenticate")

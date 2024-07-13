@@ -24,7 +24,6 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-
     private final ModelMapper modelMapper;
 
     @Autowired
@@ -44,7 +43,7 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public void registerMember(PostMemberRequestDto postMemberRequestDto) {
+    public void registerMember(PostMemberRequestRequestDto postMemberRequestDto) {
         Address address = modelMapper.map(postMemberRequestDto.getAddress(), Address.class);
         addressRepository.save(address);
         Member member = modelMapper.map(postMemberRequestDto, Member.class);
@@ -55,7 +54,7 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public void registerTrainer(PostTrainerRequestDto postTrainerRequestDto) {
+    public void registerTrainer(PostTrainerRequestRequestDto postTrainerRequestDto) {
         Address address = modelMapper.map(postTrainerRequestDto.getAddress(), Address.class);
         addressRepository.save(address);
         Trainer trainer = modelMapper.map(postTrainerRequestDto, Trainer.class);
@@ -66,7 +65,7 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public void registerWorker(PostWorkerRequestDto postWorkerRequestDto) {
+    public void registerWorker(PostWorkerRequestRequestDto postWorkerRequestDto) {
         Address address = modelMapper.map(postWorkerRequestDto.getAddress(), Address.class);
         addressRepository.save(address);
         Worker worker = modelMapper.map(postWorkerRequestDto, Worker.class);

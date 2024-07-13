@@ -1,4 +1,4 @@
-package pl.pbgym;
+package pl.pbgym.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
-import pl.pbgym.dto.auth.PostMemberRequestDto;
+import pl.pbgym.dto.auth.PostMemberRequestRequestDto;
 
 import java.time.LocalDate;
 
@@ -45,7 +45,7 @@ public class MemberRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnCreatedWhenRegisteringMember() throws Exception {
-        PostMemberRequestDto memberRegisterRequest = new PostMemberRequestDto();
+        PostMemberRequestRequestDto memberRegisterRequest = new PostMemberRequestRequestDto();
         memberRegisterRequest.setEmail("test1@member.com");
         memberRegisterRequest.setPassword("12345678");
         memberRegisterRequest.setName("Test");
@@ -72,7 +72,7 @@ public class MemberRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnConflictWhenRegisteringMemberWithSameEmail() throws Exception {
-        PostMemberRequestDto memberRegisterRequest1 = new PostMemberRequestDto();
+        PostMemberRequestRequestDto memberRegisterRequest1 = new PostMemberRequestRequestDto();
         memberRegisterRequest1.setEmail("test2@member.com");
         memberRegisterRequest1.setPassword("12345678");
         memberRegisterRequest1.setName("Test");
@@ -81,7 +81,7 @@ public class MemberRegistrationAndAuthenticationTest {
         memberRegisterRequest1.setPesel("12345678912");
         memberRegisterRequest1.setPhoneNumber("123123123");
 
-        PostMemberRequestDto memberRegisterRequest2 = new PostMemberRequestDto();
+        PostMemberRequestRequestDto memberRegisterRequest2 = new PostMemberRequestRequestDto();
         memberRegisterRequest2.setEmail("test2@member.com");
         memberRegisterRequest2.setPassword("12345678");
         memberRegisterRequest2.setName("Test");
@@ -114,7 +114,7 @@ public class MemberRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnBadRequestWhenRegisteringMemberWithInvalidData() throws Exception {
-        PostMemberRequestDto memberRegisterRequest = new PostMemberRequestDto();
+        PostMemberRequestRequestDto memberRegisterRequest = new PostMemberRequestRequestDto();
         memberRegisterRequest.setEmail("invalid-email");
         memberRegisterRequest.setPassword("123");
         memberRegisterRequest.setName("test");
@@ -141,7 +141,7 @@ public class MemberRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnBadRequestWhenRegisteringMemberWithNullOrBlankOrEmptyData() throws Exception {
-        PostMemberRequestDto memberRegisterRequest = new PostMemberRequestDto();
+        PostMemberRequestRequestDto memberRegisterRequest = new PostMemberRequestRequestDto();
         memberRegisterRequest.setEmail("");
         memberRegisterRequest.setPassword("123456789");
         memberRegisterRequest.setName(null);
@@ -168,7 +168,7 @@ public class MemberRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldReturnBadRequestWhenRegisteringValidMemberWithInvalidAddress() throws Exception {
-        PostMemberRequestDto memberRegisterRequest = new PostMemberRequestDto();
+        PostMemberRequestRequestDto memberRegisterRequest = new PostMemberRequestRequestDto();
         memberRegisterRequest.setEmail("test3@member.com");
         memberRegisterRequest.setPassword("12345678");
         memberRegisterRequest.setName("Test");
@@ -195,7 +195,7 @@ public class MemberRegistrationAndAuthenticationTest {
 
     @Test
     public void shouldAuthenticateAndReturnJwt() throws Exception {
-        PostMemberRequestDto registerRequest = new PostMemberRequestDto();
+        PostMemberRequestRequestDto registerRequest = new PostMemberRequestRequestDto();
         registerRequest.setEmail("test4@member.com");
         registerRequest.setPassword("password");
         registerRequest.setName("John");

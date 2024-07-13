@@ -5,7 +5,7 @@ import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
-public abstract class PostAbstractUserDto {
+public abstract class PostAbstractUserRequestDto {
     @Email
     @NotBlank(message = "Email is required.")
     private String email;
@@ -41,7 +41,7 @@ public abstract class PostAbstractUserDto {
     @Valid
     private PostAddressRequestDto address;
 
-    public PostAbstractUserDto() {
+    public PostAbstractUserRequestDto() {
     }
 
     public String getEmail() {

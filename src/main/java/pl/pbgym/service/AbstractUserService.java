@@ -23,7 +23,7 @@ public class AbstractUserService {
     }
 
     //TODO: METODY UPDATE BEDA PODZIELONE, A NIE, ŻE CALY OBIEKT NA RAZ
-    protected void updateAbstractUser(AbstractUser existingAbstractUser, AbstractUser newAbstractUser) {
+    public void updateAbstractUser(AbstractUser existingAbstractUser, AbstractUser newAbstractUser) {
         if(!passwordEncoder.matches(newAbstractUser.getPassword(), existingAbstractUser.getPassword())) {
             existingAbstractUser.setPassword(passwordEncoder.encode(newAbstractUser.getPassword()));
         }

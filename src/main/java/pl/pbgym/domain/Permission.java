@@ -17,7 +17,7 @@ public class Permission {
 
     @ManyToOne
     @JoinColumn(name = "worker_id")
-    Worker worker;
+    private Worker worker;
 
     public Permission() {
 

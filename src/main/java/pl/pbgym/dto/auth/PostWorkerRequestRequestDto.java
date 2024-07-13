@@ -9,7 +9,7 @@ import pl.pbgym.domain.Permissions;
 
 import java.util.List;
 
-public class PostWorkerRequestDto extends PostAbstractUserDto {
+public class PostWorkerRequestRequestDto extends PostAbstractUserRequestDto {
     @Pattern(regexp = "^[A-Z]{3}\\d{6}$", message = "Wrong format of ID card number. Valid format example: XXX000000")
     @NotBlank(message = "ID card number is required.")
     private String IdCardNumber;
@@ -40,7 +40,7 @@ public class PostWorkerRequestDto extends PostAbstractUserDto {
         this.permissionsList = permissionsList;
     }
 
-    public PostWorkerRequestDto() {
+    public PostWorkerRequestRequestDto() {
         super();
     }
 
