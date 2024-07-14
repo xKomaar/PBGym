@@ -32,16 +32,22 @@ public class PostWorkerRequestDto extends PostAbstractUserRequestDto {
     @NotNull
     private List<Permissions> permissionsList;
 
+    public PostWorkerRequestDto() {
+        super();
+    }
+
+    public PostWorkerRequestDto(String idCardNumber, String position, List<Permissions> permissionsList) {
+        IdCardNumber = idCardNumber;
+        this.position = position;
+        this.permissionsList = permissionsList;
+    }
+
     public List<Permissions> getPermissionsList() {
         return permissionsList;
     }
 
     public void setPermissionsList(List<Permissions> permissionsList) {
         this.permissionsList = permissionsList;
-    }
-
-    public PostWorkerRequestDto() {
-        super();
     }
 
     public String getIdCardNumber() {

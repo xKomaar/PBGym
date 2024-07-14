@@ -26,9 +26,9 @@ public class MemberService {
         this.modelMapper = modelMapper;
     }
 
-    public GetMemberResponseDto getMemberById(Long id) {
-        Optional<Member> member = memberRepository.findById(id);
+    public GetMemberResponseDto getMemberByEmail(String email) {
+        Optional<Member> member = memberRepository.findByEmail(email);
         return member.map(m -> modelMapper.map(m, GetMemberResponseDto.class))
-                .orElseThrow(() -> new MemberNotFoundException("Member not found with id: " + id));
+                .orElseThrow(() -> new MemberNotFoundException("Member not found with email: " + email));
     }
 }

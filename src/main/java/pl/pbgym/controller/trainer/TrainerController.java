@@ -31,21 +31,21 @@ public class TrainerController {
         this.trainerService = trainerService;
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Get a trainer by ID", description = "Fetches the trainer details by their ID.")
+    @GetMapping("/{email}")
+    @Operation(summary = "Get a trainer by ID", description = "Fetches the trainer details by their email.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Trainer found and returned successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
             @ApiResponse(responseCode = "404", description = "Trainer not found", content = @Content)
     })
-    public ResponseEntity<GetTrainerResponseDto> getTrainer(@PathVariable Long id) {
+    public ResponseEntity<GetTrainerResponseDto> getTrainer(@PathVariable String email) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(authenticatedUser instanceof Trainer && !authenticatedUser.getId().equals(id)) {
+        if(authenticatedUser instanceof Trainer && !authenticatedUser.getEmail().equals(email)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         try {
-            return ResponseEntity.ok(trainerService.getTrainerById(id));
+            return ResponseEntity.ok(trainerService.getTrainerByEmail(email));
         } catch(TrainerNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

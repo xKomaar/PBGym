@@ -17,6 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
 import pl.pbgym.dto.auth.PostMemberRequestDto;
+import pl.pbgym.repository.AbstractUserRepository;
+import pl.pbgym.repository.AddressRepository;
 
 import java.time.LocalDate;
 
@@ -33,12 +35,21 @@ public class MemberRegistrationAndAuthenticationTest {
     private MockMvc mockMvc;
     private ObjectWriter objectWriter;
 
+    @Autowired
+    private AbstractUserRepository abstractUserRepository;
+
+    @Autowired
+    private AddressRepository addressRepository;
+
     @Before
     public void setUp() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+        abstractUserRepository.deleteAll();
+        addressRepository.deleteAll();
 
         objectWriter = objectMapper.writer().withDefaultPrettyPrinter();
     }

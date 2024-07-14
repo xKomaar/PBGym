@@ -33,21 +33,21 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Get a member by ID", description = "Fetches the member details by their ID.")
+    @GetMapping("/{email}")
+    @Operation(summary = "Get a member by ID", description = "Fetches the member details by their email.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Member found and returned successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
             @ApiResponse(responseCode = "404", description = "Member not found", content = @Content)
     })
-    public ResponseEntity<GetMemberResponseDto> getMember(@PathVariable Long id) {
+    public ResponseEntity<GetMemberResponseDto> getMember(@PathVariable String email) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(authenticatedUser instanceof Member && !authenticatedUser.getId().equals(id)) {
+        if(authenticatedUser instanceof Member && !authenticatedUser.getEmail().equals(email)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         try {
-            return ResponseEntity.ok(memberService.getMemberById(id));
+            return ResponseEntity.ok(memberService.getMemberByEmail(email));
         } catch(MemberNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

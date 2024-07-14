@@ -23,9 +23,9 @@ public class TrainerService {
         this.modelMapper = modelMapper;
     }
 
-    public GetTrainerResponseDto getTrainerById(Long id) {
-        Optional<Trainer> trainer = trainerRepository.findById(id);
+    public GetTrainerResponseDto getTrainerByEmail(String email) {
+        Optional<Trainer> trainer = trainerRepository.findByEmail(email);
         return trainer.map(m -> modelMapper.map(m, GetTrainerResponseDto.class))
-                .orElseThrow(() -> new TrainerNotFoundException("Trainer not found with id: " + id));
+                .orElseThrow(() -> new TrainerNotFoundException("Trainer not found with email: " + email));
     }
 }

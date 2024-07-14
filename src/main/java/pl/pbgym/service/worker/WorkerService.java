@@ -23,9 +23,9 @@ public class WorkerService {
         this.modelMapper = modelMapper;
     }
 
-    public GetWorkerResponseDto getWorkerById(Long id) {
-        Optional<Worker> worker = workerRepository.findById(id);
+    public GetWorkerResponseDto getWorkerByEmail(String email) {
+        Optional<Worker> worker = workerRepository.findByEmail(email);
         return worker.map(m -> modelMapper.map(m, GetWorkerResponseDto.class))
-                .orElseThrow(() -> new WorkerNotFoundException("Worker not found with id: " + id));
+                .orElseThrow(() -> new WorkerNotFoundException("Worker not found with email: " + email));
     }
 }

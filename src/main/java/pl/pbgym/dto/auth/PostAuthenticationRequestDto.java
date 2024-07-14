@@ -4,6 +4,9 @@ public class PostAuthenticationRequestDto {
     private String email;
     private String password;
 
+    public PostAuthenticationRequestDto() {
+    }
+
     public PostAuthenticationRequestDto(String email, String password) {
         this.email = email;
         this.password = password;

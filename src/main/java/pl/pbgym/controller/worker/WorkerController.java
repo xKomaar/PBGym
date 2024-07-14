@@ -32,26 +32,26 @@ public class WorkerController {
         this.workerService = workerService;
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Get a worker by ID", description = "Fetches the worker details by their ID.")
+    @GetMapping("/{email}")
+    @Operation(summary = "Get a worker by ID", description = "Fetches the worker details by their email.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Worker found and returned successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
             @ApiResponse(responseCode = "404", description = "Worker not found", content = @Content)
     })
-    public ResponseEntity<GetWorkerResponseDto> getWorker(@PathVariable Long id) {
+    public ResponseEntity<GetWorkerResponseDto> getWorker(@PathVariable String email) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         //if worker isn't an admin, the id must match (he must be himself)
         if(authenticatedUser instanceof Worker) {
             if(!((Worker)authenticatedUser).getMappedPermissionList().contains(Permissions.ADMIN)) {
-                if(!authenticatedUser.getId().equals(id)) {
+                if(!authenticatedUser.getEmail().equals(email)) {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
                 }
             }
         }
 
         try {
-            return ResponseEntity.ok(workerService.getWorkerById(id));
+            return ResponseEntity.ok(workerService.getWorkerByEmail(email));
         } catch(WorkerNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

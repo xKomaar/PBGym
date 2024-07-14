@@ -4,6 +4,9 @@ public class PostAuthenticationResponseDto {
 
     private String jwt;
 
+    public PostAuthenticationResponseDto() {
+    }
+
     public PostAuthenticationResponseDto(String jwt) {
         this.jwt = jwt;
     }
