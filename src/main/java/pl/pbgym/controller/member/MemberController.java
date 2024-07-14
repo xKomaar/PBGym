@@ -19,8 +19,6 @@ import pl.pbgym.dto.member.GetMemberResponseDto;
 import pl.pbgym.exception.member.MemberNotFoundException;
 import pl.pbgym.service.member.MemberService;
 
-import java.util.Objects;
-
 @Controller
 @RequestMapping("/members")
 @CrossOrigin
@@ -34,7 +32,8 @@ public class MemberController {
     }
 
     @GetMapping("/{email}")
-    @Operation(summary = "Get a member by ID", description = "Fetches the member details by their email.")
+    @Operation(summary = "Get a worker by email", description = "Fetches the member details by their email, " +
+            "possible only for ADMIN and USER_MANAGEMENT workers and for the member who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Member found and returned successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),

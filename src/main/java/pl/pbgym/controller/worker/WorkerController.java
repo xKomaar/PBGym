@@ -33,7 +33,8 @@ public class WorkerController {
     }
 
     @GetMapping("/{email}")
-    @Operation(summary = "Get a worker by ID", description = "Fetches the worker details by their email.")
+    @Operation(summary = "Get a worker by email", description = "Fetches the worker details by their email, " +
+            "possible only for ADMIN workers and for the worker who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Worker found and returned successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),

@@ -32,7 +32,8 @@ public class TrainerController {
     }
 
     @GetMapping("/{email}")
-    @Operation(summary = "Get a trainer by ID", description = "Fetches the trainer details by their email.")
+    @Operation(summary = "Get a worker by email", description = "Fetches the trainer details by their email, " +
+            "possible only for ADMIN and USER_MANAGEMENT workers and for the trainer who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Trainer found and returned successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
