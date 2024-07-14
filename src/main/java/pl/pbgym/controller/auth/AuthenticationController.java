@@ -1,6 +1,7 @@
 package pl.pbgym.controller.auth;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -29,7 +30,7 @@ public class AuthenticationController {
     @Operation(summary = "Register a new member")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Member registered successfully"),
-            @ApiResponse(responseCode = "409", description = "Email already in use")
+            @ApiResponse(responseCode = "409", description = "Email already in use", content = @Content)
     })
     @PostMapping("/registerMember")
     public ResponseEntity<String> registerMember(@Valid @RequestBody PostMemberRequestDto request) {
@@ -45,7 +46,7 @@ public class AuthenticationController {
     @Operation(summary = "Register a new trainer")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Trainer registered successfully"),
-            @ApiResponse(responseCode = "409", description = "Email already in use")
+            @ApiResponse(responseCode = "409", description = "Email already in use", content = @Content)
     })
     @PostMapping("/registerTrainer")
     public ResponseEntity<String> registerTrainer(@Valid @RequestBody PostTrainerRequestDto request) {
@@ -61,7 +62,7 @@ public class AuthenticationController {
     @Operation(summary = "Register a new worker")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Worker registered successfully"),
-            @ApiResponse(responseCode = "409", description = "Email already in use")
+            @ApiResponse(responseCode = "409", description = "Email already in use", content = @Content)
     })
     @PostMapping("/registerWorker")
     public ResponseEntity<String> registerWorker(@Valid @RequestBody PostWorkerRequestDto request) {
@@ -77,7 +78,7 @@ public class AuthenticationController {
     @Operation(summary = "Authenticate a user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Authentication successful"),
-            @ApiResponse(responseCode = "403", description = "Authentication not successful")
+            @ApiResponse(responseCode = "403", description = "Authentication not successful", content = @Content)
     })
     @PostMapping("/authenticate")
     public ResponseEntity<PostAuthenticationResponseDto> authenticate(@RequestBody PostAuthenticationRequestDto request) {
