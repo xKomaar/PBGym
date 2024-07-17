@@ -1,6 +1,8 @@
 package pl.pbgym.dto.trainer;
 
+import jakarta.persistence.Column;
 import pl.pbgym.domain.Address;
+import pl.pbgym.dto.GetAddressResponseDto;
 
 import java.time.LocalDate;
 
@@ -12,22 +14,11 @@ public class GetTrainerResponseDto {
     private LocalDate birthdate;
     private String pesel;
     private String phoneNumber;
-    private Address address;
+    private GetAddressResponseDto address;
+    private String description;
+    private byte[] photo;
 
     public GetTrainerResponseDto() {
-    }
-
-    public GetTrainerResponseDto(Long id, String email, String name,
-                                 String surname, LocalDate birthdate, String pesel,
-                                 String phoneNumber, Address address) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-        this.surname = surname;
-        this.birthdate = birthdate;
-        this.pesel = pesel;
-        this.phoneNumber = phoneNumber;
-        this.address = address;
     }
 
     public Long getId() {
@@ -40,6 +31,22 @@ public class GetTrainerResponseDto {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public byte[] getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
     }
 
     public void setEmail(String email) {
@@ -86,11 +93,11 @@ public class GetTrainerResponseDto {
         this.phoneNumber = phoneNumber;
     }
 
-    public Address getAddress() {
+    public GetAddressResponseDto getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    public void setAddress(GetAddressResponseDto address) {
         this.address = address;
     }
 }

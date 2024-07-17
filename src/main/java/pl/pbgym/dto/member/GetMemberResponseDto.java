@@ -1,6 +1,7 @@
 package pl.pbgym.dto.member;
 
 import pl.pbgym.domain.Address;
+import pl.pbgym.dto.GetAddressResponseDto;
 
 import java.time.LocalDate;
 
@@ -12,23 +13,10 @@ public class GetMemberResponseDto {
     private LocalDate birthdate;
     private String pesel;
     private String phoneNumber;
-    private Address address;
+    private GetAddressResponseDto address;
 
     public GetMemberResponseDto() {
 
-    }
-
-    public GetMemberResponseDto(Long id, String email, String name,
-                                String surname, LocalDate birthdate, String pesel,
-                                String phoneNumber, Address address) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-        this.surname = surname;
-        this.birthdate = birthdate;
-        this.pesel = pesel;
-        this.phoneNumber = phoneNumber;
-        this.address = address;
     }
 
     public Long getId() {
@@ -87,11 +75,11 @@ public class GetMemberResponseDto {
         this.phoneNumber = phoneNumber;
     }
 
-    public Address getAddress() {
+    public GetAddressResponseDto getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    public void setAddress(GetAddressResponseDto address) {
         this.address = address;
     }
 }

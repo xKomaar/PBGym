@@ -15,11 +15,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import pl.pbgym.domain.Permissions;
+import pl.pbgym.dto.UpdateAddressRequestDto;
 import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
 import pl.pbgym.dto.auth.PostTrainerRequestDto;
 import pl.pbgym.dto.auth.PostWorkerRequestDto;
 import pl.pbgym.dto.trainer.GetTrainerResponseDto;
+import pl.pbgym.dto.trainer.UpdateTrainerRequestDto;
 import pl.pbgym.repository.AbstractUserRepository;
 import pl.pbgym.repository.AddressRepository;
 import pl.pbgym.repository.TrainerRepository;
@@ -31,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -150,7 +153,7 @@ public class TrainerControllerTest {
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         GetTrainerResponseDto response = objectMapper.readValue(jsonResponse, GetTrainerResponseDto.class);
 
-        assertEquals(8, response.getClass().getDeclaredFields().length);
+        assertEquals(10, response.getClass().getDeclaredFields().length);
         assertNotNull(response);
         assertEquals(trainerEmail, response.getEmail());
     }
@@ -166,7 +169,7 @@ public class TrainerControllerTest {
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         GetTrainerResponseDto response = objectMapper.readValue(jsonResponse, GetTrainerResponseDto.class);
 
-        assertEquals(8, response.getClass().getDeclaredFields().length);
+        assertEquals(10, response.getClass().getDeclaredFields().length);
         assertNotNull(response);
         assertEquals(trainerEmail, response.getEmail());
     }
@@ -182,7 +185,7 @@ public class TrainerControllerTest {
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         GetTrainerResponseDto response = objectMapper.readValue(jsonResponse, GetTrainerResponseDto.class);
 
-        assertEquals(8, response.getClass().getDeclaredFields().length);
+        assertEquals(10, response.getClass().getDeclaredFields().length);
         assertNotNull(response);
         assertEquals(trainerEmail, response.getEmail());
     }
@@ -201,5 +204,184 @@ public class TrainerControllerTest {
                         .header("Authorization", "Bearer " + adminJwt)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void shouldReturnOkWhenTrainerUpdatesHisOwnData() throws Exception {
+        UpdateTrainerRequestDto updateRequest = new UpdateTrainerRequestDto();
+        updateRequest.setPhoneNumber("987654321");
+
+        UpdateAddressRequestDto updatedAddress = new UpdateAddressRequestDto();
+        updatedAddress.setCity("TrainerCity");
+        updatedAddress.setStreetName("TrainerStreet");
+        updatedAddress.setBuildingNumber(2);
+        updatedAddress.setPostalCode("11-111");
+
+        updateRequest.setAddress(updatedAddress);
+        updateRequest.setDescription("Updated description");
+
+        String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
+
+        mockMvc.perform(put("/trainers/{email}", trainerEmail)
+                        .header("Authorization", "Bearer " + trainerJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonUpdateRequest))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        MvcResult mvcResult = mockMvc.perform(get("/trainers/{email}", trainerEmail)
+                        .header("Authorization", "Bearer " + trainerJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        GetTrainerResponseDto response = objectMapper.readValue(jsonResponse, GetTrainerResponseDto.class);
+
+        assertEquals("987654321", response.getPhoneNumber());
+        assertEquals("TrainerCity", response.getAddress().getCity());
+        assertEquals("Updated description", response.getDescription());
+    }
+
+    @Test
+    public void shouldReturnOkWhenAdminUpdatesTrainerData() throws Exception {
+        UpdateTrainerRequestDto updateRequest = new UpdateTrainerRequestDto();
+        updateRequest.setPhoneNumber("123123123");
+
+        UpdateAddressRequestDto updatedAddress = new UpdateAddressRequestDto();
+        updatedAddress.setCity("UpdatedCity");
+        updatedAddress.setStreetName("UpdatedStreet");
+        updatedAddress.setBuildingNumber(3);
+        updatedAddress.setPostalCode("17-123");
+
+        updateRequest.setAddress(updatedAddress);
+        updateRequest.setDescription("Admin updated description");
+
+        String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
+
+        mockMvc.perform(put("/trainers/{email}", trainerEmail)
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonUpdateRequest))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        MvcResult mvcResult = mockMvc.perform(get("/trainers/{email}", trainerEmail)
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        GetTrainerResponseDto response = objectMapper.readValue(jsonResponse, GetTrainerResponseDto.class);
+
+        assertEquals("123123123", response.getPhoneNumber());
+        assertEquals("UpdatedCity", response.getAddress().getCity());
+        assertEquals("Admin updated description", response.getDescription());
+    }
+
+    @Test
+    public void shouldReturnOkWhenUserManagerUpdatesTrainerData() throws Exception {
+        UpdateTrainerRequestDto updateRequest = new UpdateTrainerRequestDto();
+        updateRequest.setPhoneNumber("000000000");
+
+        UpdateAddressRequestDto updatedAddress = new UpdateAddressRequestDto();
+        updatedAddress.setCity("ManagerCity");
+        updatedAddress.setStreetName("ManagerStreet");
+        updatedAddress.setBuildingNumber(4);
+        updatedAddress.setPostalCode("18-123");
+
+        updateRequest.setAddress(updatedAddress);
+        updateRequest.setDescription("Manager updated description");
+
+        String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
+
+        mockMvc.perform(put("/trainers/{email}", trainerEmail)
+                        .header("Authorization", "Bearer " + managerJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonUpdateRequest))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        MvcResult mvcResult = mockMvc.perform(get("/trainers/{email}", trainerEmail)
+                        .header("Authorization", "Bearer " + managerJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        GetTrainerResponseDto response = objectMapper.readValue(jsonResponse, GetTrainerResponseDto.class);
+
+        assertEquals("000000000", response.getPhoneNumber());
+        assertEquals("ManagerCity", response.getAddress().getCity());
+        assertEquals("Manager updated description", response.getDescription());
+    }
+
+    @Test
+    public void shouldReturnForbiddenWhenTrainerUpdatesAnotherTrainerData() throws Exception {
+        UpdateTrainerRequestDto updateRequest = new UpdateTrainerRequestDto();
+        updateRequest.setPhoneNumber("111111111");
+
+        UpdateAddressRequestDto updatedAddress = new UpdateAddressRequestDto();
+        updatedAddress.setCity("OtherCity");
+        updatedAddress.setStreetName("OtherStreet");
+        updatedAddress.setBuildingNumber(5);
+        updatedAddress.setPostalCode("19-123");
+
+        updateRequest.setAddress(updatedAddress);
+        updateRequest.setDescription("Forbidden update");
+
+        String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
+
+        mockMvc.perform(put("/trainers/{email}", "another@trainer.com")
+                        .header("Authorization", "Bearer " + trainerJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonUpdateRequest))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void shouldReturnNotFoundWhenAdminUpdatesNonExistingTrainerData() throws Exception {
+        UpdateTrainerRequestDto updateRequest = new UpdateTrainerRequestDto();
+        updateRequest.setPhoneNumber("111111111");
+
+        UpdateAddressRequestDto updatedAddress = new UpdateAddressRequestDto();
+        updatedAddress.setCity("NonExistingCity");
+        updatedAddress.setStreetName("NonExistingStreet");
+        updatedAddress.setBuildingNumber(5);
+        updatedAddress.setPostalCode("19-123");
+
+        updateRequest.setAddress(updatedAddress);
+        updateRequest.setDescription("Non-existing update");
+
+        String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
+
+        mockMvc.perform(put("/trainers/{email}", "nonexistant@trainer.com")
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonUpdateRequest))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void shouldReturnBadRequestWhenUpdatingTrainerWithInvalidData() throws Exception {
+        UpdateTrainerRequestDto invalidPostalCodeRequest = new UpdateTrainerRequestDto();
+        invalidPostalCodeRequest.setPhoneNumber("123456789");
+
+        UpdateAddressRequestDto invalidPostalCodeAddress = new UpdateAddressRequestDto();
+        invalidPostalCodeAddress.setCity("City");
+        invalidPostalCodeAddress.setStreetName("Street");
+        invalidPostalCodeAddress.setBuildingNumber(1);
+        invalidPostalCodeAddress.setPostalCode("12345");
+
+        invalidPostalCodeRequest.setAddress(invalidPostalCodeAddress);
+
+        String jsonInvalidRequest = objectMapper.writeValueAsString(invalidPostalCodeRequest);
+
+        mockMvc.perform(put("/trainers/{email}", trainerEmail)
+                        .header("Authorization", "Bearer " + trainerJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonInvalidRequest))
+                .andExpect(status().isBadRequest());
     }
 }

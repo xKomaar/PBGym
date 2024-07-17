@@ -15,10 +15,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import pl.pbgym.domain.Permissions;
+import pl.pbgym.dto.UpdateAddressRequestDto;
 import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
 import pl.pbgym.dto.auth.PostWorkerRequestDto;
 import pl.pbgym.dto.worker.GetWorkerResponseDto;
+import pl.pbgym.dto.worker.UpdateWorkerRequestDto;
 import pl.pbgym.repository.AbstractUserRepository;
 import pl.pbgym.repository.AddressRepository;
 import pl.pbgym.repository.WorkerRepository;
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -160,5 +163,141 @@ public class WorkerControllerTest {
                         .header("Authorization", "Bearer " + adminJwt)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void shouldReturnOkWhenWorkerUpdatesHisOwnData() throws Exception {
+        UpdateWorkerRequestDto updateRequest = new UpdateWorkerRequestDto();
+        updateRequest.setPhoneNumber("987654321");
+
+        UpdateAddressRequestDto updatedAddress = new UpdateAddressRequestDto();
+        updatedAddress.setCity("WorkerCity");
+        updatedAddress.setStreetName("WorkerStreet");
+        updatedAddress.setBuildingNumber(2);
+        updatedAddress.setPostalCode("11-111");
+
+        updateRequest.setAddress(updatedAddress);
+
+        String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
+
+        mockMvc.perform(put("/workers/{email}", workerEmail)
+                        .header("Authorization", "Bearer " + workerJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonUpdateRequest))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        MvcResult mvcResult = mockMvc.perform(get("/workers/{email}", workerEmail)
+                        .header("Authorization", "Bearer " + workerJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        GetWorkerResponseDto response = objectMapper.readValue(jsonResponse, GetWorkerResponseDto.class);
+
+        assertEquals("987654321", response.getPhoneNumber());
+        assertEquals("WorkerCity", response.getAddress().getCity());
+    }
+
+    @Test
+    public void shouldReturnOkWhenAdminUpdatesWorkerData() throws Exception {
+        UpdateWorkerRequestDto updateRequest = new UpdateWorkerRequestDto();
+        updateRequest.setPhoneNumber("123123123");
+
+        UpdateAddressRequestDto updatedAddress = new UpdateAddressRequestDto();
+        updatedAddress.setCity("UpdatedCity");
+        updatedAddress.setStreetName("UpdatedStreet");
+        updatedAddress.setBuildingNumber(3);
+        updatedAddress.setPostalCode("17-123");
+
+        updateRequest.setAddress(updatedAddress);
+
+        String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
+
+        mockMvc.perform(put("/workers/{email}", workerEmail)
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonUpdateRequest))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        MvcResult mvcResult = mockMvc.perform(get("/workers/{email}", workerEmail)
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        GetWorkerResponseDto response = objectMapper.readValue(jsonResponse, GetWorkerResponseDto.class);
+
+        assertEquals("123123123", response.getPhoneNumber());
+        assertEquals("UpdatedCity", response.getAddress().getCity());
+    }
+
+    @Test
+    public void shouldReturnNotFoundWhenAdminUpdatesNonExistingWorkerData() throws Exception {
+        UpdateWorkerRequestDto updateRequest = new UpdateWorkerRequestDto();
+        updateRequest.setPhoneNumber("111111111");
+
+        UpdateAddressRequestDto updatedAddress = new UpdateAddressRequestDto();
+        updatedAddress.setCity("NonExistingCity");
+        updatedAddress.setStreetName("NonExistingStreet");
+        updatedAddress.setBuildingNumber(5);
+        updatedAddress.setPostalCode("19-123");
+
+        updateRequest.setAddress(updatedAddress);
+
+        String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
+
+        mockMvc.perform(put("/workers/{email}", "nonexisting@worker.com")
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonUpdateRequest))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void shouldReturnForbiddenWhenWorkerUpdatesAnotherWorkerData() throws Exception {
+        UpdateWorkerRequestDto updateRequest = new UpdateWorkerRequestDto();
+        updateRequest.setPhoneNumber("111111111");
+
+        UpdateAddressRequestDto updatedAddress = new UpdateAddressRequestDto();
+        updatedAddress.setCity("OtherCity");
+        updatedAddress.setStreetName("OtherStreet");
+        updatedAddress.setBuildingNumber(5);
+        updatedAddress.setPostalCode("19-123");
+
+        updateRequest.setAddress(updatedAddress);
+
+        String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
+
+        mockMvc.perform(put("/workers/{email}", "another@worker.com")
+                        .header("Authorization", "Bearer " + workerJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonUpdateRequest))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void shouldReturnBadRequestWhenUpdatingWorkerWithInvalidData() throws Exception {
+        UpdateWorkerRequestDto invalidAddressRequest = new UpdateWorkerRequestDto();
+        invalidAddressRequest.setPhoneNumber("123456789");
+
+        UpdateAddressRequestDto invalidAddress = new UpdateAddressRequestDto();
+        invalidAddress.setCity("");
+        invalidAddress.setStreetName("Street");
+        invalidAddress.setBuildingNumber(1);
+        invalidAddress.setPostalCode("15-123");
+
+        invalidAddressRequest.setAddress(invalidAddress);
+
+        String jsonInvalidRequest = objectMapper.writeValueAsString(invalidAddressRequest);
+
+        mockMvc.perform(put("/workers/{email}", workerEmail)
+                        .header("Authorization", "Bearer " + workerJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonInvalidRequest))
+                .andExpect(status().isBadRequest());
     }
 }

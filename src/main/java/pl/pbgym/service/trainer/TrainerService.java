@@ -3,8 +3,10 @@ package pl.pbgym.service.trainer;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.pbgym.domain.Trainer;
 import pl.pbgym.dto.trainer.GetTrainerResponseDto;
+import pl.pbgym.dto.trainer.UpdateTrainerRequestDto;
 import pl.pbgym.exception.trainer.TrainerNotFoundException;
 import pl.pbgym.repository.TrainerRepository;
 
@@ -27,5 +29,14 @@ public class TrainerService {
         Optional<Trainer> trainer = trainerRepository.findByEmail(email);
         return trainer.map(m -> modelMapper.map(m, GetTrainerResponseDto.class))
                 .orElseThrow(() -> new TrainerNotFoundException("Trainer not found with email: " + email));
+    }
+
+    @Transactional
+    public void updateTrainer(String email, UpdateTrainerRequestDto updateTrainerRequestDto) {
+        Optional<Trainer> trainer = trainerRepository.findByEmail(email);
+        trainer.ifPresentOrElse(t -> modelMapper.map(updateTrainerRequestDto, t),
+            () -> {
+                throw new TrainerNotFoundException("Trainer not found with email: " + email);
+            });
     }
 }

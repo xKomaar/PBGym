@@ -2,6 +2,7 @@ package pl.pbgym.dto.worker;
 
 import pl.pbgym.domain.Address;
 import pl.pbgym.domain.Permissions;
+import pl.pbgym.dto.GetAddressResponseDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,29 +15,12 @@ public class GetWorkerResponseDto {
     private LocalDate birthdate;
     private String pesel;
     private String phoneNumber;
-    private Address address;
+    private GetAddressResponseDto address;
     private String idCardNumber;
     private String position;
     private List<Permissions> permissionList;
 
     public GetWorkerResponseDto() {
-    }
-
-    public GetWorkerResponseDto(Long id, String email, String name,
-                                String surname, LocalDate birthdate, String pesel,
-                                String phoneNumber, Address address, String idCardNumber,
-                                String position, List<Permissions> permissionList) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-        this.surname = surname;
-        this.birthdate = birthdate;
-        this.pesel = pesel;
-        this.phoneNumber = phoneNumber;
-        this.address = address;
-        this.idCardNumber = idCardNumber;
-        this.position = position;
-        this.permissionList = permissionList;
     }
 
     public Long getId() {
@@ -95,11 +79,11 @@ public class GetWorkerResponseDto {
         this.phoneNumber = phoneNumber;
     }
 
-    public Address getAddress() {
+    public GetAddressResponseDto getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    public void setAddress(GetAddressResponseDto address) {
         this.address = address;
     }
 

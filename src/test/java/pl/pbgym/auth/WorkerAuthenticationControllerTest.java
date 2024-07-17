@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles(profiles = "test")
-public class WorkerRegistrationAndAuthenticationTest {
+public class WorkerAuthenticationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
