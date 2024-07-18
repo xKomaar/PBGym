@@ -16,10 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import pl.pbgym.domain.Permissions;
 import pl.pbgym.dto.UpdateAddressRequestDto;
-import pl.pbgym.dto.auth.PostAddressRequestDto;
-import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
-import pl.pbgym.dto.auth.PostTrainerRequestDto;
-import pl.pbgym.dto.auth.PostWorkerRequestDto;
+import pl.pbgym.dto.auth.*;
 import pl.pbgym.dto.trainer.GetTrainerResponseDto;
 import pl.pbgym.dto.trainer.UpdateTrainerRequestDto;
 import pl.pbgym.repository.AbstractUserRepository;
@@ -32,8 +29,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -383,5 +380,89 @@ public class TrainerControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonInvalidRequest))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturnOkWhenTrainerChangesOwnPasswordAndAuthenticatesWithNewPassword() throws Exception {
+        ChangePasswordRequestDto changePasswordRequest = new ChangePasswordRequestDto();
+        changePasswordRequest.setOldPassword("12345678");
+        changePasswordRequest.setNewPassword("newpassword");
+
+        String jsonChangePasswordRequest = objectMapper.writeValueAsString(changePasswordRequest);
+
+        mockMvc.perform(put("/trainers/changePassword/{email}", trainerEmail)
+                        .header("Authorization", "Bearer " + trainerJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonChangePasswordRequest))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        PostAuthenticationRequestDto postAuthenticationRequestDto = new PostAuthenticationRequestDto();
+        postAuthenticationRequestDto.setEmail(trainerEmail);
+        postAuthenticationRequestDto.setPassword("newpassword");
+
+        String jsonAuthenticationRequest = objectMapper.writeValueAsString(postAuthenticationRequestDto);
+
+        mockMvc.perform(post("/auth/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonAuthenticationRequest))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldReturnOkWhenAdminChangesTrainerPassword() throws Exception {
+        ChangePasswordRequestDto changePasswordRequest = new ChangePasswordRequestDto();
+        changePasswordRequest.setOldPassword("12345678");
+        changePasswordRequest.setNewPassword("adminnewpassword");
+
+        String jsonChangePasswordRequest = objectMapper.writeValueAsString(changePasswordRequest);
+
+        mockMvc.perform(put("/trainers/changePassword/{email}", trainerEmail)
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonChangePasswordRequest))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        PostAuthenticationRequestDto postAuthenticationRequestDto = new PostAuthenticationRequestDto();
+        postAuthenticationRequestDto.setEmail(trainerEmail);
+        postAuthenticationRequestDto.setPassword("adminnewpassword");
+
+        String jsonAuthenticationRequest = objectMapper.writeValueAsString(postAuthenticationRequestDto);
+
+        mockMvc.perform(post("/auth/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonAuthenticationRequest))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldReturnBadRequestWhenNewPasswordIsInvalid() throws Exception {
+        ChangePasswordRequestDto changePasswordRequest = new ChangePasswordRequestDto();
+        changePasswordRequest.setOldPassword("12345678");
+        changePasswordRequest.setNewPassword("short");
+
+        String jsonChangePasswordRequest = objectMapper.writeValueAsString(changePasswordRequest);
+
+        mockMvc.perform(put("/trainers/changePassword/{email}", trainerEmail)
+                        .header("Authorization", "Bearer " + trainerJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonChangePasswordRequest))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturnForbiddenIfOldPasswordIsIncorrect() throws Exception {
+        ChangePasswordRequestDto changePasswordRequest = new ChangePasswordRequestDto();
+        changePasswordRequest.setOldPassword("wrongpassword");
+        changePasswordRequest.setNewPassword("newpassword");
+
+        String jsonChangePasswordRequest = objectMapper.writeValueAsString(changePasswordRequest);
+
+        mockMvc.perform(put("/trainers/changePassword/{email}", trainerEmail)
+                        .header("Authorization", "Bearer " + trainerJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonChangePasswordRequest))
+                .andExpect(status().isForbidden());
     }
 }

@@ -19,10 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import pl.pbgym.domain.Permissions;
 import pl.pbgym.dto.UpdateAddressRequestDto;
-import pl.pbgym.dto.auth.PostAddressRequestDto;
-import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
-import pl.pbgym.dto.auth.PostMemberRequestDto;
-import pl.pbgym.dto.auth.PostWorkerRequestDto;
+import pl.pbgym.dto.auth.*;
 import pl.pbgym.dto.member.GetMemberResponseDto;
 import pl.pbgym.dto.member.UpdateMemberRequestDto;
 import pl.pbgym.repository.AbstractUserRepository;
@@ -35,8 +32,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -359,24 +355,86 @@ public class MemberControllerTest {
     }
 
     @Test
-    public void shouldReturnBadRequestWhenUpdatingMemberWithInvalidData() throws Exception {
-        UpdateMemberRequestDto invalidPhoneNumberRequest = new UpdateMemberRequestDto();
-        invalidPhoneNumberRequest.setPhoneNumber("123");
+    public void shouldReturnOkWhenMemberChangesOwnPasswordAndAuthenticatesWithNewPassword() throws Exception {
+        ChangePasswordRequestDto changePasswordRequest = new ChangePasswordRequestDto();
+        changePasswordRequest.setOldPassword("12345678");
+        changePasswordRequest.setNewPassword("newpassword");
 
-        UpdateAddressRequestDto address = new UpdateAddressRequestDto();
-        address.setCity("City");
-        address.setStreetName("Street");
-        address.setBuildingNumber(1);
-        address.setPostalCode("15-123");
+        String jsonChangePasswordRequest = objectMapper.writeValueAsString(changePasswordRequest);
 
-        invalidPhoneNumberRequest.setAddress(address);
-
-        String jsonInvalidRequest = objectMapper.writeValueAsString(invalidPhoneNumberRequest);
-
-        mockMvc.perform(put("/members/{email}", memberEmail)
+        mockMvc.perform(put("/members/changePassword/{email}", memberEmail)
                         .header("Authorization", "Bearer " + memberJwt)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonInvalidRequest))
+                        .content(jsonChangePasswordRequest))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        PostAuthenticationRequestDto postAuthenticationRequestDto = new PostAuthenticationRequestDto();
+        postAuthenticationRequestDto.setEmail(memberEmail);
+        postAuthenticationRequestDto.setPassword("newpassword");
+
+        String jsonAuthenticationRequest = objectMapper.writeValueAsString(postAuthenticationRequestDto);
+
+        mockMvc.perform(post("/auth/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonAuthenticationRequest))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldReturnOkWhenAdminChangesMemberPassword() throws Exception {
+        ChangePasswordRequestDto changePasswordRequest = new ChangePasswordRequestDto();
+        changePasswordRequest.setOldPassword("12345678");
+        changePasswordRequest.setNewPassword("adminnewpassword");
+
+        String jsonChangePasswordRequest = objectMapper.writeValueAsString(changePasswordRequest);
+
+        mockMvc.perform(put("/members/changePassword/{email}", memberEmail)
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonChangePasswordRequest))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        PostAuthenticationRequestDto postAuthenticationRequestDto = new PostAuthenticationRequestDto();
+        postAuthenticationRequestDto.setEmail(memberEmail);
+        postAuthenticationRequestDto.setPassword("adminnewpassword");
+
+        String jsonAuthenticationRequest = objectMapper.writeValueAsString(postAuthenticationRequestDto);
+
+        mockMvc.perform(post("/auth/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonAuthenticationRequest))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldReturnBadRequestWhenNewPasswordIsInvalid() throws Exception {
+        ChangePasswordRequestDto changePasswordRequest = new ChangePasswordRequestDto();
+        changePasswordRequest.setOldPassword("12345678");
+        changePasswordRequest.setNewPassword("short");
+
+        String jsonChangePasswordRequest = objectMapper.writeValueAsString(changePasswordRequest);
+
+        mockMvc.perform(put("/members/changePassword/{email}", memberEmail)
+                        .header("Authorization", "Bearer " + memberJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonChangePasswordRequest))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturnForbiddenIfOldPasswordIsIncorrect() throws Exception {
+        ChangePasswordRequestDto changePasswordRequest = new ChangePasswordRequestDto();
+        changePasswordRequest.setOldPassword("wrongpassword");
+        changePasswordRequest.setNewPassword("newpassword");
+
+        String jsonChangePasswordRequest = objectMapper.writeValueAsString(changePasswordRequest);
+
+        mockMvc.perform(put("/members/changePassword/{email}", memberEmail)
+                        .header("Authorization", "Bearer " + memberJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonChangePasswordRequest))
+                .andExpect(status().isForbidden());
     }
 }
