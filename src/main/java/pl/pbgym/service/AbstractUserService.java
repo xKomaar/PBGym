@@ -6,10 +6,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pbgym.domain.AbstractUser;
-import pl.pbgym.domain.Address;
-import pl.pbgym.domain.Member;
-import pl.pbgym.exception.member.MemberNotFoundException;
+import pl.pbgym.dto.auth.AuthenticationResponseDto;
+import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
 import pl.pbgym.repository.AbstractUserRepository;
+import pl.pbgym.service.auth.AuthenticationService;
 
 import java.util.Optional;
 
@@ -17,15 +17,17 @@ import java.util.Optional;
 public class AbstractUserService {
     private final AbstractUserRepository abstractUserRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationService authenticationService;
 
     @Autowired
-    public AbstractUserService(AbstractUserRepository abstractUserRepository, PasswordEncoder passwordEncoder) {
+    public AbstractUserService(AbstractUserRepository abstractUserRepository, PasswordEncoder passwordEncoder, AuthenticationService authenticationService) {
         this.abstractUserRepository = abstractUserRepository;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationService = authenticationService;
     }
 
     @Transactional
-    public void changePassword(String oldPassword, String newPassword, String email) {
+    public void updatePassword(String oldPassword, String newPassword, String email) {
         Optional<AbstractUser> abstractUser = abstractUserRepository.findByEmail(email);
         abstractUser.ifPresentOrElse(u -> {
                     if(!passwordEncoder.matches(oldPassword, u.getPassword())) {
@@ -39,47 +41,22 @@ public class AbstractUserService {
                 });
     }
 
-    public boolean userExists(String email) {
-        return abstractUserRepository.findByEmail(email).isPresent();
+    @Transactional
+    public AuthenticationResponseDto updateEmail(String email, String newEmail) {
+        Optional<AbstractUser> abstractUser = abstractUserRepository.findByEmail(email);
+        AuthenticationResponseDto authenticationResponseDto = new AuthenticationResponseDto();
+        abstractUser.ifPresentOrElse(u -> {
+                    u.setEmail(newEmail);
+                    String jwt = authenticationService.generateJwtToken(u);
+                    authenticationResponseDto.setJwt(jwt);
+                },
+                () -> {
+                    throw new EntityNotFoundException("User not found with email: " + email);
+                });
+        return authenticationResponseDto;
     }
 
-    //TODO: METODY UPDATE BEDA PODZIELONE, A NIE, ŻE CALY OBIEKT NA RAZ
-    public void updateAbstractUser(AbstractUser existingAbstractUser, AbstractUser newAbstractUser) {
-        if (!passwordEncoder.matches(newAbstractUser.getPassword(), existingAbstractUser.getPassword())) {
-            existingAbstractUser.setPassword(passwordEncoder.encode(newAbstractUser.getPassword()));
-        }
-        if (!existingAbstractUser.getName().equals(newAbstractUser.getName())) {
-            existingAbstractUser.setName(newAbstractUser.getName());
-        }
-        if (!existingAbstractUser.getSurname().equals(newAbstractUser.getSurname())) {
-            existingAbstractUser.setSurname(newAbstractUser.getSurname());
-        }
-        if (!existingAbstractUser.getBirthdate().equals(newAbstractUser.getBirthdate())) {
-            existingAbstractUser.setBirthdate(newAbstractUser.getBirthdate());
-        }
-        if (!existingAbstractUser.getPesel().equals(newAbstractUser.getPesel())) {
-            existingAbstractUser.setPesel(newAbstractUser.getPesel());
-        }
-        if (!existingAbstractUser.getPhoneNumber().equals(newAbstractUser.getPhoneNumber())) {
-            existingAbstractUser.setPhoneNumber(newAbstractUser.getPhoneNumber());
-        }
-
-        Address existingAddress = existingAbstractUser.getAddress();
-        Address newAddress = newAbstractUser.getAddress();
-        if (!existingAddress.getCity().equals(newAddress.getCity())) {
-            existingAbstractUser.getAddress().setCity(newAddress.getCity());
-        }
-        if (!existingAddress.getStreetName().equals(newAddress.getStreetName())) {
-            existingAbstractUser.getAddress().setStreetName(newAddress.getStreetName());
-        }
-        if (!existingAddress.getBuildingNumber().equals(newAddress.getBuildingNumber())) {
-            existingAbstractUser.getAddress().setBuildingNumber(newAddress.getBuildingNumber());
-        }
-        if (!existingAddress.getApartmentNumber().equals(newAddress.getApartmentNumber())) {
-            existingAbstractUser.getAddress().setApartmentNumber(newAddress.getApartmentNumber());
-        }
-        if (!existingAddress.getPostalCode().equals(newAddress.getPostalCode())) {
-            existingAbstractUser.getAddress().setPostalCode(newAddress.getPostalCode());
-        }
+    public boolean userExists(String email) {
+        return abstractUserRepository.findByEmail(email).isPresent();
     }
 }

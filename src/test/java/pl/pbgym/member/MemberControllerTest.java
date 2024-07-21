@@ -437,4 +437,69 @@ public class MemberControllerTest {
                         .content(jsonChangePasswordRequest))
                 .andExpect(status().isForbidden());
     }
+
+    @Test
+    public void shouldReturnOkAndNewJwtWhenMemberChangesOwnEmail() throws Exception {
+        ChangeEmailRequestDto changeEmailRequestDto = new ChangeEmailRequestDto();
+        changeEmailRequestDto.setNewEmail("newemail@member.com");
+
+        String jsonChangeEmailRequest = objectMapper.writeValueAsString(changeEmailRequestDto);
+
+        MvcResult mvcResult = mockMvc.perform(put("/members/changeEmail/{email}", memberEmail)
+                        .header("Authorization", "Bearer " + memberJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonChangeEmailRequest))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        AuthenticationResponseDto authenticationResponseDto = objectMapper.readValue(jsonResponse, AuthenticationResponseDto.class);
+
+        MvcResult validateResult = mockMvc.perform(get("/members/{email}", changeEmailRequestDto.getNewEmail())
+                        .header("Authorization", "Bearer " + authenticationResponseDto.getJwt())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String validateJsonResponse = validateResult.getResponse().getContentAsString();
+        GetMemberResponseDto response = objectMapper.readValue(validateJsonResponse, GetMemberResponseDto.class);
+
+        assertEquals(changeEmailRequestDto.getNewEmail(), response.getEmail());
+    }
+
+    @Test
+    public void shouldReturnOkWhenAdminChangesMembersEmail() throws Exception {
+        ChangeEmailRequestDto changeEmailRequestDto = new ChangeEmailRequestDto();
+        changeEmailRequestDto.setNewEmail("newemail@member.com");
+
+        String jsonChangeEmailRequest = objectMapper.writeValueAsString(changeEmailRequestDto);
+
+        mockMvc.perform(put("/members/changeEmail/{email}", memberEmail)
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonChangeEmailRequest))
+                .andExpect(status().isOk());
+
+        MvcResult validateResult = mockMvc.perform(get("/members/{email}", changeEmailRequestDto.getNewEmail())
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String validateJsonResponse = validateResult.getResponse().getContentAsString();
+        GetMemberResponseDto response = objectMapper.readValue(validateJsonResponse, GetMemberResponseDto.class);
+
+        assertEquals(changeEmailRequestDto.getNewEmail(), response.getEmail());
+    }
+
+    @Test
+    public void shouldReturnBadRequestWhenNewEmailIsInvalid() throws Exception {
+        String invalidEmail = "invalid-email";
+
+        mockMvc.perform(put("/members/changeEmail/{email}", memberEmail)
+                        .header("Authorization", "Bearer " + memberJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidEmail))
+                .andExpect(status().isBadRequest());
+    }
 }

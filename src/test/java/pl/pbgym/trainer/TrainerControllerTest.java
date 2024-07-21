@@ -21,16 +21,15 @@ import pl.pbgym.dto.trainer.GetTrainerResponseDto;
 import pl.pbgym.dto.trainer.UpdateTrainerRequestDto;
 import pl.pbgym.repository.AbstractUserRepository;
 import pl.pbgym.repository.AddressRepository;
-import pl.pbgym.repository.TrainerRepository;
 import pl.pbgym.service.auth.AuthenticationService;
-import static org.junit.Assert.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -464,5 +463,70 @@ public class TrainerControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonChangePasswordRequest))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void shouldReturnOkAndNewJwtWhenTrainerChangesOwnEmail() throws Exception {
+        ChangeEmailRequestDto changeEmailRequestDto = new ChangeEmailRequestDto();
+        changeEmailRequestDto.setNewEmail("newemail@trainer.com");
+
+        String jsonChangeEmailRequest = objectMapper.writeValueAsString(changeEmailRequestDto);
+
+        MvcResult mvcResult = mockMvc.perform(put("/trainers/changeEmail/{email}", trainerEmail)
+                        .header("Authorization", "Bearer " + trainerJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonChangeEmailRequest))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        AuthenticationResponseDto authenticationResponseDto = objectMapper.readValue(jsonResponse, AuthenticationResponseDto.class);
+
+        MvcResult validateResult = mockMvc.perform(get("/trainers/{email}", changeEmailRequestDto.getNewEmail())
+                        .header("Authorization", "Bearer " + authenticationResponseDto.getJwt())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String validateJsonResponse = validateResult.getResponse().getContentAsString();
+        GetTrainerResponseDto response = objectMapper.readValue(validateJsonResponse, GetTrainerResponseDto.class);
+
+        assertEquals(changeEmailRequestDto.getNewEmail(), response.getEmail());
+    }
+
+    @Test
+    public void shouldReturnOkWhenAdminChangesTrainersEmail() throws Exception {
+        ChangeEmailRequestDto changeEmailRequestDto = new ChangeEmailRequestDto();
+        changeEmailRequestDto.setNewEmail("newemail@trainer.com");
+
+        String jsonChangeEmailRequest = objectMapper.writeValueAsString(changeEmailRequestDto);
+
+        mockMvc.perform(put("/trainers/changeEmail/{email}", trainerEmail)
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonChangeEmailRequest))
+                .andExpect(status().isOk());
+
+        MvcResult validateResult = mockMvc.perform(get("/trainers/{email}", changeEmailRequestDto.getNewEmail())
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String validateJsonResponse = validateResult.getResponse().getContentAsString();
+        GetTrainerResponseDto response = objectMapper.readValue(validateJsonResponse, GetTrainerResponseDto.class);
+
+        assertEquals(changeEmailRequestDto.getNewEmail(), response.getEmail());
+    }
+
+    @Test
+    public void shouldReturnBadRequestWhenNewEmailIsInvalid() throws Exception {
+        String invalidEmail = "invalid-email";
+
+        mockMvc.perform(put("/trainers/changeEmail/{email}", trainerEmail)
+                        .header("Authorization", "Bearer " + trainerJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidEmail))
+                .andExpect(status().isBadRequest());
     }
 }

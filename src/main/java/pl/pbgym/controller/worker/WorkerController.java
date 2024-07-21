@@ -6,20 +6,21 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import pl.pbgym.domain.AbstractUser;
-import pl.pbgym.domain.Permissions;
+import pl.pbgym.domain.*;
 import pl.pbgym.domain.Worker;
-import pl.pbgym.domain.Worker;
+import pl.pbgym.dto.auth.AuthenticationResponseDto;
+import pl.pbgym.dto.auth.ChangeEmailRequestDto;
 import pl.pbgym.dto.auth.ChangePasswordRequestDto;
 import pl.pbgym.dto.worker.UpdateWorkerRequestDto;
 import pl.pbgym.dto.worker.GetWorkerResponseDto;
-import pl.pbgym.exception.worker.WorkerNotFoundException;
 import pl.pbgym.exception.worker.WorkerNotFoundException;
 import pl.pbgym.service.AbstractUserService;
 import pl.pbgym.service.worker.WorkerService;
@@ -67,7 +68,7 @@ public class WorkerController {
 
     @PutMapping("/{email}")
     @Operation(summary = "Update a worker by email", description = "Fetches the worker details by their email and updates their data, " +
-            "possible only for ADMIN workers and for the worker who owns the data")
+            "possible only for ADMIN workers and for the worker who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Worker found and updated successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
@@ -85,7 +86,6 @@ public class WorkerController {
                 }
             }
         }
-
         try {
             workerService.updateWorker(email, updateWorkerRequestDto);
             return ResponseEntity.status(HttpStatus.OK).body("Worker updated successfully");
@@ -96,7 +96,7 @@ public class WorkerController {
 
     @PutMapping("/changePassword/{email}")
     @Operation(summary = "Change a worker password by email", description = "Fetches the worker details by their email and changes their password, " +
-            "possible only for ADMIN workers and for the worker who owns the data")
+            "possible only for ADMIN workers and for the worker who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Worker found and updated successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
@@ -114,14 +114,42 @@ public class WorkerController {
                 }
             }
         }
-
         try {
-            abstractUserService.changePassword(changePasswordRequestDto.getOldPassword(), changePasswordRequestDto.getNewPassword(), email);
+            abstractUserService.updatePassword(changePasswordRequestDto.getOldPassword(), changePasswordRequestDto.getNewPassword(), email);
             return ResponseEntity.status(HttpStatus.OK).body("Worker password updated successfully");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
+
+    @PutMapping("/changeEmail/{email}")
+    @Operation(summary = "Change a worker email by email", description = "Fetches the worker details by their email and changes their email, " +
+            "possible only for ADMIN workers and for the worker who owns the data. " +
+            "Returns a new JWT, because after changing the email, re-authentication is needed.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Worker found and updated successfully"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Worker not found", content = @Content)
+    })
+    public ResponseEntity<AuthenticationResponseDto> changeEmail(@PathVariable String email,
+                                                                 @Valid @RequestBody ChangeEmailRequestDto changeEmailRequestDto) {
+
+        AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        //if worker isn't an admin, the id must match (he must be himself)
+        if (authenticatedUser instanceof Worker) {
+            if (!((Worker) authenticatedUser).getMappedPermissionList().contains(Permissions.ADMIN)) {
+                if (!authenticatedUser.getEmail().equals(email)) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+                }
+            }
+        }
+        try {
+            AuthenticationResponseDto authenticationResponseDto = abstractUserService.updateEmail(email, changeEmailRequestDto.getNewEmail());
+            return ResponseEntity.status(HttpStatus.OK).body(authenticationResponseDto);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 }

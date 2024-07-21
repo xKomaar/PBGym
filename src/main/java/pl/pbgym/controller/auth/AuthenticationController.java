@@ -81,7 +81,7 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "403", description = "Authentication not successful", content = @Content)
     })
     @PostMapping("/authenticate")
-    public ResponseEntity<PostAuthenticationResponseDto> authenticate(@RequestBody PostAuthenticationRequestDto request) {
+    public ResponseEntity<AuthenticationResponseDto> authenticate(@RequestBody PostAuthenticationRequestDto request) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 }

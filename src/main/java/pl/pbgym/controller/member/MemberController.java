@@ -14,14 +14,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.pbgym.domain.AbstractUser;
 import pl.pbgym.domain.Member;
+import pl.pbgym.dto.auth.AuthenticationResponseDto;
+import pl.pbgym.dto.auth.ChangeEmailRequestDto;
 import pl.pbgym.dto.auth.ChangePasswordRequestDto;
 import pl.pbgym.dto.member.GetMemberResponseDto;
 import pl.pbgym.dto.member.UpdateMemberRequestDto;
 import pl.pbgym.exception.member.MemberNotFoundException;
 import pl.pbgym.service.AbstractUserService;
 import pl.pbgym.service.member.MemberService;
-
-import javax.swing.text.html.parser.Entity;
 
 @Controller
 @RequestMapping("/members")
@@ -97,12 +97,36 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         try {
-            abstractUserService.changePassword(changePasswordRequestDto.getOldPassword(), changePasswordRequestDto.getNewPassword(), email);
+            abstractUserService.updatePassword(changePasswordRequestDto.getOldPassword(), changePasswordRequestDto.getNewPassword(), email);
             return ResponseEntity.status(HttpStatus.OK).body("Member password updated successfully");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
+
+    @PutMapping("/changeEmail/{email}")
+    @Operation(summary = "Change a member email by email", description = "Fetches the member details by their email and changes their email, " +
+            "possible only for ADMIN and USER_MANAGEMENT workers and for the member who owns the data. " +
+            "Returns a new JWT, because after changing the email, re-authentication is needed.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Member found and updated successfully"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Member not found", content = @Content)
+    })
+    public ResponseEntity<AuthenticationResponseDto> changeEmail(@PathVariable String email,
+                                                                 @Valid @RequestBody ChangeEmailRequestDto changeEmailRequestDto) {
+
+        AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (authenticatedUser instanceof Member && !authenticatedUser.getEmail().equals(email)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        try {
+            AuthenticationResponseDto authenticationResponseDto = abstractUserService.updateEmail(email, changeEmailRequestDto.getNewEmail());
+            return ResponseEntity.status(HttpStatus.OK).body(authenticationResponseDto);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 }

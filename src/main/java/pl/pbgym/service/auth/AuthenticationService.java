@@ -84,13 +84,16 @@ public class AuthenticationService {
         }
     }
 
-    public PostAuthenticationResponseDto authenticate(PostAuthenticationRequestDto request) {
+    public AuthenticationResponseDto authenticate(PostAuthenticationRequestDto request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
         AbstractUser abstractUser = abstractUserRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        String jwt = jwtService.generateToken(abstractUser);
-        return new PostAuthenticationResponseDto(jwt);
+        return new AuthenticationResponseDto(generateJwtToken(abstractUser));
+    }
+
+    public String generateJwtToken(AbstractUser abstractUser) {
+        return jwtService.generateToken(abstractUser);
     }
 }

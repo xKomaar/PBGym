@@ -16,10 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import pl.pbgym.domain.Permissions;
 import pl.pbgym.dto.UpdateAddressRequestDto;
-import pl.pbgym.dto.auth.ChangePasswordRequestDto;
-import pl.pbgym.dto.auth.PostAddressRequestDto;
-import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
-import pl.pbgym.dto.auth.PostWorkerRequestDto;
+import pl.pbgym.dto.auth.*;
+import pl.pbgym.dto.worker.GetWorkerResponseDto;
 import pl.pbgym.dto.worker.GetWorkerResponseDto;
 import pl.pbgym.dto.worker.UpdateWorkerRequestDto;
 import pl.pbgym.repository.AbstractUserRepository;
@@ -384,5 +382,70 @@ public class WorkerControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonChangePasswordRequest))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void shouldReturnOkAndNewJwtWhenWorkerChangesOwnEmail() throws Exception {
+        ChangeEmailRequestDto changeEmailRequestDto = new ChangeEmailRequestDto();
+        changeEmailRequestDto.setNewEmail("newemail@worker.com");
+
+        String jsonChangeEmailRequest = objectMapper.writeValueAsString(changeEmailRequestDto);
+
+        MvcResult mvcResult = mockMvc.perform(put("/workers/changeEmail/{email}", workerEmail)
+                        .header("Authorization", "Bearer " + workerJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonChangeEmailRequest))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        AuthenticationResponseDto authenticationResponseDto = objectMapper.readValue(jsonResponse, AuthenticationResponseDto.class);
+
+        MvcResult validateResult = mockMvc.perform(get("/workers/{email}", changeEmailRequestDto.getNewEmail())
+                        .header("Authorization", "Bearer " + authenticationResponseDto.getJwt())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String validateJsonResponse = validateResult.getResponse().getContentAsString();
+        GetWorkerResponseDto response = objectMapper.readValue(validateJsonResponse, GetWorkerResponseDto.class);
+
+        assertEquals(changeEmailRequestDto.getNewEmail(), response.getEmail());
+    }
+
+    @Test
+    public void shouldReturnOkWhenAdminChangesWorkersEmail() throws Exception {
+        ChangeEmailRequestDto changeEmailRequestDto = new ChangeEmailRequestDto();
+        changeEmailRequestDto.setNewEmail("newemail@worker.com");
+
+        String jsonChangeEmailRequest = objectMapper.writeValueAsString(changeEmailRequestDto);
+
+        mockMvc.perform(put("/workers/changeEmail/{email}", workerEmail)
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonChangeEmailRequest))
+                .andExpect(status().isOk());
+
+        MvcResult validateResult = mockMvc.perform(get("/workers/{email}", changeEmailRequestDto.getNewEmail())
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String validateJsonResponse = validateResult.getResponse().getContentAsString();
+        GetWorkerResponseDto response = objectMapper.readValue(validateJsonResponse, GetWorkerResponseDto.class);
+
+        assertEquals(changeEmailRequestDto.getNewEmail(), response.getEmail());
+    }
+
+    @Test
+    public void shouldReturnBadRequestWhenNewEmailIsInvalid() throws Exception {
+        String invalidEmail = "invalid-email";
+
+        mockMvc.perform(put("/workers/changeEmail/{email}", workerEmail)
+                        .header("Authorization", "Bearer " + workerJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidEmail))
+                .andExpect(status().isBadRequest());
     }
 }
