@@ -2,7 +2,7 @@ package pl.pbgym.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.pbgym.domain.Address;
+import pl.pbgym.domain.user.Address;
 import pl.pbgym.repository.AddressRepository;
 
 import java.util.Optional;

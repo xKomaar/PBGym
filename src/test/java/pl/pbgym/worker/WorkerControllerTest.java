@@ -14,15 +14,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import pl.pbgym.domain.Permissions;
+import pl.pbgym.domain.user.Permissions;
 import pl.pbgym.dto.UpdateAddressRequestDto;
 import pl.pbgym.dto.auth.*;
-import pl.pbgym.dto.worker.GetWorkerResponseDto;
 import pl.pbgym.dto.worker.GetWorkerResponseDto;
 import pl.pbgym.dto.worker.UpdateWorkerRequestDto;
 import pl.pbgym.repository.AbstractUserRepository;
 import pl.pbgym.repository.AddressRepository;
-import pl.pbgym.repository.WorkerRepository;
 import pl.pbgym.service.auth.AuthenticationService;
 import static org.junit.Assert.*;
 
@@ -73,7 +71,7 @@ public class WorkerControllerTest {
         postWorkerRequestDto.setPhoneNumber("123123123");
         postWorkerRequestDto.setIdCardNumber("ABD123456");
         postWorkerRequestDto.setPosition("Worker");
-        postWorkerRequestDto.setPermissionsList(new ArrayList<>());
+        postWorkerRequestDto.setPermissions(new ArrayList<>());
 
         PostAddressRequestDto postAddressRequestDto = new PostAddressRequestDto();
         postAddressRequestDto.setCity("City");
@@ -105,7 +103,7 @@ public class WorkerControllerTest {
 
         List<Permissions> permissionsList = new ArrayList<>();
         permissionsList.add(Permissions.ADMIN);
-        adminWorkerRequest.setPermissionsList(permissionsList);
+        adminWorkerRequest.setPermissions(permissionsList);
 
         authenticationService.registerWorker(adminWorkerRequest);
 

@@ -1,4 +1,4 @@
-package pl.pbgym.domain;
+package pl.pbgym.domain.user;
 
 import jakarta.persistence.*;
 
@@ -14,7 +14,7 @@ public class Worker extends AbstractUser {
     @Column(name="position")
     private String position;
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Permission> permissionList;
+    private List<Permission> permissions;
 
     public Worker() {
     }
@@ -35,19 +35,19 @@ public class Worker extends AbstractUser {
         this.position = position;
     }
 
-    public List<Permission> getPermissionList() {
-        return permissionList;
+    public List<Permission> getPermissions() {
+        return permissions;
     }
 
-    public List<Permissions> getMappedPermissionList() {
-        List<Permissions> mappedPermissionList = new ArrayList<>();
-        for(Permission p : this.permissionList) {
-            mappedPermissionList.add(p.get());
+    public List<Permissions> getMappedPermissions() {
+        List<Permissions> mappedPermissions = new ArrayList<>();
+        for(Permission p : this.permissions) {
+            mappedPermissions.add(p.get());
         }
-        return mappedPermissionList;
+        return mappedPermissions;
     }
 
-    public void setPermissionList(List<Permission> permissionList) {
-        this.permissionList = permissionList;
+    public void setPermissions(List<Permission> permissions) {
+        this.permissions = permissions;
     }
 }

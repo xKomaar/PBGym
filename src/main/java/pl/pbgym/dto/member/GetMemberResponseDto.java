@@ -1,6 +1,5 @@
 package pl.pbgym.dto.member;
 
-import pl.pbgym.domain.Address;
 import pl.pbgym.dto.GetAddressResponseDto;
 
 import java.time.LocalDate;

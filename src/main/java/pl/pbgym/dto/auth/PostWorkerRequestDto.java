@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import pl.pbgym.validator.PermissionSubset;
-import pl.pbgym.domain.Permissions;
+import pl.pbgym.domain.user.Permissions;
 
 import java.util.List;
 
@@ -30,24 +30,24 @@ public class PostWorkerRequestDto extends PostAbstractUserRequestDto {
             Permissions.SHOP_MANAGEMENT
     })
     @NotNull
-    private List<Permissions> permissionsList;
+    private List<Permissions> permissions;
 
     public PostWorkerRequestDto() {
         super();
     }
 
-    public PostWorkerRequestDto(String idCardNumber, String position, List<Permissions> permissionsList) {
+    public PostWorkerRequestDto(String idCardNumber, String position, List<Permissions> permissions) {
         IdCardNumber = idCardNumber;
         this.position = position;
-        this.permissionsList = permissionsList;
+        this.permissions = permissions;
     }
 
-    public List<Permissions> getPermissionsList() {
-        return permissionsList;
+    public List<Permissions> getPermissions() {
+        return permissions;
     }
 
-    public void setPermissionsList(List<Permissions> permissionsList) {
-        this.permissionsList = permissionsList;
+    public void setPermissions(List<Permissions> permissions) {
+        this.permissions = permissions;
     }
 
     public String getIdCardNumber() {

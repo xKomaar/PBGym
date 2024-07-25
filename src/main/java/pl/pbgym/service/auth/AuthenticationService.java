@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.pbgym.domain.*;
+import pl.pbgym.domain.user.*;
 import pl.pbgym.dto.auth.*;
 import pl.pbgym.repository.*;
 
@@ -74,8 +74,8 @@ public class AuthenticationService {
 
         workerRepository.save(worker);
 
-        if(!postWorkerRequestDto.getPermissionsList().isEmpty()) {
-            for(Permissions p : postWorkerRequestDto.getPermissionsList()) {
+        if(!postWorkerRequestDto.getPermissions().isEmpty()) {
+            for(Permissions p : postWorkerRequestDto.getPermissions()) {
                 Permission permission = new Permission();
                 permission.setWorker(worker);
                 permission.set(p);

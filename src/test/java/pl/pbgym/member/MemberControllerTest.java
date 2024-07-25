@@ -1,14 +1,11 @@
 package pl.pbgym.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
-import org.springframework.aop.scope.ScopedProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,14 +14,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import pl.pbgym.domain.Permissions;
+import pl.pbgym.domain.user.Permissions;
 import pl.pbgym.dto.UpdateAddressRequestDto;
 import pl.pbgym.dto.auth.*;
 import pl.pbgym.dto.member.GetMemberResponseDto;
 import pl.pbgym.dto.member.UpdateMemberRequestDto;
 import pl.pbgym.repository.AbstractUserRepository;
 import pl.pbgym.repository.AddressRepository;
-import pl.pbgym.repository.MemberRepository;
 import pl.pbgym.service.auth.AuthenticationService;
 import static org.junit.Assert.*;
 
@@ -104,7 +100,7 @@ public class MemberControllerTest {
 
         List<Permissions> permissionsList = new ArrayList<>();
         permissionsList.add(Permissions.ADMIN);
-        adminWorkerRequest.setPermissionsList(permissionsList);
+        adminWorkerRequest.setPermissions(permissionsList);
 
         authenticationService.registerWorker(adminWorkerRequest);
 
@@ -128,7 +124,7 @@ public class MemberControllerTest {
 
         List<Permissions> permissionsList2 = new ArrayList<>();
         permissionsList2.add(Permissions.USER_MANAGEMENT);
-        managerWorkerRequest.setPermissionsList(permissionsList2);
+        managerWorkerRequest.setPermissions(permissionsList2);
 
         authenticationService.registerWorker(managerWorkerRequest);
 

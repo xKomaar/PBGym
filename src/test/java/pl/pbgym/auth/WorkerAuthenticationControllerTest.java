@@ -18,7 +18,7 @@ import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
 import pl.pbgym.dto.auth.PostWorkerRequestDto;
 import pl.pbgym.service.auth.AuthenticationService;
-import pl.pbgym.domain.Permissions;
+import pl.pbgym.domain.user.Permissions;
 import pl.pbgym.repository.AbstractUserRepository;
 import pl.pbgym.repository.AddressRepository;
 import pl.pbgym.repository.PermissionRepository;
@@ -86,9 +86,9 @@ public class WorkerAuthenticationControllerTest {
         adminWorkerRequest.setPosition("Owner");
         adminWorkerRequest.setAddress(postAddressRequestDto);
 
-        List<Permissions> permissionsList = new ArrayList<>();
-        permissionsList.add(Permissions.ADMIN);
-        adminWorkerRequest.setPermissionsList(permissionsList);
+        List<Permissions> permissions = new ArrayList<>();
+        permissions.add(Permissions.ADMIN);
+        adminWorkerRequest.setPermissions(permissions);
 
         authenticationService.registerWorker(adminWorkerRequest);
 
@@ -108,7 +108,7 @@ public class WorkerAuthenticationControllerTest {
         workerRegisterRequest.setPhoneNumber("123123123");
         workerRegisterRequest.setIdCardNumber("XYZ987654");
         workerRegisterRequest.setPosition("Position");
-        workerRegisterRequest.setPermissionsList(new ArrayList<>());
+        workerRegisterRequest.setPermissions(new ArrayList<>());
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
@@ -140,7 +140,7 @@ public class WorkerAuthenticationControllerTest {
         workerRegisterRequest1.setPhoneNumber("123123123");
         workerRegisterRequest1.setIdCardNumber("XYZ987654");
         workerRegisterRequest1.setPosition("Position");
-        workerRegisterRequest1.setPermissionsList(new ArrayList<>());
+        workerRegisterRequest1.setPermissions(new ArrayList<>());
 
         PostAddressRequestDto address1 = new PostAddressRequestDto();
         address1.setCity("City");
@@ -160,7 +160,7 @@ public class WorkerAuthenticationControllerTest {
         workerRegisterRequest2.setPhoneNumber("321321321");
         workerRegisterRequest2.setIdCardNumber("XYZ654321");
         workerRegisterRequest2.setPosition("Position");
-        workerRegisterRequest2.setPermissionsList(new ArrayList<>());
+        workerRegisterRequest2.setPermissions(new ArrayList<>());
 
         PostAddressRequestDto address2 = new PostAddressRequestDto();
         address2.setCity("City");
@@ -199,7 +199,7 @@ public class WorkerAuthenticationControllerTest {
         workerRegisterRequest.setPhoneNumber("123");
         workerRegisterRequest.setIdCardNumber("ABC123");
         workerRegisterRequest.setPosition("Position");
-        workerRegisterRequest.setPermissionsList(new ArrayList<>());
+        workerRegisterRequest.setPermissions(new ArrayList<>());
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("i");
@@ -230,7 +230,7 @@ public class WorkerAuthenticationControllerTest {
         workerRegisterRequest.setPhoneNumber("123");
         workerRegisterRequest.setIdCardNumber("ABC123");
         workerRegisterRequest.setPosition("Position");
-        workerRegisterRequest.setPermissionsList(new ArrayList<>());
+        workerRegisterRequest.setPermissions(new ArrayList<>());
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("");
@@ -261,7 +261,7 @@ public class WorkerAuthenticationControllerTest {
         workerRegisterRequest.setPhoneNumber("123123123");
         workerRegisterRequest.setIdCardNumber("XYZ987654");
         workerRegisterRequest.setPosition("Position");
-        workerRegisterRequest.setPermissionsList(new ArrayList<>());
+        workerRegisterRequest.setPermissions(new ArrayList<>());
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity(" ");
@@ -292,7 +292,7 @@ public class WorkerAuthenticationControllerTest {
         workerRegisterRequest.setPhoneNumber("123456789");
         workerRegisterRequest.setIdCardNumber("ABC123456");
         workerRegisterRequest.setPosition("Position");
-        workerRegisterRequest.setPermissionsList(new ArrayList<>());
+        workerRegisterRequest.setPermissions(new ArrayList<>());
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");

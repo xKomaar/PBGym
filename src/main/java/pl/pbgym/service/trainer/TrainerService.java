@@ -4,7 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.pbgym.domain.Trainer;
+import pl.pbgym.domain.user.Trainer;
 import pl.pbgym.dto.trainer.GetTrainerResponseDto;
 import pl.pbgym.dto.trainer.UpdateTrainerRequestDto;
 import pl.pbgym.exception.trainer.TrainerNotFoundException;

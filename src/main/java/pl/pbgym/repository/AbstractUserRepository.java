@@ -2,7 +2,7 @@ package pl.pbgym.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pl.pbgym.domain.AbstractUser;
+import pl.pbgym.domain.user.AbstractUser;
 
 import java.util.Optional;
 

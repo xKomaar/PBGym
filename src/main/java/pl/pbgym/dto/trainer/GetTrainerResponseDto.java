@@ -1,7 +1,5 @@
 package pl.pbgym.dto.trainer;
 
-import jakarta.persistence.Column;
-import pl.pbgym.domain.Address;
 import pl.pbgym.dto.GetAddressResponseDto;
 
 import java.time.LocalDate;

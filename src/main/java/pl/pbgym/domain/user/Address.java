@@ -1,4 +1,4 @@
-package pl.pbgym.domain;
+package pl.pbgym.domain.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nullable;

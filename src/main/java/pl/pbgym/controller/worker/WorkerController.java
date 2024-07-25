@@ -6,16 +6,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import pl.pbgym.domain.*;
-import pl.pbgym.domain.Worker;
+import pl.pbgym.domain.user.Worker;
+import pl.pbgym.domain.user.AbstractUser;
+import pl.pbgym.domain.user.Permissions;
 import pl.pbgym.dto.auth.AuthenticationResponseDto;
 import pl.pbgym.dto.auth.ChangeEmailRequestDto;
 import pl.pbgym.dto.auth.ChangePasswordRequestDto;
@@ -52,7 +51,7 @@ public class WorkerController {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         //if worker isn't an admin, the id must match (he must be himself)
         if (authenticatedUser instanceof Worker) {
-            if (!((Worker) authenticatedUser).getMappedPermissionList().contains(Permissions.ADMIN)) {
+            if (!((Worker) authenticatedUser).getMappedPermissions().contains(Permissions.ADMIN)) {
                 if (!authenticatedUser.getEmail().equals(email)) {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
                 }
@@ -80,7 +79,7 @@ public class WorkerController {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         //if worker isn't an admin, the id must match (he must be himself)
         if (authenticatedUser instanceof Worker) {
-            if (!((Worker) authenticatedUser).getMappedPermissionList().contains(Permissions.ADMIN)) {
+            if (!((Worker) authenticatedUser).getMappedPermissions().contains(Permissions.ADMIN)) {
                 if (!authenticatedUser.getEmail().equals(email)) {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
                 }
@@ -108,7 +107,7 @@ public class WorkerController {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         //if worker isn't an admin, the id must match (he must be himself)
         if (authenticatedUser instanceof Worker) {
-            if (!((Worker) authenticatedUser).getMappedPermissionList().contains(Permissions.ADMIN)) {
+            if (!((Worker) authenticatedUser).getMappedPermissions().contains(Permissions.ADMIN)) {
                 if (!authenticatedUser.getEmail().equals(email)) {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
                 }
@@ -139,7 +138,7 @@ public class WorkerController {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         //if worker isn't an admin, the id must match (he must be himself)
         if (authenticatedUser instanceof Worker) {
-            if (!((Worker) authenticatedUser).getMappedPermissionList().contains(Permissions.ADMIN)) {
+            if (!((Worker) authenticatedUser).getMappedPermissions().contains(Permissions.ADMIN)) {
                 if (!authenticatedUser.getEmail().equals(email)) {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
                 }

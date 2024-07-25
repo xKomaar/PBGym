@@ -1,7 +1,7 @@
 package pl.pbgym.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.pbgym.domain.Address;
+import pl.pbgym.domain.user.Address;
 
 import java.util.Optional;
 

@@ -1,4 +1,4 @@
-package pl.pbgym.domain;
+package pl.pbgym.domain.user;
 
 public enum Permissions {
     ADMIN,

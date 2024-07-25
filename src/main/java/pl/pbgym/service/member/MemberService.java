@@ -5,13 +5,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.pbgym.domain.Member;
+import pl.pbgym.domain.user.Member;
 import pl.pbgym.dto.member.GetMemberResponseDto;
 import pl.pbgym.dto.member.UpdateMemberRequestDto;
-import pl.pbgym.dto.worker.GetWorkerResponseDto;
 import pl.pbgym.exception.member.MemberNotFoundException;
 import pl.pbgym.repository.MemberRepository;
-import pl.pbgym.service.AbstractUserService;
 
 import java.util.Optional;
 

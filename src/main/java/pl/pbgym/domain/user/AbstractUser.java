@@ -1,8 +1,6 @@
-package pl.pbgym.domain;
+package pl.pbgym.domain.user;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,7 +15,7 @@ import java.util.stream.Stream;
 @Entity
 @Table(name="abstract_user")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class AbstractUser implements UserDetails {
+public abstract class AbstractUser implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "abstract_user_seq_gen")
@@ -69,7 +67,7 @@ public class AbstractUser implements UserDetails {
             case Trainer trainer -> Collections.singletonList(new SimpleGrantedAuthority("TRAINER"));
             case Worker worker -> Stream.concat(
                         Stream.of(new SimpleGrantedAuthority("WORKER")),
-                        worker.getPermissionList().stream()
+                        worker.getPermissions().stream()
                             .map(permission -> new SimpleGrantedAuthority(permission.get().name()))
                     ).collect(Collectors.toList());
             default -> Collections.emptyList();
