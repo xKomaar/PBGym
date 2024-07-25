@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pbgym.domain.user.*;
 import pl.pbgym.dto.auth.*;
-import pl.pbgym.repository.*;
+import pl.pbgym.repository.user.*;
 
 @Service
 public class AuthenticationService {

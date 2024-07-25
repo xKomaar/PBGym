@@ -17,8 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
 import pl.pbgym.dto.auth.PostMemberRequestDto;
-import pl.pbgym.repository.AbstractUserRepository;
-import pl.pbgym.repository.AddressRepository;
+import pl.pbgym.repository.user.AbstractUserRepository;
+import pl.pbgym.repository.user.AddressRepository;
 
 import java.time.LocalDate;
 

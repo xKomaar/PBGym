@@ -7,9 +7,6 @@ import jakarta.persistence.*;
 @PrimaryKeyJoinColumn(name = "special_offer_id")
 public class SpecialOffer extends Offer {
     @Basic
-    @Column(name = "entryFee", nullable = false)
-    private Double entryFee;
-    @Basic
     @Column(name = "specialOfferText", nullable = true)
     private String specialOfferText;
     @Basic
@@ -20,14 +17,7 @@ public class SpecialOffer extends Offer {
     private String previousPriceInfo;
 
     public SpecialOffer() {
-    }
-
-    public Double getEntryFee() {
-        return entryFee;
-    }
-
-    public void setEntryFee(Double entryFee) {
-        this.entryFee = entryFee;
+        this.setType(OfferType.SPECIAL);
     }
 
     public String getSpecialOfferText() {

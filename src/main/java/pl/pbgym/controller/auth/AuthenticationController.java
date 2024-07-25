@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.pbgym.service.auth.AuthenticationService;
 import pl.pbgym.dto.auth.*;
-import pl.pbgym.service.AbstractUserService;
+import pl.pbgym.service.user.AbstractUserService;
 
 @RestController
 @RequestMapping("/auth")

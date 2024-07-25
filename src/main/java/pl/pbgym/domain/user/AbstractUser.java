@@ -24,7 +24,7 @@ public abstract class AbstractUser implements UserDetails {
     private Long id;
 
     @Basic
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Basic

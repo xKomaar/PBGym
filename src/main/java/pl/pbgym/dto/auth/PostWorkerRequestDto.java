@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import pl.pbgym.validator.PermissionSubset;
+import pl.pbgym.validator.permission.PermissionSubset;
 import pl.pbgym.domain.user.Permissions;
 
 import java.util.List;

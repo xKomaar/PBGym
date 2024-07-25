@@ -19,9 +19,9 @@ import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
 import pl.pbgym.dto.auth.PostWorkerRequestDto;
 import pl.pbgym.service.auth.AuthenticationService;
 import pl.pbgym.domain.user.Permissions;
-import pl.pbgym.repository.AbstractUserRepository;
-import pl.pbgym.repository.AddressRepository;
-import pl.pbgym.repository.PermissionRepository;
+import pl.pbgym.repository.user.AbstractUserRepository;
+import pl.pbgym.repository.user.AddressRepository;
+import pl.pbgym.repository.user.PermissionRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

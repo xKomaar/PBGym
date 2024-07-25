@@ -1,49 +1,25 @@
-package pl.pbgym.domain.offer;
+package pl.pbgym.dto.offer.standard;
 
 import jakarta.persistence.*;
+import pl.pbgym.domain.offer.OfferProperty;
+import pl.pbgym.domain.offer.OfferType;
 
 import java.util.List;
 
-@Entity
-@Table(name="offer")
-@Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Offer {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "offer_seq_gen")
-    @SequenceGenerator(name="offer_seq_gen", sequenceName="OFFER_SEQ", allocationSize = 1)
-    @Column(name = "id", nullable = false)
+public class GetStandardOfferResponseDto {
     private Long id;
-    @Basic
-    @Column(name = "title", nullable = false, unique = true)
     private String title;
-    @Basic
-    @Column(name = "subtitle", nullable = false)
     private String subtitle;
-    @Basic
-    @Column(name = "price", nullable = false)
     private Double price;
-    @Basic
-    @Column(name = "entryFee", nullable = false)
     private Double entryFee;
-    @Basic
-    @Column(name = "isActive", nullable = false)
     private boolean isActive;
-    @Enumerated(EnumType.STRING)
     private OfferType type;
-    @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<OfferProperty> properties;
+    private List<String> properties;
 
-    public Offer() {
+
+    public GetStandardOfferResponseDto() {
     }
 
-    public OfferType getType() {
-        return type;
-    }
-
-    public void setType(OfferType type) {
-        this.type = type;
-    }
 
     public Long getId() {
         return id;
@@ -69,7 +45,7 @@ public abstract class Offer {
         this.subtitle = subtitle;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
@@ -93,7 +69,19 @@ public abstract class Offer {
         isActive = active;
     }
 
-    public List<OfferProperty> getProperties() {
+    public OfferType getType() {
+        return type;
+    }
+
+    public void setType(OfferType type) {
+        this.type = type;
+    }
+
+    public List<String> getProperties() {
         return properties;
+    }
+
+    public void setProperties(List<String> properties) {
+        this.properties = properties;
     }
 }
