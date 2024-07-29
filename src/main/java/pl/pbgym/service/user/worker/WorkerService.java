@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pbgym.domain.user.Worker;
-import pl.pbgym.dto.offer.worker.UpdateWorkerRequestDto;
-import pl.pbgym.dto.offer.worker.GetWorkerResponseDto;
+import pl.pbgym.dto.user.worker.UpdateWorkerRequestDto;
+import pl.pbgym.dto.user.worker.GetWorkerResponseDto;
 import pl.pbgym.exception.user.worker.WorkerNotFoundException;
 import pl.pbgym.repository.user.WorkerRepository;
 

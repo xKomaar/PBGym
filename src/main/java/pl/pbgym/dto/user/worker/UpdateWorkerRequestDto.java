@@ -1,4 +1,4 @@
-package pl.pbgym.dto.offer.worker;
+package pl.pbgym.dto.user.worker;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

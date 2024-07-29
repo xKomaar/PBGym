@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.pbgym.domain.offer.*;
+import pl.pbgym.dto.offer.GetOfferResponseDto;
 import pl.pbgym.dto.offer.special.GetSpecialOfferResponseDto;
 import pl.pbgym.dto.offer.special.PostSpecialOfferRequestDto;
 import pl.pbgym.dto.offer.standard.GetStandardOfferResponseDto;
@@ -50,7 +51,7 @@ public class OfferService {
                 .orElseThrow(() -> new StandardOfferNotFoundException("Standard Offer not found with title: " + title));
     }
 
-    public GetSpecialOfferResponseDto getSpecialOfferResponseDto(String title) {
+    public GetSpecialOfferResponseDto getSpecialOfferByTitle(String title) {
         Optional<SpecialOffer> specialOffer = specialOfferRepository.findByTitle(title);
         return specialOffer.map(offer -> {
                     GetSpecialOfferResponseDto getSpecialOfferResponseDto =
@@ -59,6 +60,27 @@ public class OfferService {
                     return getSpecialOfferResponseDto;
                 })
                 .orElseThrow(() -> new SpecialOfferNotFoundException("Special Offer not found with title: " + title));
+    }
+
+    public List<GetOfferResponseDto> getAllOffers() {
+        List<Offer> offers = offerRepository.findAll();
+
+        return offers.stream().map(
+                o -> modelMapper.map(o, GetOfferResponseDto.class)).toList();
+    }
+
+    public List<GetStandardOfferResponseDto> getAllStandardOffers() {
+        List<StandardOffer> offers = standardOfferRepository.findAll();
+
+        return offers.stream().map(
+                o -> modelMapper.map(o, GetStandardOfferResponseDto.class)).toList();
+    }
+
+    public List<GetSpecialOfferResponseDto> getAllSpecialOffers() {
+        List<SpecialOffer> offers = specialOfferRepository.findAll();
+
+        return offers.stream().map(
+                o -> modelMapper.map(o, GetSpecialOfferResponseDto.class)).toList();
     }
 
     public void saveStandardOffer(PostStandardOfferRequestDto postStandardOfferRequestDto) {
@@ -105,7 +127,7 @@ public class OfferService {
                 });
     }
 
-    public void saveOfferProperties(List<String> properties, Offer offer) {
+    protected void saveOfferProperties(List<String> properties, Offer offer) {
         if(properties != null && !properties.isEmpty()) {
             for(String p : properties) {
                 OfferProperty offerProperty = new OfferProperty();
@@ -116,7 +138,7 @@ public class OfferService {
         }
     }
 
-    public List<String> mapOfferProperties (List<OfferProperty> offerProperties) {
+    protected List<String> mapOfferProperties (List<OfferProperty> offerProperties) {
         List<String> mappedProperties = new ArrayList<>();
         if(offerProperties != null && !offerProperties.isEmpty()) {
             for(OfferProperty p : offerProperties) {

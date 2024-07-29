@@ -1,21 +1,21 @@
-package pl.pbgym.dto.offer.standard;
+package pl.pbgym.dto.offer;
 
 import pl.pbgym.domain.offer.OfferType;
-import pl.pbgym.dto.offer.GetOfferResponseDto;
 
 import java.util.List;
 
-public class GetStandardOfferResponseDto extends GetOfferResponseDto {
+public abstract class GetOfferResponseDto {
     private Long id;
     private String title;
     private String subtitle;
     private Double price;
     private Double entryFee;
     private boolean isActive;
+    private OfferType type;
     private List<String> properties;
 
 
-    public GetStandardOfferResponseDto() {
+    public GetOfferResponseDto() {
     }
 
 
@@ -65,6 +65,14 @@ public class GetStandardOfferResponseDto extends GetOfferResponseDto {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public OfferType getType() {
+        return type;
+    }
+
+    public void setType(OfferType type) {
+        this.type = type;
     }
 
     public List<String> getProperties() {

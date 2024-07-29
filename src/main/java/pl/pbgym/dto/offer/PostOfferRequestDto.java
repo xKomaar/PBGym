@@ -10,7 +10,7 @@ import pl.pbgym.validator.list.ListSize;
 
 import java.util.List;
 
-public class PostOfferRequestDto {
+public abstract class PostOfferRequestDto {
     @Size(min = 3, message = "Title can't be shorter than 3 characters.")
     @Size(max = 30, message = "Title can't be longer than 30 characters.")
     @NotEmpty(message = "Title is required.")

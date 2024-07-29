@@ -6,5 +6,4 @@ import pl.pbgym.dto.offer.PostOfferRequestDto;
 public class PostStandardOfferRequestDto extends PostOfferRequestDto {
     public PostStandardOfferRequestDto() {
     }
-
 }

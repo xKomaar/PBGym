@@ -1,4 +1,4 @@
-package pl.pbgym.dto.offer.worker;
+package pl.pbgym.dto.user.worker;
 
 import pl.pbgym.domain.user.Permissions;
 import pl.pbgym.dto.user.GetAddressResponseDto;
