@@ -41,6 +41,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/trainers/changePassword/", "/trainers/changeEmail/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "TRAINER")
                         .requestMatchers("/workers/").hasAnyAuthority("ADMIN", "WORKER")
                         .requestMatchers("/workers/changePassword/", "/workers/changeEmail/").hasAnyAuthority("ADMIN", "WORKER")
+                        .requestMatchers("/offer/public/active").permitAll()
                         .requestMatchers("/offer/**").hasAnyAuthority("ADMIN", "PASS_MANAGEMENT")
                         .requestMatchers("/swagger/**", "/swagger-ui/**", "v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()

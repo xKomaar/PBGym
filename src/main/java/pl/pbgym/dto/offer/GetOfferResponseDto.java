@@ -1,16 +1,31 @@
 package pl.pbgym.dto.offer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import pl.pbgym.domain.offer.OfferType;
+import pl.pbgym.dto.offer.special.GetSpecialOfferResponseDto;
+import pl.pbgym.dto.offer.standard.GetStandardOfferResponseDto;
 
 import java.util.List;
 
-public abstract class GetOfferResponseDto {
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = GetStandardOfferResponseDto.class, name = "STANDARD"),
+        @JsonSubTypes.Type(value = GetSpecialOfferResponseDto.class, name = "SPECIAL")
+})
+public class GetOfferResponseDto {
     private Long id;
     private String title;
     private String subtitle;
     private Double price;
     private Double entryFee;
     private boolean isActive;
+    @JsonIgnore
     private OfferType type;
     private List<String> properties;
 

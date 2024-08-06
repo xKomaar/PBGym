@@ -44,6 +44,16 @@ public class OfferController {
         return ResponseEntity.ok(offerService.getAllOffers());
     }
 
+    @GetMapping("/public/active")
+    @Operation(summary = "MEANT FOR THE PUBLIC - Get all active offers",
+            description = "Fetches all active offers only with public data")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Offer list fetched"),
+    })
+    public ResponseEntity<List<GetOfferResponseDto>> getAllActiveOffers() {
+        return ResponseEntity.ok(offerService.getAllActiveOffers());
+    }
+
     @GetMapping("/standard")
     @Operation(summary = "Get all standard offers", description = "Fetches all standard offers, " +
             "possible only for ADMIN and PASS_MANAGEMENT workers.")
@@ -100,31 +110,39 @@ public class OfferController {
 
     @PostMapping("/standard")
     @Operation(summary = "Add an standard offer", description = "Adds a standard offer, " +
-            "possible only for ADMIN and PASS_MANAGEMENT workers.")
+            "possible only for ADMIN and PASS_MANAGEMENT workers. MAX PROPERTIES = 6")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Standard offer added"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
     })
     public ResponseEntity<String> addStandardOffer(@Valid @RequestBody PostStandardOfferRequestDto postStandardOfferRequestDto) {
+        if(offerService.offerExists(postStandardOfferRequestDto.getTitle())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("This title is already in use!");
+        }
+
         offerService.saveStandardOffer(postStandardOfferRequestDto);
         return ResponseEntity.ok("Standard Offer successfully added.");
     }
 
     @PostMapping("/special")
     @Operation(summary = "Add an special offer", description = "Adds a special offer, " +
-            "possible only for ADMIN and PASS_MANAGEMENT workers.")
+            "possible only for ADMIN and PASS_MANAGEMENT workers. MAX PROPERTIES = 6")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Special offer added"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
     })
     public ResponseEntity<String> addSpecialOffer(@Valid @RequestBody PostSpecialOfferRequestDto postSpecialOfferRequestDto) {
+        if(offerService.offerExists(postSpecialOfferRequestDto.getTitle())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("This title is already in use!");
+        }
+
         offerService.saveSpecialOffer(postSpecialOfferRequestDto);
         return ResponseEntity.ok("Special Offer successfully added.");
     }
 
     @PutMapping("/standard/{title}")
     @Operation(summary = "Update an standard offer", description = "Updates a standard offer, " +
-            "possible only for ADMIN and PASS_MANAGEMENT workers.")
+            "possible only for ADMIN and PASS_MANAGEMENT workers. MAX PROPERTIES = 6")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Standard offer updated"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
@@ -147,7 +165,7 @@ public class OfferController {
 
     @PutMapping("/special/{title}")
     @Operation(summary = "Update an special offer", description = "Updates a special offer, " +
-            "possible only for ADMIN and PASS_MANAGEMENT workers.")
+            "possible only for ADMIN and PASS_MANAGEMENT workers. MAX PROPERTIES = 6")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Special offer updated"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),

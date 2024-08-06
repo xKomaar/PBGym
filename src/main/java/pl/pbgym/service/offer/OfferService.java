@@ -20,6 +20,7 @@ import pl.pbgym.repository.offer.StandardOfferRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OfferService {
@@ -64,9 +65,9 @@ public class OfferService {
 
     public List<GetOfferResponseDto> getAllOffers() {
         List<Offer> offers = offerRepository.findAll();
-
         return offers.stream().map(
-                o -> modelMapper.map(o, GetOfferResponseDto.class)).toList();
+                o -> modelMapper.map(o, determineOfferResponseDtoClass(o))
+        ).collect(Collectors.toList());
     }
 
     public List<GetStandardOfferResponseDto> getAllStandardOffers() {
@@ -149,5 +150,22 @@ public class OfferService {
     }
     public boolean offerExists(String title) {
         return (offerRepository.findByTitle(title).isPresent());
+    }
+
+    public List<GetOfferResponseDto> getAllActiveOffers() {
+        List<Offer> offers = offerRepository.findAllActive();
+        return offers.stream().map(
+                o -> modelMapper.map(o, determineOfferResponseDtoClass(o))
+        ).collect(Collectors.toList());
+    }
+
+    private Class<? extends GetOfferResponseDto> determineOfferResponseDtoClass(Offer offer) {
+        if (offer instanceof StandardOffer) {
+            return GetStandardOfferResponseDto.class;
+        } else if (offer instanceof SpecialOffer) {
+            return GetSpecialOfferResponseDto.class;
+        } else {
+            throw new IllegalArgumentException("Unknown offer type");
+        }
     }
 }
