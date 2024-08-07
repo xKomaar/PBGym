@@ -144,6 +144,11 @@ public class WorkerController {
                 }
             }
         }
+        if(!email.equals(changeEmailRequestDto.getNewEmail())) {
+            if (abstractUserService.userExists(changeEmailRequestDto.getNewEmail())) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            }
+        }
         try {
             AuthenticationResponseDto authenticationResponseDto = abstractUserService.updateEmail(email, changeEmailRequestDto.getNewEmail());
             return ResponseEntity.status(HttpStatus.OK).body(authenticationResponseDto);

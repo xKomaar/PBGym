@@ -490,12 +490,29 @@ public class MemberControllerTest {
 
     @Test
     public void shouldReturnBadRequestWhenNewEmailIsInvalid() throws Exception {
-        String invalidEmail = "invalid-email";
+        ChangeEmailRequestDto changeEmailRequestDto = new ChangeEmailRequestDto();
+        changeEmailRequestDto.setNewEmail("invalid-mail");
+
+        String jsonChangeEmailRequest = objectMapper.writeValueAsString(changeEmailRequestDto);
 
         mockMvc.perform(put("/members/changeEmail/{email}", memberEmail)
                         .header("Authorization", "Bearer " + memberJwt)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(invalidEmail))
+                        .content(jsonChangeEmailRequest))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturnConflictWhenUpdatingAndEmailIsTaken() throws Exception {
+        ChangeEmailRequestDto changeEmailRequestDto = new ChangeEmailRequestDto();
+        changeEmailRequestDto.setNewEmail("admin@admin.com");
+
+        String jsonChangeEmailRequest = objectMapper.writeValueAsString(changeEmailRequestDto);
+
+        mockMvc.perform(put("/members/changeEmail/{email}", memberEmail)
+                        .header("Authorization", "Bearer " + memberJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonChangeEmailRequest))
+                .andExpect(status().isConflict());
     }
 }

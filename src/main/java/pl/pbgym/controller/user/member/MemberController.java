@@ -122,6 +122,11 @@ public class MemberController {
         if (authenticatedUser instanceof Member && !authenticatedUser.getEmail().equals(email)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+        if(!email.equals(changeEmailRequestDto.getNewEmail())) {
+            if (abstractUserService.userExists(changeEmailRequestDto.getNewEmail())) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            }
+        }
         try {
             AuthenticationResponseDto authenticationResponseDto = abstractUserService.updateEmail(email, changeEmailRequestDto.getNewEmail());
             return ResponseEntity.status(HttpStatus.OK).body(authenticationResponseDto);

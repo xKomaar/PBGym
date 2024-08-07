@@ -268,7 +268,6 @@ public class OfferControllerTest {
                 .andReturn();
 
         String jsonResponse = mvcResult.getResponse().getContentAsString();
-        System.out.println(jsonResponse);
         List<GetStandardOfferResponseDto> responseList = objectMapper.readValue(jsonResponse, new TypeReference<>(){});
         assertFalse(responseList.isEmpty());
 
