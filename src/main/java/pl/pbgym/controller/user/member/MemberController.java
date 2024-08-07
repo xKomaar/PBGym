@@ -87,7 +87,8 @@ public class MemberController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Member found and updated successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Member not found", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Member not found", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Email already in use", content = @Content)
     })
     public ResponseEntity<String> changePassword(@PathVariable String email,
                                                  @Valid @RequestBody ChangePasswordRequestDto changePasswordRequestDto) {

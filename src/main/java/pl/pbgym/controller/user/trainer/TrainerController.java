@@ -115,7 +115,8 @@ public class TrainerController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Trainer found and updated successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Trainer not found", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Trainer not found", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Email already in use", content = @Content)
     })
     public ResponseEntity<AuthenticationResponseDto> changeEmail(@PathVariable String email,
                                                                  @Valid @RequestBody ChangeEmailRequestDto changeEmailRequestDto) {
