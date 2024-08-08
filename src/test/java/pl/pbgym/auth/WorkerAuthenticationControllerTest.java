@@ -281,7 +281,7 @@ public class WorkerAuthenticationControllerTest {
     }
 
     @Test
-    public void shouldAuthenticateAndReturnJwt() throws Exception {
+    public void shouldAuthenticateAndReturnJwtAndUserType() throws Exception {
         PostWorkerRequestDto workerRegisterRequest = new PostWorkerRequestDto();
         workerRegisterRequest.setEmail("test4@worker.com");
         workerRegisterRequest.setPassword("password");
@@ -317,6 +317,8 @@ public class WorkerAuthenticationControllerTest {
                         .content(jsonAuth))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.jwt").exists())
-                .andExpect(jsonPath("$.jwt").isString());
+                .andExpect(jsonPath("$.jwt").isString())
+                .andExpect(jsonPath("$.userType").exists())
+                .andExpect(jsonPath("$.userType").value("Worker"));
     }
 }

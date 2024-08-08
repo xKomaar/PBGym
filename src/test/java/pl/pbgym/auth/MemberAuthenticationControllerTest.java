@@ -205,7 +205,7 @@ public class MemberAuthenticationControllerTest {
     }
 
     @Test
-    public void shouldAuthenticateAndReturnJwt() throws Exception {
+    public void shouldAuthenticateAndReturnJwtAndUserType() throws Exception {
         PostMemberRequestDto registerRequest = new PostMemberRequestDto();
         registerRequest.setEmail("test4@member.com");
         registerRequest.setPassword("password");
@@ -237,6 +237,8 @@ public class MemberAuthenticationControllerTest {
                         .content(jsonAuth))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.jwt").exists())
-                .andExpect(jsonPath("$.jwt").isString());
+                .andExpect(jsonPath("$.jwt").isString())
+                .andExpect(jsonPath("$.userType").exists())
+                .andExpect(jsonPath("$.userType").value("Member"));
     }
 }

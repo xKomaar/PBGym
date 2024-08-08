@@ -90,7 +90,7 @@ public class AuthenticationService {
         );
         AbstractUser abstractUser = abstractUserRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return new AuthenticationResponseDto(generateJwtToken(abstractUser));
+        return new AuthenticationResponseDto(generateJwtToken(abstractUser), abstractUser.getClass().getSimpleName());
     }
 
     public String generateJwtToken(AbstractUser abstractUser) {
