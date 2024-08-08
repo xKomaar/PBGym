@@ -44,6 +44,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/offer/public/active").permitAll()
                         .requestMatchers("/offer/**").hasAnyAuthority("ADMIN", "PASS_MANAGEMENT")
                         .requestMatchers("/swagger/**", "/swagger-ui/**", "v3/api-docs/**").permitAll()
+                        .requestMatchers("/ping").permitAll()
                         .anyRequest().authenticated()
                 ).sessionManagement(config -> config
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
