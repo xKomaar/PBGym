@@ -1,5 +1,6 @@
 package pl.pbgym.domain.offer;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -21,8 +22,11 @@ public abstract class Offer {
     @Column(name = "subtitle", nullable = false)
     private String subtitle;
     @Basic
-    @Column(name = "price", nullable = false)
-    private Double price;
+    @Column(name = "monthylPrice", nullable = false)
+    private Double monthlyPrice;
+    @Basic
+    @Column(name = "durationInMonth", nullable = false)
+    private Integer durationInMonths;
     @Basic
     @Column(name = "entryFee", nullable = false)
     private Double entryFee;
@@ -32,6 +36,7 @@ public abstract class Offer {
     @Enumerated(EnumType.STRING)
     private OfferType type;
     @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Nullable
     private List<OfferProperty> properties;
 
     public Offer() {
@@ -69,12 +74,12 @@ public abstract class Offer {
         this.subtitle = subtitle;
     }
 
-    public double getPrice() {
-        return price;
+    public double getMonthlyPrice() {
+        return monthlyPrice;
     }
 
-    public void setPrice(Double price) {
-        this.price = price;
+    public void setMonthlyPrice(Double price) {
+        this.monthlyPrice = price;
     }
 
     public Double getEntryFee() {
@@ -91,6 +96,18 @@ public abstract class Offer {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public Integer getDurationInMonths() {
+        return durationInMonths;
+    }
+
+    public void setDurationInMonths(Integer durationInMonths) {
+        this.durationInMonths = durationInMonths;
+    }
+
+    public void setProperties(List<OfferProperty> properties) {
+        this.properties = properties;
     }
 
     public List<OfferProperty> getProperties() {

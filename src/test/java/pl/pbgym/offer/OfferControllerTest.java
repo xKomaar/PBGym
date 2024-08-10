@@ -1,6 +1,5 @@
 package pl.pbgym.offer;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -41,6 +40,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -71,6 +71,8 @@ public class OfferControllerTest {
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
+        offerRepository.deleteAll();
+        offerPropertyRepository.deleteAll();
         abstractUserRepository.deleteAll();
         addressRepository.deleteAll();
 
@@ -92,7 +94,7 @@ public class OfferControllerTest {
         PostAddressRequestDto postAddressRequestDto = new PostAddressRequestDto();
         postAddressRequestDto.setCity("City");
         postAddressRequestDto.setStreetName("Street");
-        postAddressRequestDto.setBuildingNumber(1);
+        postAddressRequestDto.setBuildingNumber("1");
         postAddressRequestDto.setPostalCode("15-123");
 
         postWorkerRequestDto.setAddress(postAddressRequestDto);
@@ -101,9 +103,6 @@ public class OfferControllerTest {
 
         workerJwt = authenticationService.authenticate(
                 new PostAuthenticationRequestDto("test@worker.com", "12345678")).getJwt();
-
-        offerRepository.deleteAll();
-        offerPropertyRepository.deleteAll();
     }
 
     @Test
@@ -111,9 +110,12 @@ public class OfferControllerTest {
         PostStandardOfferRequestDto postOfferRequestDto = new PostStandardOfferRequestDto();
         postOfferRequestDto.setTitle("Standard Offer");
         postOfferRequestDto.setSubtitle("Standard Subtitle");
-        postOfferRequestDto.setPrice(100.0);
+        postOfferRequestDto.setMonthlyPrice(100.0);
+        postOfferRequestDto.setDurationInMonths(12);
         postOfferRequestDto.setEntryFee(10.0);
         postOfferRequestDto.setActive(true);
+        postOfferRequestDto.setProperties(List.of("Property1", "Property2", "Property3", "Property4"));
+
 
         mockMvc.perform(post("/offer/standard")
                         .header("Authorization", "Bearer " + workerJwt)
@@ -130,12 +132,15 @@ public class OfferControllerTest {
         PostSpecialOfferRequestDto postOfferRequestDto = new PostSpecialOfferRequestDto();
         postOfferRequestDto.setTitle("Special Offer");
         postOfferRequestDto.setSubtitle("Special Subtitle");
-        postOfferRequestDto.setPrice(200.0);
+        postOfferRequestDto.setMonthlyPrice(200.0);
         postOfferRequestDto.setEntryFee(20.0);
+        postOfferRequestDto.setDurationInMonths(12);
         postOfferRequestDto.setActive(true);
         postOfferRequestDto.setSpecialOfferText("Special Text");
         postOfferRequestDto.setBorderText("Border Text");
         postOfferRequestDto.setPreviousPriceInfo("Previous Price");
+        postOfferRequestDto.setProperties(List.of("Property1", "Property2", "Property3", "Property4"));
+
 
         mockMvc.perform(post("/offer/special")
                         .header("Authorization", "Bearer " + workerJwt)
@@ -152,7 +157,8 @@ public class OfferControllerTest {
         PostStandardOfferRequestDto postOfferRequestDto = new PostStandardOfferRequestDto();
         postOfferRequestDto.setTitle("");
         postOfferRequestDto.setSubtitle("Standard Subtitle");
-        postOfferRequestDto.setPrice(100.0);
+        postOfferRequestDto.setMonthlyPrice(100.0);
+        postOfferRequestDto.setDurationInMonths(null);
         postOfferRequestDto.setEntryFee(10.0);
         postOfferRequestDto.setActive(true);
 
@@ -168,8 +174,9 @@ public class OfferControllerTest {
         PostSpecialOfferRequestDto postOfferRequestDto = new PostSpecialOfferRequestDto();
         postOfferRequestDto.setTitle("");
         postOfferRequestDto.setSubtitle("Special Subtitle");
-        postOfferRequestDto.setPrice(200.0);
+        postOfferRequestDto.setMonthlyPrice(200.0);
         postOfferRequestDto.setEntryFee(20.0);
+        postOfferRequestDto.setDurationInMonths(null);
         postOfferRequestDto.setActive(true);
         postOfferRequestDto.setSpecialOfferText("Special Text");
         postOfferRequestDto.setBorderText("Border Text");
@@ -187,8 +194,9 @@ public class OfferControllerTest {
         PostStandardOfferRequestDto postOfferRequestDto = new PostStandardOfferRequestDto();
         postOfferRequestDto.setTitle("Standard Offer");
         postOfferRequestDto.setSubtitle("Standard Subtitle");
-        postOfferRequestDto.setPrice(100.0);
+        postOfferRequestDto.setMonthlyPrice(100.0);
         postOfferRequestDto.setEntryFee(10.0);
+        postOfferRequestDto.setDurationInMonths(6);
         postOfferRequestDto.setActive(true);
         postOfferRequestDto.setProperties(List.of("Property1", "Property2", "Property3", "Property4", "Property5", "Property6", "Property7"));
 
@@ -202,10 +210,11 @@ public class OfferControllerTest {
     @Test
     public void shouldReturnConflictWhenPostStandardAndSpecialOfferWithExistingTitle() throws Exception {
         PostStandardOfferRequestDto postOfferRequestDto = new PostStandardOfferRequestDto();
-        postOfferRequestDto.setTitle("Standard Offer");
+        postOfferRequestDto.setTitle("title");
         postOfferRequestDto.setSubtitle("Standard Subtitle");
-        postOfferRequestDto.setPrice(100.0);
+        postOfferRequestDto.setMonthlyPrice(100.0);
         postOfferRequestDto.setEntryFee(10.0);
+        postOfferRequestDto.setDurationInMonths(6);
         postOfferRequestDto.setActive(true);
         postOfferRequestDto.setProperties(List.of("Property1", "Property2", "Property3", "Property4"));
 
@@ -216,33 +225,36 @@ public class OfferControllerTest {
                 .andExpect(status().isOk());
 
         PostStandardOfferRequestDto postOfferRequestDto2 = new PostStandardOfferRequestDto();
-        postOfferRequestDto2.setTitle("Standard Offer");
+        postOfferRequestDto2.setTitle("title");
         postOfferRequestDto2.setSubtitle("Standard Subtitle");
-        postOfferRequestDto2.setPrice(100.0);
+        postOfferRequestDto2.setMonthlyPrice(100.0);
         postOfferRequestDto2.setEntryFee(10.0);
+        postOfferRequestDto2.setDurationInMonths(6);
         postOfferRequestDto2.setActive(true);
         postOfferRequestDto2.setProperties(List.of("Property1", "Property2", "Property3", "Property4"));
 
         mockMvc.perform(post("/offer/standard")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(postOfferRequestDto)))
+                        .content(objectMapper.writeValueAsString(postOfferRequestDto2)))
                 .andExpect(status().isConflict());
 
         PostSpecialOfferRequestDto postOfferRequestDto3 = new PostSpecialOfferRequestDto();
-        postOfferRequestDto3.setTitle("Special Offer");
+        postOfferRequestDto3.setTitle("title");
         postOfferRequestDto3.setSubtitle("Special Subtitle");
-        postOfferRequestDto3.setPrice(200.0);
+        postOfferRequestDto3.setMonthlyPrice(200.0);
         postOfferRequestDto3.setEntryFee(20.0);
+        postOfferRequestDto3.setDurationInMonths(6);
         postOfferRequestDto3.setActive(true);
         postOfferRequestDto3.setSpecialOfferText("Special Text");
         postOfferRequestDto3.setBorderText("Border Text");
         postOfferRequestDto3.setPreviousPriceInfo("Previous Price");
+        postOfferRequestDto3.setProperties(List.of("Property1", "Property2", "Property3", "Property4"));
 
         mockMvc.perform(post("/offer/special")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(postOfferRequestDto)))
+                        .content(objectMapper.writeValueAsString(postOfferRequestDto3)))
                 .andExpect(status().isConflict());
     }
 
@@ -251,8 +263,10 @@ public class OfferControllerTest {
         PostStandardOfferRequestDto postOfferRequestDto = new PostStandardOfferRequestDto();
         postOfferRequestDto.setTitle("Standard Offer");
         postOfferRequestDto.setSubtitle("Standard Subtitle");
-        postOfferRequestDto.setPrice(100.0);
+        postOfferRequestDto.setMonthlyPrice(100.0);
         postOfferRequestDto.setEntryFee(10.0);
+        postOfferRequestDto.setDurationInMonths(6);
+        postOfferRequestDto.setProperties(List.of("Property1", "Property2", "Property3", "Property4"));
         postOfferRequestDto.setActive(true);
 
         mockMvc.perform(post("/offer/standard")
@@ -261,22 +275,21 @@ public class OfferControllerTest {
                         .content(objectMapper.writeValueAsString(postOfferRequestDto)))
                 .andExpect(status().isOk());
 
-        MvcResult mvcResult = mockMvc.perform(get("/offer/standard")
+        MvcResult mvcResult = mockMvc.perform(get("/offer/standard/Standard Offer")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
 
         String jsonResponse = mvcResult.getResponse().getContentAsString();
-        List<GetStandardOfferResponseDto> responseList = objectMapper.readValue(jsonResponse, new TypeReference<>(){});
-        assertFalse(responseList.isEmpty());
-
-        GetStandardOfferResponseDto response = responseList.get(0);
+        GetStandardOfferResponseDto response = objectMapper.readValue(jsonResponse, GetStandardOfferResponseDto.class);
 
         assertEquals("Standard Offer", response.getTitle());
         assertEquals("Standard Subtitle", response.getSubtitle());
-        assertEquals(100.0, response.getPrice(), 0);
+        assertEquals(100.0, response.getMonthlyPrice(), 0);
         assertEquals(10.0, response.getEntryFee(), 0);
+        assertEquals(6, response.getDurationInMonths(), 0);
+        assertEquals(List.of("Property1", "Property2", "Property3", "Property4"), response.getProperties());
         assertTrue(response.isActive());
     }
 
@@ -285,9 +298,11 @@ public class OfferControllerTest {
         PostSpecialOfferRequestDto postOfferRequestDto = new PostSpecialOfferRequestDto();
         postOfferRequestDto.setTitle("Special Offer");
         postOfferRequestDto.setSubtitle("Special Subtitle");
-        postOfferRequestDto.setPrice(200.0);
+        postOfferRequestDto.setMonthlyPrice(200.0);
         postOfferRequestDto.setEntryFee(20.0);
         postOfferRequestDto.setActive(true);
+        postOfferRequestDto.setProperties(List.of("Property1", "Property2", "Property3", "Property4"));
+        postOfferRequestDto.setDurationInMonths(6);
         postOfferRequestDto.setSpecialOfferText("Special Text");
         postOfferRequestDto.setBorderText("Border Text");
         postOfferRequestDto.setPreviousPriceInfo("Previous Price");
@@ -298,27 +313,25 @@ public class OfferControllerTest {
                         .content(objectMapper.writeValueAsString(postOfferRequestDto)))
                 .andExpect(status().isOk());
 
-        MvcResult mvcResult = mockMvc.perform(get("/offer/special")
+        MvcResult mvcResult = mockMvc.perform(get("/offer/special/Special Offer")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
 
         String jsonResponse = mvcResult.getResponse().getContentAsString();
-        List<GetSpecialOfferResponseDto> responseList = objectMapper.readValue(jsonResponse, new TypeReference<>() {});
-
-        assertFalse(responseList.isEmpty());
-
-        GetSpecialOfferResponseDto response = responseList.get(0);
+        GetSpecialOfferResponseDto response = objectMapper.readValue(jsonResponse, GetSpecialOfferResponseDto.class);
 
         assertEquals("Special Offer", response.getTitle());
         assertEquals("Special Subtitle", response.getSubtitle());
-        assertEquals(200.0, response.getPrice(), 0);
+        assertEquals(200.0, response.getMonthlyPrice(), 0);
         assertEquals(20.0, response.getEntryFee(), 0);
         assertTrue(response.isActive());
+        assertEquals(List.of("Property1", "Property2", "Property3", "Property4"), response.getProperties());
         assertEquals("Special Text", response.getSpecialOfferText());
         assertEquals("Border Text", response.getBorderText());
         assertEquals("Previous Price", response.getPreviousPriceInfo());
+        assertEquals(6, response.getDurationInMonths(), 0);
     }
 
     @Test
@@ -326,9 +339,11 @@ public class OfferControllerTest {
         PostStandardOfferRequestDto standardOffer = new PostStandardOfferRequestDto();
         standardOffer.setTitle("Standard Offer");
         standardOffer.setSubtitle("Standard Subtitle");
-        standardOffer.setPrice(100.0);
+        standardOffer.setMonthlyPrice(100.0);
         standardOffer.setEntryFee(10.0);
+        standardOffer.setDurationInMonths(6);
         standardOffer.setActive(true);
+        standardOffer.setProperties(List.of("Property1", "Property2", "Property3", "Property4"));
 
         mockMvc.perform(post("/offer/standard")
                         .header("Authorization", "Bearer " + workerJwt)
@@ -339,11 +354,13 @@ public class OfferControllerTest {
         PostSpecialOfferRequestDto specialOffer = new PostSpecialOfferRequestDto();
         specialOffer.setTitle("Special Offer");
         specialOffer.setSubtitle("Special Subtitle");
-        specialOffer.setPrice(200.0);
+        specialOffer.setMonthlyPrice(200.0);
         specialOffer.setEntryFee(20.0);
         specialOffer.setActive(true);
+        specialOffer.setDurationInMonths(12);
         specialOffer.setSpecialOfferText("Special Text");
         specialOffer.setBorderText("Border Text");
+        specialOffer.setProperties(List.of("Property1", "Property2", "Property3", "Property4"));
         specialOffer.setPreviousPriceInfo("Previous Price");
 
         mockMvc.perform(post("/offer/special")
@@ -363,8 +380,10 @@ public class OfferControllerTest {
 
         assertEquals(2, offers.size());
         assertEquals("Standard Offer", offers.get(0).getTitle());
+        assertEquals(List.of("Property1", "Property2", "Property3", "Property4"), offers.get(0).getProperties());
         assertEquals("Special Offer", offers.get(1).getTitle());
         assertEquals("Border Text", ((GetSpecialOfferResponseDto)offers.get(1)).getBorderText());
+        assertEquals(List.of("Property1", "Property2", "Property3", "Property4"), offers.get(1).getProperties());
     }
 
     @Test
@@ -372,8 +391,9 @@ public class OfferControllerTest {
         PostStandardOfferRequestDto postOfferRequestDto = new PostStandardOfferRequestDto();
         postOfferRequestDto.setTitle("Standard Offer");
         postOfferRequestDto.setSubtitle("Standard Subtitle");
-        postOfferRequestDto.setPrice(100.0);
+        postOfferRequestDto.setMonthlyPrice(100.0);
         postOfferRequestDto.setEntryFee(10.0);
+        postOfferRequestDto.setDurationInMonths(12);
         postOfferRequestDto.setActive(true);
         postOfferRequestDto.setProperties(List.of("Property1", "Property2", "Property3", "Property4"));
 
@@ -406,8 +426,9 @@ public class OfferControllerTest {
         PostStandardOfferRequestDto postOfferRequestDto = new PostStandardOfferRequestDto();
         postOfferRequestDto.setTitle("Standard Offer");
         postOfferRequestDto.setSubtitle("Standard Subtitle");
-        postOfferRequestDto.setPrice(100.0);
+        postOfferRequestDto.setMonthlyPrice(100.0);
         postOfferRequestDto.setEntryFee(10.0);
+        postOfferRequestDto.setDurationInMonths(12);
         postOfferRequestDto.setActive(true);
 
         mockMvc.perform(post("/offer/standard")
@@ -419,8 +440,9 @@ public class OfferControllerTest {
         PostStandardOfferRequestDto updatedOfferRequestDto = new PostStandardOfferRequestDto();
         updatedOfferRequestDto.setTitle("Updated Standard Offer");
         updatedOfferRequestDto.setSubtitle("Updated Standard Subtitle");
-        updatedOfferRequestDto.setPrice(120.0);
+        updatedOfferRequestDto.setMonthlyPrice(120.0);
         updatedOfferRequestDto.setEntryFee(15.0);
+        updatedOfferRequestDto.setDurationInMonths(18);
         updatedOfferRequestDto.setActive(false);
 
         mockMvc.perform(put("/offer/standard/Standard Offer")
@@ -433,9 +455,10 @@ public class OfferControllerTest {
         assertNotNull(response);
         assertEquals("Updated Standard Offer", response.getTitle());
         assertEquals("Updated Standard Subtitle", response.getSubtitle());
-        assertEquals(120.0, response.getPrice(), 0);
+        assertEquals(120.0, response.getMonthlyPrice(), 0);
         assertEquals(15.0, response.getEntryFee(), 0);
         assertFalse(response.isActive());
+        assertEquals(18, response.getDurationInMonths(),0);
     }
 
     @Test
@@ -443,9 +466,10 @@ public class OfferControllerTest {
         PostSpecialOfferRequestDto postOfferRequestDto = new PostSpecialOfferRequestDto();
         postOfferRequestDto.setTitle("Special Offer");
         postOfferRequestDto.setSubtitle("Special Subtitle");
-        postOfferRequestDto.setPrice(200.0);
+        postOfferRequestDto.setMonthlyPrice(200.0);
         postOfferRequestDto.setEntryFee(20.0);
         postOfferRequestDto.setActive(true);
+        postOfferRequestDto.setDurationInMonths(12);
         postOfferRequestDto.setSpecialOfferText("Special Text");
         postOfferRequestDto.setBorderText("Border Text");
         postOfferRequestDto.setPreviousPriceInfo("Previous Price");
@@ -459,8 +483,9 @@ public class OfferControllerTest {
         PostSpecialOfferRequestDto updatedOfferRequestDto = new PostSpecialOfferRequestDto();
         updatedOfferRequestDto.setTitle("Updated Special Offer");
         updatedOfferRequestDto.setSubtitle("Updated Special Subtitle");
-        updatedOfferRequestDto.setPrice(220.0);
+        updatedOfferRequestDto.setMonthlyPrice(220.0);
         updatedOfferRequestDto.setEntryFee(25.0);
+        updatedOfferRequestDto.setDurationInMonths(18);
         updatedOfferRequestDto.setActive(false);
         updatedOfferRequestDto.setSpecialOfferText("Updated Special Text");
         updatedOfferRequestDto.setBorderText("Updated Border Text");
@@ -476,12 +501,13 @@ public class OfferControllerTest {
         assertNotNull(response);
         assertEquals("Updated Special Offer", response.getTitle());
         assertEquals("Updated Special Subtitle", response.getSubtitle());
-        assertEquals(220.0, response.getPrice(), 0);
+        assertEquals(220.0, response.getMonthlyPrice(), 0);
         assertEquals(25.0, response.getEntryFee(), 0);
         assertFalse(response.isActive());
         assertEquals("Updated Special Text", ((SpecialOffer)response).getSpecialOfferText());
         assertEquals("Updated Border Text", ((SpecialOffer)response).getBorderText());
         assertEquals("Updated Previous Price", ((SpecialOffer)response).getPreviousPriceInfo());
+        assertEquals(18, response.getDurationInMonths(),0);
     }
 
     @Test
@@ -489,8 +515,9 @@ public class OfferControllerTest {
         PostStandardOfferRequestDto firstOfferRequestDto = new PostStandardOfferRequestDto();
         firstOfferRequestDto.setTitle("First Standard Offer");
         firstOfferRequestDto.setSubtitle("First Subtitle");
-        firstOfferRequestDto.setPrice(100.0);
+        firstOfferRequestDto.setMonthlyPrice(100.0);
         firstOfferRequestDto.setEntryFee(10.0);
+        firstOfferRequestDto.setDurationInMonths(12);
         firstOfferRequestDto.setActive(true);
 
         mockMvc.perform(post("/offer/standard")
@@ -502,8 +529,9 @@ public class OfferControllerTest {
         PostStandardOfferRequestDto secondOfferRequestDto = new PostStandardOfferRequestDto();
         secondOfferRequestDto.setTitle("Second Standard Offer");
         secondOfferRequestDto.setSubtitle("Second Subtitle");
-        secondOfferRequestDto.setPrice(150.0);
+        secondOfferRequestDto.setMonthlyPrice(150.0);
         secondOfferRequestDto.setEntryFee(15.0);
+        secondOfferRequestDto.setDurationInMonths(18);
         secondOfferRequestDto.setActive(true);
 
         mockMvc.perform(post("/offer/standard")
@@ -526,8 +554,9 @@ public class OfferControllerTest {
         PostSpecialOfferRequestDto firstOfferRequestDto = new PostSpecialOfferRequestDto();
         firstOfferRequestDto.setTitle("First Special Offer");
         firstOfferRequestDto.setSubtitle("First Subtitle");
-        firstOfferRequestDto.setPrice(200.0);
+        firstOfferRequestDto.setMonthlyPrice(200.0);
         firstOfferRequestDto.setEntryFee(20.0);
+        firstOfferRequestDto.setDurationInMonths(12);
         firstOfferRequestDto.setActive(true);
         firstOfferRequestDto.setSpecialOfferText("First Special Text");
         firstOfferRequestDto.setBorderText("First Border Text");
@@ -542,8 +571,9 @@ public class OfferControllerTest {
         PostSpecialOfferRequestDto secondOfferRequestDto = new PostSpecialOfferRequestDto();
         secondOfferRequestDto.setTitle("Second Special Offer");
         secondOfferRequestDto.setSubtitle("Second Subtitle");
-        secondOfferRequestDto.setPrice(250.0);
+        secondOfferRequestDto.setMonthlyPrice(250.0);
         secondOfferRequestDto.setEntryFee(25.0);
+        secondOfferRequestDto.setDurationInMonths(18);
         secondOfferRequestDto.setActive(true);
         secondOfferRequestDto.setSpecialOfferText("Second Special Text");
         secondOfferRequestDto.setBorderText("Second Border Text");
@@ -583,8 +613,9 @@ public class OfferControllerTest {
         PostStandardOfferRequestDto firstOfferRequestDto = new PostStandardOfferRequestDto();
         firstOfferRequestDto.setTitle("First Standard Offer");
         firstOfferRequestDto.setSubtitle("First Subtitle");
-        firstOfferRequestDto.setPrice(100.0);
+        firstOfferRequestDto.setMonthlyPrice(100.0);
         firstOfferRequestDto.setEntryFee(10.0);
+        firstOfferRequestDto.setDurationInMonths(6);
         firstOfferRequestDto.setActive(true);
 
         mockMvc.perform(post("/offer/standard")
@@ -596,8 +627,9 @@ public class OfferControllerTest {
         PostStandardOfferRequestDto secondOfferRequestDto = new PostStandardOfferRequestDto();
         secondOfferRequestDto.setTitle("Second Standard Offer");
         secondOfferRequestDto.setSubtitle("Second Subtitle");
-        secondOfferRequestDto.setPrice(150.0);
+        secondOfferRequestDto.setMonthlyPrice(150.0);
         secondOfferRequestDto.setEntryFee(15.0);
+        secondOfferRequestDto.setDurationInMonths(12);
         secondOfferRequestDto.setActive(false);
 
         mockMvc.perform(post("/offer/standard")
@@ -609,8 +641,9 @@ public class OfferControllerTest {
         PostSpecialOfferRequestDto thirdOfferRequestDto = new PostSpecialOfferRequestDto();
         thirdOfferRequestDto.setTitle("Special Offer");
         thirdOfferRequestDto.setSubtitle("Special Subtitle");
-        thirdOfferRequestDto.setPrice(200.0);
+        thirdOfferRequestDto.setMonthlyPrice(200.0);
         thirdOfferRequestDto.setEntryFee(20.0);
+        thirdOfferRequestDto.setDurationInMonths(18);
         thirdOfferRequestDto.setActive(true);
         thirdOfferRequestDto.setSpecialOfferText("Special Text");
         thirdOfferRequestDto.setBorderText("Border Text");
@@ -625,8 +658,9 @@ public class OfferControllerTest {
         PostSpecialOfferRequestDto fourthOfferRequestDto = new PostSpecialOfferRequestDto();
         fourthOfferRequestDto.setTitle("Special Offer 2");
         fourthOfferRequestDto.setSubtitle("Special Subtitle");
-        fourthOfferRequestDto.setPrice(200.0);
+        fourthOfferRequestDto.setMonthlyPrice(200.0);
         fourthOfferRequestDto.setEntryFee(20.0);
+        fourthOfferRequestDto.setDurationInMonths(18);
         fourthOfferRequestDto.setActive(false);
         fourthOfferRequestDto.setSpecialOfferText("Special Text");
         fourthOfferRequestDto.setBorderText("Border Text");

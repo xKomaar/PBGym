@@ -15,8 +15,8 @@ public class PostAddressRequestDto {
     private String streetName;
 
     @NotNull
-    @Digits(integer = 5, fraction = 0, message = "Building number must consist of only digits")
-    private Integer buildingNumber;
+    @Pattern(regexp="(?i)^[1-9]\\d*(?: ?(?:[a-z]|[/-] ?\\d+[a-z]?))?$", message = "Building must be valid")
+    private String buildingNumber;
 
     @Nullable
     @Digits(integer = 5, fraction = 0, message = "Building number must consist of only digits")
@@ -45,11 +45,11 @@ public class PostAddressRequestDto {
         this.streetName = streetName;
     }
 
-    public Integer getBuildingNumber() {
+    public String getBuildingNumber() {
         return buildingNumber;
     }
 
-    public void setBuildingNumber(Integer buildingNr) {
+    public void setBuildingNumber(String buildingNr) {
         this.buildingNumber = buildingNr;
     }
 

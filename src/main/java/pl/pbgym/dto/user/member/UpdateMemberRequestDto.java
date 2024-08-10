@@ -2,7 +2,7 @@ package pl.pbgym.dto.user.member;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-import pl.pbgym.dto.user.UpdateAddressRequestDto;
+import pl.pbgym.dto.auth.PostAddressRequestDto;
 
 public class UpdateMemberRequestDto {
 
@@ -10,7 +10,7 @@ public class UpdateMemberRequestDto {
     @Pattern(regexp = "^\\d{9}$", message = "Phone number must consist of 9 digits.")
     private String phoneNumber;
     @Valid
-    private UpdateAddressRequestDto address;
+    private PostAddressRequestDto address;
 
     public UpdateMemberRequestDto() {
     }
@@ -23,11 +23,11 @@ public class UpdateMemberRequestDto {
         this.phoneNumber = phoneNumber;
     }
 
-    public UpdateAddressRequestDto getAddress() {
+    public PostAddressRequestDto getAddress() {
         return address;
     }
 
-    public void setAddress(UpdateAddressRequestDto address) {
+    public void setAddress(PostAddressRequestDto address) {
         this.address = address;
     }
 }

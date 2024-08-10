@@ -150,6 +150,10 @@ public class OfferController {
             @ApiResponse(responseCode = "409", description = "New title is already taken", content = @Content),
     })
     public ResponseEntity<String> updateStandardOffer(@PathVariable String title, @Valid @RequestBody PostStandardOfferRequestDto postStandardOfferRequestDto) {
+        if(!offerService.offerExists(title)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Standard Offer not found with title " + title);
+        }
+
         if(!title.equals(postStandardOfferRequestDto.getTitle())) {
             if(offerService.offerExists(postStandardOfferRequestDto.getTitle())) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("This title is already in use!");
@@ -158,7 +162,7 @@ public class OfferController {
         try {
             offerService.updateStandardOffer(title, postStandardOfferRequestDto);
         } catch (StandardOfferNotFoundException e) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body("Standard Offer not found with title {title}");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Standard Offer not found with title " + title);
         }
         return ResponseEntity.ok("Standard Offer successfully updated.");
     }
@@ -173,6 +177,10 @@ public class OfferController {
             @ApiResponse(responseCode = "409", description = "New title is already taken", content = @Content),
     })
     public ResponseEntity<String> updateSpecialOffer(@PathVariable String title, @Valid @RequestBody PostSpecialOfferRequestDto postSpecialOfferRequestDto) {
+        if(!offerService.offerExists(title)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Standard Offer not found with title " + title);
+        }
+
         if(!title.equals(postSpecialOfferRequestDto.getTitle())) {
             if(offerService.offerExists(postSpecialOfferRequestDto.getTitle())) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("This title is already in use!");
@@ -181,7 +189,7 @@ public class OfferController {
         try {
             offerService.updateSpecialOffer(title, postSpecialOfferRequestDto);
         } catch (SpecialOfferNotFoundException e) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body("Special Offer not found with title {title}");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Special Offer not found with title " + title);
         }
 
         return ResponseEntity.ok("Special Offer successfully updated.");
@@ -200,7 +208,7 @@ public class OfferController {
             offerService.deleteOfferByTitle(title);
             return ResponseEntity.ok().body("Offer successfully deleted.");
         } catch (OfferNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Offer not found with title " + title);
         }
     }
 }

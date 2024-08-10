@@ -1,7 +1,6 @@
 package pl.pbgym.dto.offer;
 
 import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.NotBlank;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -19,12 +18,14 @@ public abstract class PostOfferRequestDto {
     @Size(max = 50, message = "Subtitle can't be longer than 50 characters.")
     @NotEmpty(message = "Subtitle is required.")
     private String subtitle;
-    @NotNull(message = "Price is required.")
-    private Double price;
+    @NotNull(message = "Monthly is required.")
+    private Double monthlyPrice;
     @NotNull(message = "Entry Fee is required.")
     private Double entryFee;
     @NotNull(message = "isActive is required.")
     private boolean isActive;
+    @NotNull(message = "Duration in months is required.")
+    private Integer durationInMonths;
     @Nullable
     @ListSize(maxCount = 6)
     private List<String> properties;
@@ -57,12 +58,12 @@ public abstract class PostOfferRequestDto {
         this.subtitle = subtitle;
     }
 
-    public Double getPrice() {
-        return price;
+    public Double getMonthlyPrice() {
+        return monthlyPrice;
     }
 
-    public void setPrice(Double price) {
-        this.price = price;
+    public void setMonthlyPrice(Double monthlyPrice) {
+        this.monthlyPrice = monthlyPrice;
     }
 
     public Double getEntryFee() {
@@ -79,5 +80,13 @@ public abstract class PostOfferRequestDto {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public Integer getDurationInMonths() {
+        return durationInMonths;
+    }
+
+    public void setDurationInMonths(Integer durationInMonths) {
+        this.durationInMonths = durationInMonths;
     }
 }

@@ -1,77 +1,10 @@
 package pl.pbgym.dto.offer.standard;
 
-import pl.pbgym.domain.offer.OfferType;
 import pl.pbgym.dto.offer.GetOfferResponseDto;
 
 import java.util.List;
 
 public class GetStandardOfferResponseDto extends GetOfferResponseDto {
-    private Long id;
-    private String title;
-    private String subtitle;
-    private Double price;
-    private Double entryFee;
-    private boolean isActive;
-    private List<String> properties;
-
-
     public GetStandardOfferResponseDto() {
-    }
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getSubtitle() {
-        return subtitle;
-    }
-
-    public void setSubtitle(String subtitle) {
-        this.subtitle = subtitle;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Double getEntryFee() {
-        return entryFee;
-    }
-
-    public void setEntryFee(Double entryFee) {
-        this.entryFee = entryFee;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    public List<String> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(List<String> properties) {
-        this.properties = properties;
     }
 }

@@ -70,7 +70,7 @@ public class MemberAuthenticationControllerTest {
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
         address.setStreetName("Street");
-        address.setBuildingNumber(1);
+        address.setBuildingNumber("1A");
         address.setPostalCode("15-123");
 
         memberRegisterRequest.setAddress(address);
@@ -106,7 +106,7 @@ public class MemberAuthenticationControllerTest {
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
         address.setStreetName("Street");
-        address.setBuildingNumber(1);
+        address.setBuildingNumber("1");
         address.setPostalCode("15-123");
 
         memberRegisterRequest1.setAddress(address);
@@ -139,7 +139,7 @@ public class MemberAuthenticationControllerTest {
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("i");
         address.setStreetName("n");
-        address.setBuildingNumber(0);
+        address.setBuildingNumber("0");
         address.setPostalCode("1532-123");
 
         memberRegisterRequest.setAddress(address);
@@ -166,7 +166,7 @@ public class MemberAuthenticationControllerTest {
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("");
         address.setStreetName("   ");
-        address.setBuildingNumber(0);
+        address.setBuildingNumber("0");
         address.setPostalCode("1532-123");
 
         memberRegisterRequest.setAddress(address);
@@ -220,7 +220,7 @@ public class MemberAuthenticationControllerTest {
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
         address.setStreetName("Street");
-        address.setBuildingNumber(1);
+        address.setBuildingNumber("1");
         address.setPostalCode("15-123");
 
         registerRequest.setAddress(address);

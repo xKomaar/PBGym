@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import pl.pbgym.domain.user.Permissions;
-import pl.pbgym.dto.user.UpdateAddressRequestDto;
 import pl.pbgym.dto.auth.*;
 import pl.pbgym.dto.user.worker.GetWorkerResponseDto;
 import pl.pbgym.dto.user.worker.UpdateWorkerRequestDto;
@@ -76,7 +75,7 @@ public class WorkerControllerTest {
         PostAddressRequestDto postAddressRequestDto = new PostAddressRequestDto();
         postAddressRequestDto.setCity("City");
         postAddressRequestDto.setStreetName("Street");
-        postAddressRequestDto.setBuildingNumber(1);
+        postAddressRequestDto.setBuildingNumber("1 B");
         postAddressRequestDto.setPostalCode("15-123");
 
         postWorkerRequestDto.setAddress(postAddressRequestDto);
@@ -86,7 +85,7 @@ public class WorkerControllerTest {
         PostAddressRequestDto postAddressRequestDto2 = new PostAddressRequestDto();
         postAddressRequestDto2.setCity("City");
         postAddressRequestDto2.setStreetName("Street");
-        postAddressRequestDto2.setBuildingNumber(1);
+        postAddressRequestDto2.setBuildingNumber("1");
         postAddressRequestDto2.setPostalCode("15-123");
 
         PostWorkerRequestDto adminWorkerRequest = new PostWorkerRequestDto();
@@ -167,10 +166,10 @@ public class WorkerControllerTest {
         UpdateWorkerRequestDto updateRequest = new UpdateWorkerRequestDto();
         updateRequest.setPhoneNumber("987654321");
 
-        UpdateAddressRequestDto updatedAddress = new UpdateAddressRequestDto();
+        PostAddressRequestDto updatedAddress = new PostAddressRequestDto();
         updatedAddress.setCity("WorkerCity");
         updatedAddress.setStreetName("WorkerStreet");
-        updatedAddress.setBuildingNumber(2);
+        updatedAddress.setBuildingNumber("2");
         updatedAddress.setPostalCode("11-111");
 
         updateRequest.setAddress(updatedAddress);
@@ -202,10 +201,10 @@ public class WorkerControllerTest {
         UpdateWorkerRequestDto updateRequest = new UpdateWorkerRequestDto();
         updateRequest.setPhoneNumber("123123123");
 
-        UpdateAddressRequestDto updatedAddress = new UpdateAddressRequestDto();
+        PostAddressRequestDto updatedAddress = new PostAddressRequestDto();
         updatedAddress.setCity("UpdatedCity");
         updatedAddress.setStreetName("UpdatedStreet");
-        updatedAddress.setBuildingNumber(3);
+        updatedAddress.setBuildingNumber("3");
         updatedAddress.setPostalCode("17-123");
 
         updateRequest.setAddress(updatedAddress);
@@ -237,10 +236,10 @@ public class WorkerControllerTest {
         UpdateWorkerRequestDto updateRequest = new UpdateWorkerRequestDto();
         updateRequest.setPhoneNumber("111111111");
 
-        UpdateAddressRequestDto updatedAddress = new UpdateAddressRequestDto();
+        PostAddressRequestDto updatedAddress = new PostAddressRequestDto();
         updatedAddress.setCity("NonExistingCity");
         updatedAddress.setStreetName("NonExistingStreet");
-        updatedAddress.setBuildingNumber(5);
+        updatedAddress.setBuildingNumber("5");
         updatedAddress.setPostalCode("19-123");
 
         updateRequest.setAddress(updatedAddress);
@@ -259,10 +258,10 @@ public class WorkerControllerTest {
         UpdateWorkerRequestDto updateRequest = new UpdateWorkerRequestDto();
         updateRequest.setPhoneNumber("111111111");
 
-        UpdateAddressRequestDto updatedAddress = new UpdateAddressRequestDto();
+        PostAddressRequestDto updatedAddress = new PostAddressRequestDto();
         updatedAddress.setCity("OtherCity");
         updatedAddress.setStreetName("OtherStreet");
-        updatedAddress.setBuildingNumber(5);
+        updatedAddress.setBuildingNumber("5");
         updatedAddress.setPostalCode("19-123");
 
         updateRequest.setAddress(updatedAddress);
@@ -281,10 +280,10 @@ public class WorkerControllerTest {
         UpdateWorkerRequestDto invalidAddressRequest = new UpdateWorkerRequestDto();
         invalidAddressRequest.setPhoneNumber("123456789");
 
-        UpdateAddressRequestDto invalidAddress = new UpdateAddressRequestDto();
+        PostAddressRequestDto invalidAddress = new PostAddressRequestDto();
         invalidAddress.setCity("");
         invalidAddress.setStreetName("Street");
-        invalidAddress.setBuildingNumber(1);
+        invalidAddress.setBuildingNumber("1");
         invalidAddress.setPostalCode("15-123");
 
         invalidAddressRequest.setAddress(invalidAddress);

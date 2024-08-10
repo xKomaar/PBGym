@@ -27,11 +27,11 @@ public class OfferProperty {
         this.id = id;
     }
 
-    public String get() {
+    public String getProperty() {
         return property;
     }
 
-    public void set(String property) {
+    public void setProperty(String property) {
         this.property = property;
     }
 

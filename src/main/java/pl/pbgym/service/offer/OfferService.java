@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.pbgym.domain.offer.*;
 import pl.pbgym.dto.offer.GetOfferResponseDto;
+import pl.pbgym.dto.offer.PostOfferRequestDto;
 import pl.pbgym.dto.offer.special.GetSpecialOfferResponseDto;
 import pl.pbgym.dto.offer.special.PostSpecialOfferRequestDto;
 import pl.pbgym.dto.offer.standard.GetStandardOfferResponseDto;
@@ -20,7 +21,6 @@ import pl.pbgym.repository.offer.StandardOfferRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class OfferService {
@@ -65,55 +65,92 @@ public class OfferService {
 
     public List<GetOfferResponseDto> getAllOffers() {
         List<Offer> offers = offerRepository.findAll();
-        return offers.stream().map(
-                o -> modelMapper.map(o, determineOfferResponseDtoClass(o))
-        ).collect(Collectors.toList());
+        return mapOfferListToGetOfferResponseDtoList(offers);
+    }
+
+    public List<GetOfferResponseDto> getAllActiveOffers() {
+        List<Offer> offers = offerRepository.findAllActive();
+        return mapOfferListToGetOfferResponseDtoList(offers);
+    }
+
+    public List<GetOfferResponseDto> mapOfferListToGetOfferResponseDtoList(List<Offer> offers) {
+        List<GetOfferResponseDto> dtoList = new ArrayList<>();
+
+        for(Offer offer : offers) {
+            GetOfferResponseDto dto = modelMapper.map(offer, determineOfferResponseDtoClass(offer));
+            dto.setProperties(mapOfferProperties(offer.getProperties()));
+            dtoList.add(dto);
+        }
+
+        return dtoList;
     }
 
     public List<GetStandardOfferResponseDto> getAllStandardOffers() {
         List<StandardOffer> offers = standardOfferRepository.findAll();
+        List<GetStandardOfferResponseDto> dtoList = new ArrayList<>();
 
-        return offers.stream().map(
-                o -> modelMapper.map(o, GetStandardOfferResponseDto.class)).toList();
+        for(StandardOffer offer : offers) {
+            GetStandardOfferResponseDto dto = modelMapper.map(offer, GetStandardOfferResponseDto.class);
+            dto.setProperties(mapOfferProperties(offer.getProperties()));
+            dtoList.add(dto);
+        }
+
+        return dtoList;
     }
 
     public List<GetSpecialOfferResponseDto> getAllSpecialOffers() {
         List<SpecialOffer> offers = specialOfferRepository.findAll();
+        List<GetSpecialOfferResponseDto> dtoList = new ArrayList<>();
 
-        return offers.stream().map(
-                o -> modelMapper.map(o, GetSpecialOfferResponseDto.class)).toList();
+        for(SpecialOffer offer : offers) {
+            GetSpecialOfferResponseDto dto = modelMapper.map(offer, GetSpecialOfferResponseDto.class);
+            dto.setProperties(mapOfferProperties(offer.getProperties()));
+            dtoList.add(dto);
+        }
+
+        return dtoList;
     }
 
-    public void saveStandardOffer(PostStandardOfferRequestDto postStandardOfferRequestDto) {
-        StandardOffer standardOffer = modelMapper.map(postStandardOfferRequestDto, StandardOffer.class);
+    public void saveStandardOffer(PostStandardOfferRequestDto dto) {
+        StandardOffer standardOffer = new StandardOffer();
+        this.mapOfferToPostOfferRequestDto(standardOffer, dto);
+
         standardOfferRepository.save(standardOffer);
-        saveOfferProperties(postStandardOfferRequestDto.getProperties(), standardOffer);
+        saveOfferProperties(dto.getProperties(), standardOffer);
     }
 
-    public void saveSpecialOffer(PostSpecialOfferRequestDto postSpecialOfferRequestDto) {
-        SpecialOffer specialOffer = modelMapper.map(postSpecialOfferRequestDto, SpecialOffer.class);
+    public void saveSpecialOffer(PostSpecialOfferRequestDto dto) {
+        SpecialOffer specialOffer = new SpecialOffer();
+        this.mapOfferToPostOfferRequestDto(specialOffer, dto);
+        specialOffer.setSpecialOfferText(dto.getSpecialOfferText());
+        specialOffer.setBorderText(dto.getBorderText());
+        specialOffer.setPreviousPriceInfo(dto.getPreviousPriceInfo());
+
         specialOfferRepository.save(specialOffer);
-        saveOfferProperties(postSpecialOfferRequestDto.getProperties(), specialOffer);
+        saveOfferProperties(dto.getProperties(), specialOffer);
     }
 
-    public void updateStandardOffer(String title, PostStandardOfferRequestDto postStandardOfferRequestDto) {
+    public void updateStandardOffer(String title, PostStandardOfferRequestDto dto) {
         Optional<StandardOffer> standardOffer = standardOfferRepository.findByTitle(title);
         standardOffer.ifPresentOrElse(offer -> {
-                    modelMapper.map(postStandardOfferRequestDto, offer);
+                    this.mapOfferToPostOfferRequestDto(offer, dto);
                     offerPropertyRepository.deleteAll(offer.getProperties());
-                    saveOfferProperties(postStandardOfferRequestDto.getProperties(), offer);
+                    saveOfferProperties(dto.getProperties(), offer);
                 },
                 () -> {
                     throw new StandardOfferNotFoundException("Standard Offer not found with title: " + title);
                 });
     }
 
-    public void updateSpecialOffer(String title, PostSpecialOfferRequestDto postSpecialOfferRequestDto) {
+    public void updateSpecialOffer(String title, PostSpecialOfferRequestDto dto) {
         Optional<SpecialOffer> specialOffer = specialOfferRepository.findByTitle(title);
         specialOffer.ifPresentOrElse(offer -> {
-                    modelMapper.map(postSpecialOfferRequestDto, offer);
+                    this.mapOfferToPostOfferRequestDto(offer, dto);
+                    offer.setSpecialOfferText(dto.getSpecialOfferText());
+                    offer.setBorderText(dto.getBorderText());
+                    offer.setPreviousPriceInfo(dto.getPreviousPriceInfo());
                     offerPropertyRepository.deleteAll(offer.getProperties());
-                    saveOfferProperties(postSpecialOfferRequestDto.getProperties(), offer);
+                    saveOfferProperties(dto.getProperties(), offer);
                 },
                 () -> {
                     throw new SpecialOfferNotFoundException("Special Offer not found with title: " + title);
@@ -132,31 +169,33 @@ public class OfferService {
         if(properties != null && !properties.isEmpty()) {
             for(String p : properties) {
                 OfferProperty offerProperty = new OfferProperty();
-                offerProperty.set(p);
+                offerProperty.setProperty(p);
                 offerProperty.setOffer(offer);
                 offerPropertyRepository.save(offerProperty);
             }
         }
     }
 
+    protected void mapOfferToPostOfferRequestDto(Offer offer, PostOfferRequestDto dto) {
+        offer.setTitle(dto.getTitle());
+        offer.setSubtitle(dto.getSubtitle());
+        offer.setMonthlyPrice(dto.getMonthlyPrice());
+        offer.setEntryFee(dto.getEntryFee());
+        offer.setDurationInMonths(dto.getDurationInMonths());
+        offer.setActive(dto.isActive());
+    }
+
     protected List<String> mapOfferProperties (List<OfferProperty> offerProperties) {
         List<String> mappedProperties = new ArrayList<>();
         if(offerProperties != null && !offerProperties.isEmpty()) {
             for(OfferProperty p : offerProperties) {
-                mappedProperties.add(p.get());
+                mappedProperties.add(p.getProperty());
             }
         }
         return mappedProperties;
     }
     public boolean offerExists(String title) {
         return (offerRepository.findByTitle(title).isPresent());
-    }
-
-    public List<GetOfferResponseDto> getAllActiveOffers() {
-        List<Offer> offers = offerRepository.findAllActive();
-        return offers.stream().map(
-                o -> modelMapper.map(o, determineOfferResponseDtoClass(o))
-        ).collect(Collectors.toList());
     }
 
     private Class<? extends GetOfferResponseDto> determineOfferResponseDtoClass(Offer offer) {

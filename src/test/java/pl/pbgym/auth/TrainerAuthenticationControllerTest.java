@@ -73,7 +73,7 @@ public class TrainerAuthenticationControllerTest {
         PostAddressRequestDto postAddressRequestDto = new PostAddressRequestDto();
         postAddressRequestDto.setCity("City");
         postAddressRequestDto.setStreetName("Street");
-        postAddressRequestDto.setBuildingNumber(1);
+        postAddressRequestDto.setBuildingNumber("1 A");
         postAddressRequestDto.setPostalCode("15-123");
 
         PostWorkerRequestDto adminWorkerRequest = new PostWorkerRequestDto();
@@ -111,7 +111,7 @@ public class TrainerAuthenticationControllerTest {
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
         address.setStreetName("Street");
-        address.setBuildingNumber(1);
+        address.setBuildingNumber("1A");
         address.setPostalCode("15-123");
 
         trainerRegisterRequest.setAddress(address);
@@ -140,7 +140,7 @@ public class TrainerAuthenticationControllerTest {
         PostAddressRequestDto address1 = new PostAddressRequestDto();
         address1.setCity("City");
         address1.setStreetName("Street");
-        address1.setBuildingNumber(1);
+        address1.setBuildingNumber("1 A");
         address1.setPostalCode("15-123");
 
         trainerRegisterRequest1.setAddress(address1);
@@ -157,7 +157,7 @@ public class TrainerAuthenticationControllerTest {
         PostAddressRequestDto address2 = new PostAddressRequestDto();
         address2.setCity("City");
         address2.setStreetName("Street");
-        address2.setBuildingNumber(1);
+        address2.setBuildingNumber("1 A");
         address2.setPostalCode("15-123");
 
         trainerRegisterRequest2.setAddress(address2);
@@ -193,7 +193,7 @@ public class TrainerAuthenticationControllerTest {
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("i");
         address.setStreetName("n");
-        address.setBuildingNumber(0);
+        address.setBuildingNumber("0");
         address.setPostalCode("1532-123");
 
         trainerRegisterRequest.setAddress(address);
@@ -221,7 +221,7 @@ public class TrainerAuthenticationControllerTest {
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("");
         address.setStreetName("   ");
-        address.setBuildingNumber(0);
+        address.setBuildingNumber("0");
         address.setPostalCode("1532-123");
 
         trainerRegisterRequest.setAddress(address);
@@ -277,7 +277,7 @@ public class TrainerAuthenticationControllerTest {
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
         address.setStreetName("Street");
-        address.setBuildingNumber(1);
+        address.setBuildingNumber("1A");
         address.setPostalCode("15-123");
 
         trainerRegisterRequest.setAddress(address);

@@ -21,7 +21,7 @@ public class Address {
     private String streetName;
 
     @Column(name = "building_number", nullable = false)
-    private Integer buildingNumber;
+    private String buildingNumber;
 
     @Nullable
     @Column(name = "apartment_number")
@@ -57,11 +57,11 @@ public class Address {
         this.streetName = streetName;
     }
 
-    public Integer getBuildingNumber() {
+    public String getBuildingNumber() {
         return buildingNumber;
     }
 
-    public void setBuildingNumber(Integer buildingNr) {
+    public void setBuildingNumber(String buildingNr) {
         this.buildingNumber = buildingNr;
     }
 

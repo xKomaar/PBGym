@@ -4,7 +4,7 @@ public class GetAddressResponseDto {
     private Long id;
     private String city;
     private String streetName;
-    private Integer buildingNumber;
+    private String buildingNumber;
     private Integer apartmentNumber;
     private String postalCode;
 
@@ -35,11 +35,11 @@ public class GetAddressResponseDto {
         this.streetName = streetName;
     }
 
-    public Integer getBuildingNumber() {
+    public String getBuildingNumber() {
         return buildingNumber;
     }
 
-    public void setBuildingNumber(Integer buildingNumber) {
+    public void setBuildingNumber(String buildingNumber) {
         this.buildingNumber = buildingNumber;
     }
 

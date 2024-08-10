@@ -71,7 +71,7 @@ public class WorkerAuthenticationControllerTest {
         PostAddressRequestDto postAddressRequestDto = new PostAddressRequestDto();
         postAddressRequestDto.setCity("City");
         postAddressRequestDto.setStreetName("Street");
-        postAddressRequestDto.setBuildingNumber(1);
+        postAddressRequestDto.setBuildingNumber("3");
         postAddressRequestDto.setPostalCode("15-123");
 
         PostWorkerRequestDto adminWorkerRequest = new PostWorkerRequestDto();
@@ -113,7 +113,7 @@ public class WorkerAuthenticationControllerTest {
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
         address.setStreetName("Street");
-        address.setBuildingNumber(1);
+        address.setBuildingNumber("1");
         address.setPostalCode("15-123");
 
         workerRegisterRequest.setAddress(address);
@@ -145,7 +145,7 @@ public class WorkerAuthenticationControllerTest {
         PostAddressRequestDto address1 = new PostAddressRequestDto();
         address1.setCity("City");
         address1.setStreetName("Street");
-        address1.setBuildingNumber(1);
+        address1.setBuildingNumber("1");
         address1.setPostalCode("15-123");
 
         workerRegisterRequest1.setAddress(address1);
@@ -165,7 +165,7 @@ public class WorkerAuthenticationControllerTest {
         PostAddressRequestDto address2 = new PostAddressRequestDto();
         address2.setCity("City");
         address2.setStreetName("Street");
-        address2.setBuildingNumber(1);
+        address2.setBuildingNumber("1");
         address2.setPostalCode("15-123");
 
         workerRegisterRequest2.setAddress(address2);
@@ -204,7 +204,7 @@ public class WorkerAuthenticationControllerTest {
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("i");
         address.setStreetName("n");
-        address.setBuildingNumber(0);
+        address.setBuildingNumber("0");
         address.setPostalCode("1532-123");
 
         workerRegisterRequest.setAddress(address);
@@ -235,7 +235,7 @@ public class WorkerAuthenticationControllerTest {
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("");
         address.setStreetName("   ");
-        address.setBuildingNumber(0);
+        address.setBuildingNumber("0");
         address.setPostalCode("1532-123");
 
         workerRegisterRequest.setAddress(address);
@@ -297,7 +297,7 @@ public class WorkerAuthenticationControllerTest {
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
         address.setStreetName("Street");
-        address.setBuildingNumber(1);
+        address.setBuildingNumber("1");
         address.setPostalCode("15-123");
 
         workerRegisterRequest.setAddress(address);

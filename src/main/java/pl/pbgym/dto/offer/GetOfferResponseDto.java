@@ -22,11 +22,12 @@ public class GetOfferResponseDto {
     private Long id;
     private String title;
     private String subtitle;
-    private Double price;
+    private Double monthlyPrice;
     private Double entryFee;
     private boolean isActive;
     @JsonIgnore
     private OfferType type;
+    private Integer durationInMonths;
     private List<String> properties;
 
 
@@ -58,12 +59,12 @@ public class GetOfferResponseDto {
         this.subtitle = subtitle;
     }
 
-    public Double getPrice() {
-        return price;
+    public Double getMonthlyPrice() {
+        return monthlyPrice;
     }
 
-    public void setPrice(Double price) {
-        this.price = price;
+    public void setMonthlyPrice(Double monthlyPrice) {
+        this.monthlyPrice = monthlyPrice;
     }
 
     public Double getEntryFee() {
@@ -96,5 +97,13 @@ public class GetOfferResponseDto {
 
     public void setProperties(List<String> properties) {
         this.properties = properties;
+    }
+
+    public Integer getDurationInMonths() {
+        return durationInMonths;
+    }
+
+    public void setDurationInMonths(Integer durationInMonths) {
+        this.durationInMonths = durationInMonths;
     }
 }

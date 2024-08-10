@@ -4,7 +4,7 @@ import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-import pl.pbgym.dto.user.UpdateAddressRequestDto;
+import pl.pbgym.dto.auth.PostAddressRequestDto;
 
 public class UpdateTrainerRequestDto {
 
@@ -13,7 +13,7 @@ public class UpdateTrainerRequestDto {
     private String phoneNumber;
 
     @Valid
-    private UpdateAddressRequestDto address;
+    private PostAddressRequestDto address;
 
     @Basic
     @Column(name="description")
@@ -33,11 +33,11 @@ public class UpdateTrainerRequestDto {
         this.phoneNumber = phoneNumber;
     }
 
-    public UpdateAddressRequestDto getAddress() {
+    public PostAddressRequestDto getAddress() {
         return address;
     }
 
-    public void setAddress(UpdateAddressRequestDto address) {
+    public void setAddress(PostAddressRequestDto address) {
         this.address = address;
     }
 
