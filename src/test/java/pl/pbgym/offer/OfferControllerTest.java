@@ -117,7 +117,7 @@ public class OfferControllerTest {
         postOfferRequestDto.setProperties(List.of("Property1", "Property2", "Property3", "Property4"));
 
 
-        mockMvc.perform(post("/offer/standard")
+        mockMvc.perform(post("/offers/standard")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postOfferRequestDto)))
@@ -142,7 +142,7 @@ public class OfferControllerTest {
         postOfferRequestDto.setProperties(List.of("Property1", "Property2", "Property3", "Property4"));
 
 
-        mockMvc.perform(post("/offer/special")
+        mockMvc.perform(post("/offers/special")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postOfferRequestDto)))
@@ -162,7 +162,7 @@ public class OfferControllerTest {
         postOfferRequestDto.setEntryFee(10.0);
         postOfferRequestDto.setActive(true);
 
-        mockMvc.perform(post("/offer/standard")
+        mockMvc.perform(post("/offers/standard")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postOfferRequestDto)))
@@ -182,7 +182,7 @@ public class OfferControllerTest {
         postOfferRequestDto.setBorderText("Border Text");
         postOfferRequestDto.setPreviousPriceInfo("Previous Price");
 
-        mockMvc.perform(post("/offer/special")
+        mockMvc.perform(post("/offers/special")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postOfferRequestDto)))
@@ -200,7 +200,7 @@ public class OfferControllerTest {
         postOfferRequestDto.setActive(true);
         postOfferRequestDto.setProperties(List.of("Property1", "Property2", "Property3", "Property4", "Property5", "Property6", "Property7"));
 
-        mockMvc.perform(post("/offer/standard")
+        mockMvc.perform(post("/offers/standard")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postOfferRequestDto)))
@@ -218,7 +218,7 @@ public class OfferControllerTest {
         postOfferRequestDto.setActive(true);
         postOfferRequestDto.setProperties(List.of("Property1", "Property2", "Property3", "Property4"));
 
-        mockMvc.perform(post("/offer/standard")
+        mockMvc.perform(post("/offers/standard")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postOfferRequestDto)))
@@ -233,7 +233,7 @@ public class OfferControllerTest {
         postOfferRequestDto2.setActive(true);
         postOfferRequestDto2.setProperties(List.of("Property1", "Property2", "Property3", "Property4"));
 
-        mockMvc.perform(post("/offer/standard")
+        mockMvc.perform(post("/offers/standard")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postOfferRequestDto2)))
@@ -251,7 +251,7 @@ public class OfferControllerTest {
         postOfferRequestDto3.setPreviousPriceInfo("Previous Price");
         postOfferRequestDto3.setProperties(List.of("Property1", "Property2", "Property3", "Property4"));
 
-        mockMvc.perform(post("/offer/special")
+        mockMvc.perform(post("/offers/special")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postOfferRequestDto3)))
@@ -269,13 +269,13 @@ public class OfferControllerTest {
         postOfferRequestDto.setProperties(List.of("Property1", "Property2", "Property3", "Property4"));
         postOfferRequestDto.setActive(true);
 
-        mockMvc.perform(post("/offer/standard")
+        mockMvc.perform(post("/offers/standard")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postOfferRequestDto)))
                 .andExpect(status().isOk());
 
-        MvcResult mvcResult = mockMvc.perform(get("/offer/standard/Standard Offer")
+        MvcResult mvcResult = mockMvc.perform(get("/offers/standard/Standard Offer")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -307,13 +307,13 @@ public class OfferControllerTest {
         postOfferRequestDto.setBorderText("Border Text");
         postOfferRequestDto.setPreviousPriceInfo("Previous Price");
 
-        mockMvc.perform(post("/offer/special")
+        mockMvc.perform(post("/offers/special")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postOfferRequestDto)))
                 .andExpect(status().isOk());
 
-        MvcResult mvcResult = mockMvc.perform(get("/offer/special/Special Offer")
+        MvcResult mvcResult = mockMvc.perform(get("/offers/special/Special Offer")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -345,7 +345,7 @@ public class OfferControllerTest {
         standardOffer.setActive(true);
         standardOffer.setProperties(List.of("Property1", "Property2", "Property3", "Property4"));
 
-        mockMvc.perform(post("/offer/standard")
+        mockMvc.perform(post("/offers/standard")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(standardOffer)))
@@ -363,13 +363,13 @@ public class OfferControllerTest {
         specialOffer.setProperties(List.of("Property1", "Property2", "Property3", "Property4"));
         specialOffer.setPreviousPriceInfo("Previous Price");
 
-        mockMvc.perform(post("/offer/special")
+        mockMvc.perform(post("/offers/special")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(specialOffer)))
                 .andExpect(status().isOk());
 
-        MvcResult mvcResult = mockMvc.perform(get("/offer/")
+        MvcResult mvcResult = mockMvc.perform(get("/offers/")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -397,19 +397,19 @@ public class OfferControllerTest {
         postOfferRequestDto.setActive(true);
         postOfferRequestDto.setProperties(List.of("Property1", "Property2", "Property3", "Property4"));
 
-        mockMvc.perform(post("/offer/standard")
+        mockMvc.perform(post("/offers/standard")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postOfferRequestDto)))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(delete("/offer/Standard Offer")
+        mockMvc.perform(delete("/offers/Standard Offer")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postOfferRequestDto)))
                 .andExpect(status().isOk());
 
-        MvcResult mvcResult = mockMvc.perform(get("/offer/")
+        MvcResult mvcResult = mockMvc.perform(get("/offers/")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -431,7 +431,7 @@ public class OfferControllerTest {
         postOfferRequestDto.setDurationInMonths(12);
         postOfferRequestDto.setActive(true);
 
-        mockMvc.perform(post("/offer/standard")
+        mockMvc.perform(post("/offers/standard")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postOfferRequestDto)))
@@ -445,7 +445,7 @@ public class OfferControllerTest {
         updatedOfferRequestDto.setDurationInMonths(18);
         updatedOfferRequestDto.setActive(false);
 
-        mockMvc.perform(put("/offer/standard/Standard Offer")
+        mockMvc.perform(put("/offers/standard/Standard Offer")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updatedOfferRequestDto)))
@@ -474,7 +474,7 @@ public class OfferControllerTest {
         postOfferRequestDto.setBorderText("Border Text");
         postOfferRequestDto.setPreviousPriceInfo("Previous Price");
 
-        mockMvc.perform(post("/offer/special")
+        mockMvc.perform(post("/offers/special")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postOfferRequestDto)))
@@ -491,7 +491,7 @@ public class OfferControllerTest {
         updatedOfferRequestDto.setBorderText("Updated Border Text");
         updatedOfferRequestDto.setPreviousPriceInfo("Updated Previous Price");
 
-        mockMvc.perform(put("/offer/special/Special Offer")
+        mockMvc.perform(put("/offers/special/Special Offer")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updatedOfferRequestDto)))
@@ -520,7 +520,7 @@ public class OfferControllerTest {
         firstOfferRequestDto.setDurationInMonths(12);
         firstOfferRequestDto.setActive(true);
 
-        mockMvc.perform(post("/offer/standard")
+        mockMvc.perform(post("/offers/standard")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(firstOfferRequestDto)))
@@ -534,7 +534,7 @@ public class OfferControllerTest {
         secondOfferRequestDto.setDurationInMonths(18);
         secondOfferRequestDto.setActive(true);
 
-        mockMvc.perform(post("/offer/standard")
+        mockMvc.perform(post("/offers/standard")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(secondOfferRequestDto)))
@@ -542,7 +542,7 @@ public class OfferControllerTest {
 
         secondOfferRequestDto.setTitle("First Standard Offer");
 
-        mockMvc.perform(put("/offer/standard/Second Standard Offer")
+        mockMvc.perform(put("/offers/standard/Second Standard Offer")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(secondOfferRequestDto)))
@@ -562,7 +562,7 @@ public class OfferControllerTest {
         firstOfferRequestDto.setBorderText("First Border Text");
         firstOfferRequestDto.setPreviousPriceInfo("First Previous Price");
 
-        mockMvc.perform(post("/offer/special")
+        mockMvc.perform(post("/offers/special")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(firstOfferRequestDto)))
@@ -579,7 +579,7 @@ public class OfferControllerTest {
         secondOfferRequestDto.setBorderText("Second Border Text");
         secondOfferRequestDto.setPreviousPriceInfo("Second Previous Price");
 
-        mockMvc.perform(post("/offer/special")
+        mockMvc.perform(post("/offers/special")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(secondOfferRequestDto)))
@@ -587,7 +587,7 @@ public class OfferControllerTest {
 
         secondOfferRequestDto.setTitle("First Special Offer");
 
-        mockMvc.perform(put("/offer/special/Second Special Offer")
+        mockMvc.perform(put("/offers/special/Second Special Offer")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(secondOfferRequestDto)))
@@ -596,14 +596,14 @@ public class OfferControllerTest {
 
     @Test
     public void shouldReturnForbiddenWhenGetStandardOfferWithoutJwt() throws Exception {
-        mockMvc.perform(get("/offer/standard/1")
+        mockMvc.perform(get("/offers/standard/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
     }
 
     @Test
     public void shouldReturnForbiddenWhenGetSpecialOfferWithoutJwt() throws Exception {
-        mockMvc.perform(get("/offer/special/1")
+        mockMvc.perform(get("/offers/special/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
     }
@@ -618,7 +618,7 @@ public class OfferControllerTest {
         firstOfferRequestDto.setDurationInMonths(6);
         firstOfferRequestDto.setActive(true);
 
-        mockMvc.perform(post("/offer/standard")
+        mockMvc.perform(post("/offers/standard")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(firstOfferRequestDto)))
@@ -632,7 +632,7 @@ public class OfferControllerTest {
         secondOfferRequestDto.setDurationInMonths(12);
         secondOfferRequestDto.setActive(false);
 
-        mockMvc.perform(post("/offer/standard")
+        mockMvc.perform(post("/offers/standard")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(secondOfferRequestDto)))
@@ -649,7 +649,7 @@ public class OfferControllerTest {
         thirdOfferRequestDto.setBorderText("Border Text");
         thirdOfferRequestDto.setPreviousPriceInfo("Previous Price");
 
-        mockMvc.perform(post("/offer/special")
+        mockMvc.perform(post("/offers/special")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(thirdOfferRequestDto)))
@@ -666,14 +666,14 @@ public class OfferControllerTest {
         fourthOfferRequestDto.setBorderText("Border Text");
         fourthOfferRequestDto.setPreviousPriceInfo("Previous Price");
 
-        mockMvc.perform(post("/offer/special")
+        mockMvc.perform(post("/offers/special")
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(fourthOfferRequestDto)))
                 .andExpect(status().isOk());
 
         
-        MvcResult mvcResult = mockMvc.perform(get("/offer/public/active")
+        MvcResult mvcResult = mockMvc.perform(get("/offers/public/active")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();

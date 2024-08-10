@@ -3,6 +3,7 @@ package pl.pbgym.service.offer;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.pbgym.domain.offer.*;
 import pl.pbgym.dto.offer.GetOfferResponseDto;
 import pl.pbgym.dto.offer.PostOfferRequestDto;
@@ -111,6 +112,7 @@ public class OfferService {
         return dtoList;
     }
 
+    @Transactional
     public void saveStandardOffer(PostStandardOfferRequestDto dto) {
         StandardOffer standardOffer = new StandardOffer();
         this.mapOfferToPostOfferRequestDto(standardOffer, dto);
@@ -119,6 +121,7 @@ public class OfferService {
         saveOfferProperties(dto.getProperties(), standardOffer);
     }
 
+    @Transactional
     public void saveSpecialOffer(PostSpecialOfferRequestDto dto) {
         SpecialOffer specialOffer = new SpecialOffer();
         this.mapOfferToPostOfferRequestDto(specialOffer, dto);
@@ -130,6 +133,7 @@ public class OfferService {
         saveOfferProperties(dto.getProperties(), specialOffer);
     }
 
+    @Transactional
     public void updateStandardOffer(String title, PostStandardOfferRequestDto dto) {
         Optional<StandardOffer> standardOffer = standardOfferRepository.findByTitle(title);
         standardOffer.ifPresentOrElse(offer -> {
@@ -142,6 +146,7 @@ public class OfferService {
                 });
     }
 
+    @Transactional
     public void updateSpecialOffer(String title, PostSpecialOfferRequestDto dto) {
         Optional<SpecialOffer> specialOffer = specialOfferRepository.findByTitle(title);
         specialOffer.ifPresentOrElse(offer -> {
@@ -157,6 +162,7 @@ public class OfferService {
                 });
     }
 
+    @Transactional
     public void deleteOfferByTitle(String title) {
         Optional<Offer> offer = offerRepository.findByTitle(title);
         offer.ifPresentOrElse(offerRepository::delete,
@@ -165,11 +171,12 @@ public class OfferService {
                 });
     }
 
+    @Transactional
     protected void saveOfferProperties(List<String> properties, Offer offer) {
         if(properties != null && !properties.isEmpty()) {
             for(String p : properties) {
                 OfferProperty offerProperty = new OfferProperty();
-                offerProperty.setProperty(p);
+                offerProperty.set(p);
                 offerProperty.setOffer(offer);
                 offerPropertyRepository.save(offerProperty);
             }
@@ -189,7 +196,7 @@ public class OfferService {
         List<String> mappedProperties = new ArrayList<>();
         if(offerProperties != null && !offerProperties.isEmpty()) {
             for(OfferProperty p : offerProperties) {
-                mappedProperties.add(p.getProperty());
+                mappedProperties.add(p.get());
             }
         }
         return mappedProperties;

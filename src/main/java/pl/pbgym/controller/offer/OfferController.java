@@ -23,7 +23,7 @@ import pl.pbgym.service.offer.OfferService;
 import java.util.List;
 
 @Controller
-@RequestMapping("/offer")
+@RequestMapping("/offers")
 public class OfferController {
 
     private OfferService offerService;

@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import pl.pbgym.domain.user.Permissions;
 import pl.pbgym.dto.auth.*;
 import pl.pbgym.dto.user.worker.GetWorkerResponseDto;
+import pl.pbgym.dto.user.worker.UpdateWorkerAuthorityRequestDto;
 import pl.pbgym.dto.user.worker.UpdateWorkerRequestDto;
 import pl.pbgym.repository.user.AbstractUserRepository;
 import pl.pbgym.repository.user.AddressRepository;
@@ -180,8 +181,7 @@ public class WorkerControllerTest {
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonUpdateRequest))
-                .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(status().isOk());
 
         MvcResult mvcResult = mockMvc.perform(get("/workers/{email}", workerEmail)
                         .header("Authorization", "Bearer " + workerJwt)
@@ -215,8 +215,7 @@ public class WorkerControllerTest {
                         .header("Authorization", "Bearer " + adminJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonUpdateRequest))
-                .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(status().isOk());
 
         MvcResult mvcResult = mockMvc.perform(get("/workers/{email}", workerEmail)
                         .header("Authorization", "Bearer " + adminJwt)
@@ -229,6 +228,35 @@ public class WorkerControllerTest {
 
         assertEquals("123123123", response.getPhoneNumber());
         assertEquals("UpdatedCity", response.getAddress().getCity());
+    }
+
+    @Test
+    public void shouldReturnOkWhenAdminUpdatesWorkerAuthority() throws Exception {
+        UpdateWorkerAuthorityRequestDto updateRequest = new UpdateWorkerAuthorityRequestDto();
+
+        List<Permissions> permissionsList = List.of(Permissions.PASS_MANAGEMENT, Permissions.USER_MANAGEMENT);
+        updateRequest.setPermissions(permissionsList);
+        updateRequest.setPosition("Manager");
+
+        String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
+
+        mockMvc.perform(put("/workers/authority/{email}", workerEmail)
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonUpdateRequest))
+                .andExpect(status().isOk());
+
+        MvcResult mvcResult = mockMvc.perform(get("/workers/{email}", workerEmail)
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        GetWorkerResponseDto response = objectMapper.readValue(jsonResponse, GetWorkerResponseDto.class);
+
+        assertEquals("Manager", response.getPosition());
+        assertTrue(response.getPermissions().containsAll(permissionsList));
     }
 
     @Test

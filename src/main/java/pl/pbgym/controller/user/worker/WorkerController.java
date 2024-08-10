@@ -18,6 +18,7 @@ import pl.pbgym.domain.user.Permissions;
 import pl.pbgym.dto.auth.AuthenticationResponseDto;
 import pl.pbgym.dto.auth.ChangeEmailRequestDto;
 import pl.pbgym.dto.auth.ChangePasswordRequestDto;
+import pl.pbgym.dto.user.worker.UpdateWorkerAuthorityRequestDto;
 import pl.pbgym.dto.user.worker.UpdateWorkerRequestDto;
 import pl.pbgym.dto.user.worker.GetWorkerResponseDto;
 import pl.pbgym.exception.user.worker.WorkerNotFoundException;
@@ -87,6 +88,24 @@ public class WorkerController {
         }
         try {
             workerService.updateWorker(email, updateWorkerRequestDto);
+            return ResponseEntity.status(HttpStatus.OK).body("Worker updated successfully");
+        } catch (WorkerNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @PutMapping("/authority/{email}")
+    @Operation(summary = "Update a workers position and permissions by email", description = "Fetches the worker details by their email and updates their position and permissions, " +
+            "possible only for ADMIN workers.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Worker found and updated successfully"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Worker not found", content = @Content)
+    })
+    public ResponseEntity<String> updateWorkerAuthority(@PathVariable String email,
+                                               @Valid @RequestBody UpdateWorkerAuthorityRequestDto updateWorkerAuthorityRequestDto) {
+        try {
+            workerService.updateWorkerAuthority(email, updateWorkerAuthorityRequestDto);
             return ResponseEntity.status(HttpStatus.OK).body("Worker updated successfully");
         } catch (WorkerNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
