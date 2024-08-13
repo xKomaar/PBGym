@@ -24,6 +24,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/offers")
+@CrossOrigin
 public class OfferController {
 
     private OfferService offerService;
