@@ -83,22 +83,32 @@ public class MemberController {
 
     @PutMapping("/changePassword/{email}")
     @Operation(summary = "Change a member password by email", description = "Fetches the member details by their email and changes their password, " +
-            "possible only for ADMIN and USER_MANAGEMENT workers and for the member who owns the data.")
+            "possible only for ADMIN and USER_MANAGEMENT workers and for the member who owns the data. Worker doesn't need to provide the old password (it can be left null or empty).")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Member found and updated successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
             @ApiResponse(responseCode = "404", description = "Member not found", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Email already in use", content = @Content)
+
     })
     public ResponseEntity<String> changePassword(@PathVariable String email,
                                                  @Valid @RequestBody ChangePasswordRequestDto changePasswordRequestDto) {
 
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (authenticatedUser instanceof Member && !authenticatedUser.getEmail().equals(email)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (authenticatedUser instanceof Member) {
+            if(!authenticatedUser.getEmail().equals(email)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        } else {
+            try {
+                memberService.updatePasswordWithoutOldPasswordCheck(changePasswordRequestDto.getNewPassword(), email);
+                return ResponseEntity.status(HttpStatus.OK).body("Member password updated successfully");
+            } catch (EntityNotFoundException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
         }
+
         try {
-            abstractUserService.updatePassword(changePasswordRequestDto.getOldPassword(), changePasswordRequestDto.getNewPassword(), email);
+            memberService.updatePassword(changePasswordRequestDto.getOldPassword(), changePasswordRequestDto.getNewPassword(), email);
             return ResponseEntity.status(HttpStatus.OK).body("Member password updated successfully");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -129,7 +139,7 @@ public class MemberController {
             }
         }
         try {
-            AuthenticationResponseDto authenticationResponseDto = abstractUserService.updateEmail(email, changeEmailRequestDto.getNewEmail());
+            AuthenticationResponseDto authenticationResponseDto = memberService.updateEmail(email, changeEmailRequestDto.getNewEmail());
             return ResponseEntity.status(HttpStatus.OK).body(authenticationResponseDto);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

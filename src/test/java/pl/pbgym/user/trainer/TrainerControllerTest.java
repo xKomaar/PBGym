@@ -410,7 +410,6 @@ public class TrainerControllerTest {
     @Test
     public void shouldReturnOkWhenAdminChangesTrainerPassword() throws Exception {
         ChangePasswordRequestDto changePasswordRequest = new ChangePasswordRequestDto();
-        changePasswordRequest.setOldPassword("12345678");
         changePasswordRequest.setNewPassword("adminnewpassword");
 
         String jsonChangePasswordRequest = objectMapper.writeValueAsString(changePasswordRequest);

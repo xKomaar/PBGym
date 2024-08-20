@@ -114,7 +114,8 @@ public class WorkerController {
 
     @PutMapping("/changePassword/{email}")
     @Operation(summary = "Change a worker password by email", description = "Fetches the worker details by their email and changes their password, " +
-            "possible only for ADMIN workers and for the worker who owns the data.")
+            "possible only for ADMIN workers and for the worker who owns the data. Admin doesn't need to provide the old password (it can be left null or empty)." +
+            "If admin wants to change another admins password, they must provide the old password.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Worker found and updated successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
@@ -130,10 +131,25 @@ public class WorkerController {
                 if (!authenticatedUser.getEmail().equals(email)) {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
                 }
+            } else {
+                try {
+                    GetWorkerResponseDto workerDao = workerService.getWorkerByEmail(email);
+                    //if worker is an Admin then their password must be changed with providing old password
+                    if(!workerDao.getPermissions().contains(Permissions.ADMIN)) {
+                        try {
+                            workerService.updatePasswordWithoutOldPasswordCheck(changePasswordRequestDto.getNewPassword(), email);
+                            return ResponseEntity.status(HttpStatus.OK).body("Worker password updated successfully");
+                        } catch (WorkerNotFoundException e) {
+                            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                        }
+                    }
+                } catch (WorkerNotFoundException e) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                }
             }
         }
         try {
-            abstractUserService.updatePassword(changePasswordRequestDto.getOldPassword(), changePasswordRequestDto.getNewPassword(), email);
+            workerService.updatePassword(changePasswordRequestDto.getOldPassword(), changePasswordRequestDto.getNewPassword(), email);
             return ResponseEntity.status(HttpStatus.OK).body("Worker password updated successfully");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -170,7 +186,7 @@ public class WorkerController {
             }
         }
         try {
-            AuthenticationResponseDto authenticationResponseDto = abstractUserService.updateEmail(email, changeEmailRequestDto.getNewEmail());
+            AuthenticationResponseDto authenticationResponseDto = workerService.updateEmail(email, changeEmailRequestDto.getNewEmail());
             return ResponseEntity.status(HttpStatus.OK).body(authenticationResponseDto);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

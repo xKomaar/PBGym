@@ -15,44 +15,10 @@ import java.util.Optional;
 @Service
 public class AbstractUserService {
     private final AbstractUserRepository abstractUserRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final AuthenticationService authenticationService;
 
     @Autowired
-    public AbstractUserService(AbstractUserRepository abstractUserRepository, PasswordEncoder passwordEncoder, AuthenticationService authenticationService) {
+    public AbstractUserService(AbstractUserRepository abstractUserRepository) {
         this.abstractUserRepository = abstractUserRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationService = authenticationService;
-    }
-
-    @Transactional
-    public void updatePassword(String oldPassword, String newPassword, String email) {
-        Optional<AbstractUser> abstractUser = abstractUserRepository.findByEmail(email);
-        abstractUser.ifPresentOrElse(u -> {
-                    if(!passwordEncoder.matches(oldPassword, u.getPassword())) {
-                        throw new RuntimeException("Old password is incorrect");
-                    } else {
-                        u.setPassword(passwordEncoder.encode(newPassword));
-                    }
-                },
-                () -> {
-                    throw new EntityNotFoundException("User not found with email: " + email);
-                });
-    }
-
-    @Transactional
-    public AuthenticationResponseDto updateEmail(String email, String newEmail) {
-        Optional<AbstractUser> abstractUser = abstractUserRepository.findByEmail(email);
-        AuthenticationResponseDto authenticationResponseDto = new AuthenticationResponseDto();
-        abstractUser.ifPresentOrElse(u -> {
-                    u.setEmail(newEmail);
-                    String jwt = authenticationService.generateJwtToken(u);
-                    authenticationResponseDto.setJwt(jwt);
-                },
-                () -> {
-                    throw new EntityNotFoundException("User not found with email: " + email);
-                });
-        return authenticationResponseDto;
     }
 
     public boolean userExists(String email) {

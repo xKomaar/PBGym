@@ -379,7 +379,7 @@ public class MemberControllerTest {
     @Test
     public void shouldReturnOkWhenAdminChangesMemberPassword() throws Exception {
         ChangePasswordRequestDto changePasswordRequest = new ChangePasswordRequestDto();
-        changePasswordRequest.setOldPassword("12345678");
+        changePasswordRequest.setOldPassword("");
         changePasswordRequest.setNewPassword("adminnewpassword");
 
         String jsonChangePasswordRequest = objectMapper.writeValueAsString(changePasswordRequest);

@@ -85,7 +85,7 @@ public class TrainerController {
 
     @PutMapping("/changePassword/{email}")
     @Operation(summary = "Change a trainer password by email", description = "Fetches the trainer details by their email and changes their password, " +
-            "possible only for ADMIN and USER_MANAGEMENT workers and for the trainer who owns the data.")
+            "possible only for ADMIN and USER_MANAGEMENT workers and for the trainer who owns the data. Worker doesn't need to provide the old password (it can be left null or empty).")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Trainer found and updated successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
@@ -95,11 +95,20 @@ public class TrainerController {
                                                  @Valid @RequestBody ChangePasswordRequestDto changePasswordRequestDto) {
 
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (authenticatedUser instanceof Trainer && !authenticatedUser.getEmail().equals(email)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (authenticatedUser instanceof Trainer) {
+            if(!authenticatedUser.getEmail().equals(email)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        } else {
+            try {
+                trainerService.updatePasswordWithoutOldPasswordCheck(changePasswordRequestDto.getNewPassword(), email);
+                return ResponseEntity.status(HttpStatus.OK).body("Trainer password updated successfully");
+            } catch (EntityNotFoundException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
         }
         try {
-            abstractUserService.updatePassword(changePasswordRequestDto.getOldPassword(), changePasswordRequestDto.getNewPassword(), email);
+            trainerService.updatePassword(changePasswordRequestDto.getOldPassword(), changePasswordRequestDto.getNewPassword(), email);
             return ResponseEntity.status(HttpStatus.OK).body("Trainer password updated successfully");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -131,7 +140,7 @@ public class TrainerController {
             }
         }
         try {
-            AuthenticationResponseDto authenticationResponseDto = abstractUserService.updateEmail(email, changeEmailRequestDto.getNewEmail());
+            AuthenticationResponseDto authenticationResponseDto = trainerService.updateEmail(email, changeEmailRequestDto.getNewEmail());
             return ResponseEntity.status(HttpStatus.OK).body(authenticationResponseDto);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

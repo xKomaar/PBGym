@@ -355,7 +355,7 @@ public class WorkerControllerTest {
     @Test
     public void shouldReturnOkWhenAdminChangesWorkerPassword() throws Exception {
         ChangePasswordRequestDto changePasswordRequest = new ChangePasswordRequestDto();
-        changePasswordRequest.setOldPassword("12345678");
+        changePasswordRequest.setOldPassword(null);
         changePasswordRequest.setNewPassword("adminnewpassword");
 
         String jsonChangePasswordRequest = objectMapper.writeValueAsString(changePasswordRequest);
@@ -377,6 +377,47 @@ public class WorkerControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonAuthenticationRequest))
                 .andExpect(status().isOk());
+    }
+
+    public void shouldReturnOkWhenAdminChangesHisOwnPassword() throws Exception {
+        ChangePasswordRequestDto changePasswordRequest = new ChangePasswordRequestDto();
+        changePasswordRequest.setOldPassword("password");
+        changePasswordRequest.setNewPassword("adminnewpassword");
+
+        String jsonChangePasswordRequest = objectMapper.writeValueAsString(changePasswordRequest);
+
+        mockMvc.perform(put("/workers/changePassword/{email}", "admin@admin.com")
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonChangePasswordRequest))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        PostAuthenticationRequestDto postAuthenticationRequestDto = new PostAuthenticationRequestDto();
+        postAuthenticationRequestDto.setEmail(workerEmail);
+        postAuthenticationRequestDto.setPassword("adminnewpassword");
+
+        String jsonAuthenticationRequest = objectMapper.writeValueAsString(postAuthenticationRequestDto);
+
+        mockMvc.perform(post("/auth/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonAuthenticationRequest))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldReturnForbiddenWhenAdminTriesToChangeAdminsPasswordWithoutOldPassword() throws Exception {
+        ChangePasswordRequestDto changePasswordRequest = new ChangePasswordRequestDto();
+        changePasswordRequest.setOldPassword("null");
+        changePasswordRequest.setNewPassword("password");
+
+        String jsonChangePasswordRequest = objectMapper.writeValueAsString(changePasswordRequest);
+
+        mockMvc.perform(put("/workers/changePassword/{email}", workerEmail)
+                        .header("Authorization", "Bearer " + workerJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonChangePasswordRequest))
+                .andExpect(status().isForbidden());
     }
 
     @Test
