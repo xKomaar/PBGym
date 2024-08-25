@@ -6,9 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.pbgym.domain.user.Member;
 import pl.pbgym.domain.user.Permission;
-import pl.pbgym.domain.user.Permissions;
+import pl.pbgym.domain.user.PermissionType;
 import pl.pbgym.domain.user.Worker;
 import pl.pbgym.dto.auth.AuthenticationResponseDto;
 import pl.pbgym.dto.user.worker.UpdateWorkerAuthorityRequestDto;
@@ -67,7 +66,7 @@ public class WorkerService {
                     w.setPosition(updateWorkerAuthorityRequestDto.getPosition());
                     permissionRepository.deleteAll(w.getPermissions());
                     if(!updateWorkerAuthorityRequestDto.getPermissions().isEmpty()) {
-                        for(Permissions p : updateWorkerAuthorityRequestDto.getPermissions()) {
+                        for(PermissionType p : updateWorkerAuthorityRequestDto.getPermissions()) {
                             Permission permission = new Permission();
                             permission.setWorker(w);
                             permission.set(p);

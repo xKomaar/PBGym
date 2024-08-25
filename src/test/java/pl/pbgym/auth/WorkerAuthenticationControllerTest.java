@@ -18,7 +18,7 @@ import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
 import pl.pbgym.dto.auth.PostWorkerRequestDto;
 import pl.pbgym.service.auth.AuthenticationService;
-import pl.pbgym.domain.user.Permissions;
+import pl.pbgym.domain.user.PermissionType;
 import pl.pbgym.repository.user.AbstractUserRepository;
 import pl.pbgym.repository.user.AddressRepository;
 import pl.pbgym.repository.user.PermissionRepository;
@@ -86,8 +86,8 @@ public class WorkerAuthenticationControllerTest {
         adminWorkerRequest.setPosition("Owner");
         adminWorkerRequest.setAddress(postAddressRequestDto);
 
-        List<Permissions> permissions = new ArrayList<>();
-        permissions.add(Permissions.ADMIN);
+        List<PermissionType> permissions = new ArrayList<>();
+        permissions.add(PermissionType.ADMIN);
         adminWorkerRequest.setPermissions(permissions);
 
         authenticationService.registerWorker(adminWorkerRequest);

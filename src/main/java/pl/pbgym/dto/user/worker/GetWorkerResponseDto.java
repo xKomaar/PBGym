@@ -1,6 +1,6 @@
 package pl.pbgym.dto.user.worker;
 
-import pl.pbgym.domain.user.Permissions;
+import pl.pbgym.domain.user.PermissionType;
 import pl.pbgym.dto.user.GetAddressResponseDto;
 
 import java.time.LocalDate;
@@ -17,7 +17,7 @@ public class GetWorkerResponseDto {
     private GetAddressResponseDto address;
     private String idCardNumber;
     private String position;
-    private List<Permissions> permissions;
+    private List<PermissionType> permissions;
 
     public GetWorkerResponseDto() {
     }
@@ -102,11 +102,11 @@ public class GetWorkerResponseDto {
         this.position = position;
     }
 
-    public List<Permissions> getPermissions() {
+    public List<PermissionType> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(List<Permissions> permissions) {
+    public void setPermissions(List<PermissionType> permissions) {
         this.permissions = permissions;
     }
 }

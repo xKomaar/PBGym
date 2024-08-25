@@ -14,7 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.pbgym.domain.user.Worker;
 import pl.pbgym.domain.user.AbstractUser;
-import pl.pbgym.domain.user.Permissions;
+import pl.pbgym.domain.user.PermissionType;
 import pl.pbgym.dto.auth.AuthenticationResponseDto;
 import pl.pbgym.dto.auth.ChangeEmailRequestDto;
 import pl.pbgym.dto.auth.ChangePasswordRequestDto;
@@ -52,7 +52,7 @@ public class WorkerController {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         //if worker isn't an admin, the id must match (he must be himself)
         if (authenticatedUser instanceof Worker) {
-            if (!((Worker) authenticatedUser).getMappedPermissions().contains(Permissions.ADMIN)) {
+            if (!((Worker) authenticatedUser).getMappedPermissions().contains(PermissionType.ADMIN)) {
                 if (!authenticatedUser.getEmail().equals(email)) {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
                 }
@@ -80,7 +80,7 @@ public class WorkerController {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         //if worker isn't an admin, the id must match (he must be himself)
         if (authenticatedUser instanceof Worker) {
-            if (!((Worker) authenticatedUser).getMappedPermissions().contains(Permissions.ADMIN)) {
+            if (!((Worker) authenticatedUser).getMappedPermissions().contains(PermissionType.ADMIN)) {
                 if (!authenticatedUser.getEmail().equals(email)) {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
                 }
@@ -127,7 +127,7 @@ public class WorkerController {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         //if worker isn't an admin, the id must match (he must be himself)
         if (authenticatedUser instanceof Worker) {
-            if (!((Worker) authenticatedUser).getMappedPermissions().contains(Permissions.ADMIN)) {
+            if (!((Worker) authenticatedUser).getMappedPermissions().contains(PermissionType.ADMIN)) {
                 if (!authenticatedUser.getEmail().equals(email)) {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
                 }
@@ -135,7 +135,7 @@ public class WorkerController {
                 try {
                     GetWorkerResponseDto workerDao = workerService.getWorkerByEmail(email);
                     //if worker is an Admin then their password must be changed with providing old password
-                    if(!workerDao.getPermissions().contains(Permissions.ADMIN)) {
+                    if(!workerDao.getPermissions().contains(PermissionType.ADMIN)) {
                         try {
                             workerService.updatePasswordWithoutOldPasswordCheck(changePasswordRequestDto.getNewPassword(), email);
                             return ResponseEntity.status(HttpStatus.OK).body("Worker password updated successfully");
@@ -174,7 +174,7 @@ public class WorkerController {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         //if worker isn't an admin, the id must match (he must be himself)
         if (authenticatedUser instanceof Worker) {
-            if (!((Worker) authenticatedUser).getMappedPermissions().contains(Permissions.ADMIN)) {
+            if (!((Worker) authenticatedUser).getMappedPermissions().contains(PermissionType.ADMIN)) {
                 if (!authenticatedUser.getEmail().equals(email)) {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
                 }

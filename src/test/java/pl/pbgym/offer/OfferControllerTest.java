@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import pl.pbgym.domain.offer.Offer;
 import pl.pbgym.domain.offer.SpecialOffer;
-import pl.pbgym.domain.user.Permissions;
+import pl.pbgym.domain.user.PermissionType;
 import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
 import pl.pbgym.dto.auth.PostWorkerRequestDto;
@@ -87,9 +87,9 @@ public class OfferControllerTest {
         postWorkerRequestDto.setIdCardNumber("ABD123456");
         postWorkerRequestDto.setPosition("Worker");
 
-        List<Permissions> permissionsList = new ArrayList<>();
-        permissionsList.add(Permissions.PASS_MANAGEMENT);
-        postWorkerRequestDto.setPermissions(permissionsList);
+        List<PermissionType> permissionTypeList = new ArrayList<>();
+        permissionTypeList.add(PermissionType.PASS_MANAGEMENT);
+        postWorkerRequestDto.setPermissions(permissionTypeList);
 
         PostAddressRequestDto postAddressRequestDto = new PostAddressRequestDto();
         postAddressRequestDto.setCity("City");

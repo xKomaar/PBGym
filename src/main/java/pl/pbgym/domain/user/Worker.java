@@ -39,8 +39,8 @@ public class Worker extends AbstractUser {
         return permissions;
     }
 
-    public List<Permissions> getMappedPermissions() {
-        List<Permissions> mappedPermissions = new ArrayList<>();
+    public List<PermissionType> getMappedPermissions() {
+        List<PermissionType> mappedPermissions = new ArrayList<>();
         for(Permission p : this.permissions) {
             mappedPermissions.add(p.get());
         }

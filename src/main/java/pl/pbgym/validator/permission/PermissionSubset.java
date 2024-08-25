@@ -2,7 +2,7 @@ package pl.pbgym.validator.permission;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import pl.pbgym.domain.user.Permissions;
+import pl.pbgym.domain.user.PermissionType;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -16,7 +16,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 @Constraint(validatedBy = PermissionSubsetValidator.class)
 public @interface PermissionSubset {
-    Permissions[] anyOf();
+    PermissionType[] anyOf();
     String message() default "Permission must be any of {anyOf}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

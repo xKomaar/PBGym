@@ -75,7 +75,7 @@ public class AuthenticationService {
         workerRepository.save(worker);
 
         if(!postWorkerRequestDto.getPermissions().isEmpty()) {
-            for(Permissions p : postWorkerRequestDto.getPermissions()) {
+            for(PermissionType p : postWorkerRequestDto.getPermissions()) {
                 Permission permission = new Permission();
                 permission.setWorker(worker);
                 permission.set(p);

@@ -14,7 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import pl.pbgym.domain.user.Permissions;
+import pl.pbgym.domain.user.PermissionType;
 import pl.pbgym.dto.auth.*;
 import pl.pbgym.dto.user.worker.GetWorkerResponseDto;
 import pl.pbgym.dto.user.worker.UpdateWorkerAuthorityRequestDto;
@@ -101,9 +101,9 @@ public class WorkerControllerTest {
         adminWorkerRequest.setPosition("Owner");
         adminWorkerRequest.setAddress(postAddressRequestDto2);
 
-        List<Permissions> permissionsList = new ArrayList<>();
-        permissionsList.add(Permissions.ADMIN);
-        adminWorkerRequest.setPermissions(permissionsList);
+        List<PermissionType> permissionTypeList = new ArrayList<>();
+        permissionTypeList.add(PermissionType.ADMIN);
+        adminWorkerRequest.setPermissions(permissionTypeList);
 
         authenticationService.registerWorker(adminWorkerRequest);
 
@@ -234,8 +234,8 @@ public class WorkerControllerTest {
     public void shouldReturnOkWhenAdminUpdatesWorkerAuthority() throws Exception {
         UpdateWorkerAuthorityRequestDto updateRequest = new UpdateWorkerAuthorityRequestDto();
 
-        List<Permissions> permissionsList = List.of(Permissions.PASS_MANAGEMENT, Permissions.USER_MANAGEMENT);
-        updateRequest.setPermissions(permissionsList);
+        List<PermissionType> permissionTypeList = List.of(PermissionType.PASS_MANAGEMENT, PermissionType.USER_MANAGEMENT);
+        updateRequest.setPermissions(permissionTypeList);
         updateRequest.setPosition("Manager");
 
         String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
@@ -256,7 +256,7 @@ public class WorkerControllerTest {
         GetWorkerResponseDto response = objectMapper.readValue(jsonResponse, GetWorkerResponseDto.class);
 
         assertEquals("Manager", response.getPosition());
-        assertTrue(response.getPermissions().containsAll(permissionsList));
+        assertTrue(response.getPermissions().containsAll(permissionTypeList));
     }
 
     @Test

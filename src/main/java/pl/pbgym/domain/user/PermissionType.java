@@ -1,6 +1,6 @@
 package pl.pbgym.domain.user;
 
-public enum Permissions {
+public enum PermissionType {
     ADMIN,
     STATISTICS,
     USER_MANAGEMENT,

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import pl.pbgym.domain.user.Permissions;
+import pl.pbgym.domain.user.PermissionType;
 import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.dto.auth.PostMemberRequestDto;
 import pl.pbgym.dto.auth.PostTrainerRequestDto;
@@ -64,8 +64,8 @@ public class DataSeeder implements CommandLineRunner {
         adminWorkerRequest.setPosition("Owner");
         adminWorkerRequest.setAddress(postAddressRequestDto);
 
-        List<Permissions> permissions = new ArrayList<>();
-        permissions.add(Permissions.ADMIN);
+        List<PermissionType> permissions = new ArrayList<>();
+        permissions.add(PermissionType.ADMIN);
         adminWorkerRequest.setPermissions(permissions);
 
         authenticationService.registerWorker(adminWorkerRequest);

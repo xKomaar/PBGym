@@ -14,7 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import pl.pbgym.domain.user.Permissions;
+import pl.pbgym.domain.user.PermissionType;
 import pl.pbgym.dto.auth.*;
 import pl.pbgym.dto.user.member.GetMemberResponseDto;
 import pl.pbgym.dto.user.member.UpdateMemberRequestDto;
@@ -97,9 +97,9 @@ public class MemberControllerTest {
         adminWorkerRequest.setPosition("Owner");
         adminWorkerRequest.setAddress(postAddressRequestDto2);
 
-        List<Permissions> permissionsList = new ArrayList<>();
-        permissionsList.add(Permissions.ADMIN);
-        adminWorkerRequest.setPermissions(permissionsList);
+        List<PermissionType> permissionTypeList = new ArrayList<>();
+        permissionTypeList.add(PermissionType.ADMIN);
+        adminWorkerRequest.setPermissions(permissionTypeList);
 
         authenticationService.registerWorker(adminWorkerRequest);
 
@@ -121,9 +121,9 @@ public class MemberControllerTest {
         managerWorkerRequest.setPosition("Manager");
         managerWorkerRequest.setAddress(postAddressRequestDto3);
 
-        List<Permissions> permissionsList2 = new ArrayList<>();
-        permissionsList2.add(Permissions.USER_MANAGEMENT);
-        managerWorkerRequest.setPermissions(permissionsList2);
+        List<PermissionType> permissionTypeList2 = new ArrayList<>();
+        permissionTypeList2.add(PermissionType.USER_MANAGEMENT);
+        managerWorkerRequest.setPermissions(permissionTypeList2);
 
         authenticationService.registerWorker(managerWorkerRequest);
 

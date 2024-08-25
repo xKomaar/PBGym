@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import pl.pbgym.validator.permission.PermissionSubset;
-import pl.pbgym.domain.user.Permissions;
+import pl.pbgym.domain.user.PermissionType;
 
 import java.util.List;
 
@@ -20,33 +20,33 @@ public class PostWorkerRequestDto extends PostAbstractUserRequestDto {
     private String position;
 
     @PermissionSubset(anyOf = {
-            Permissions.ADMIN,
-            Permissions.STATISTICS,
-            Permissions.USER_MANAGEMENT,
-            Permissions.NEWSLETTER,
-            Permissions.PASS_MANAGEMENT,
-            Permissions.GROUP_CLASSES_MANAGEMENT,
-            Permissions.BLOG,
-            Permissions.SHOP_MANAGEMENT
+            PermissionType.ADMIN,
+            PermissionType.STATISTICS,
+            PermissionType.USER_MANAGEMENT,
+            PermissionType.NEWSLETTER,
+            PermissionType.PASS_MANAGEMENT,
+            PermissionType.GROUP_CLASSES_MANAGEMENT,
+            PermissionType.BLOG,
+            PermissionType.SHOP_MANAGEMENT
     })
     @NotNull
-    private List<Permissions> permissions;
+    private List<PermissionType> permissions;
 
     public PostWorkerRequestDto() {
         super();
     }
 
-    public PostWorkerRequestDto(String idCardNumber, String position, List<Permissions> permissions) {
+    public PostWorkerRequestDto(String idCardNumber, String position, List<PermissionType> permissions) {
         IdCardNumber = idCardNumber;
         this.position = position;
         this.permissions = permissions;
     }
 
-    public List<Permissions> getPermissions() {
+    public List<PermissionType> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(List<Permissions> permissions) {
+    public void setPermissions(List<PermissionType> permissions) {
         this.permissions = permissions;
     }
 
