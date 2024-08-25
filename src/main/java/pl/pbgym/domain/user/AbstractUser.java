@@ -22,35 +22,20 @@ public abstract class AbstractUser implements UserDetails {
     @SequenceGenerator(name="abstract_user_seq_gen", sequenceName="ABSTRACT_USER_SEQ", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;
-
-    @Basic
     @Column(name = "email", nullable = false, unique = true)
     private String email;
-
-    @Basic
     @Column(name = "password", nullable = false)
     private String password;
-
-    @Basic
     @Column(name = "name", nullable = false)
     private String name;
-
-    @Basic
     @Column(name = "surname", nullable = false)
     private String surname;
-
-    @Basic
     @Column(name = "birthdate", nullable = false)
     private LocalDate birthdate;
-
-    @Basic
     @Column(name = "pesel", nullable = false)
     private String pesel;
-
-    @Basic
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
-
     @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinColumn(name="address_id", referencedColumnName = "id", nullable = false)
     private Address address;

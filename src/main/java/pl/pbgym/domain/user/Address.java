@@ -13,23 +13,17 @@ public class Address {
     @SequenceGenerator(name="address_seq_gen", sequenceName="ADDRESS_SEQ", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;
-
     @Column(name = "city", nullable = false)
     private String city;
-
     @Column(name = "street_name", nullable = false)
     private String streetName;
-
     @Column(name = "building_number", nullable = false)
     private String buildingNumber;
-
     @Nullable
     @Column(name = "apartment_number")
     private Integer apartmentNumber;
-
     @Column(name = "postal_code", nullable = false)
     private String postalCode;
-
     @OneToOne(mappedBy = "address")
     @JsonIgnore
     private AbstractUser abstractUser;

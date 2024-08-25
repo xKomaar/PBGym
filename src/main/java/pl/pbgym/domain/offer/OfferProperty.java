@@ -9,7 +9,6 @@ public class OfferProperty {
     @SequenceGenerator(name="offer_property_seq_gen", sequenceName="OFFER_PROPERTY_SEQ", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;
-    @Basic
     @Column(name = "property", nullable = false)
     private String property;
     @ManyToOne

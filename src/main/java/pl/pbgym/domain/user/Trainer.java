@@ -6,11 +6,8 @@ import jakarta.persistence.*;
 @Table(name="trainer")
 @PrimaryKeyJoinColumn(name = "trainer_id")
 public class Trainer extends AbstractUser {
-
-    @Basic
     @Column(name="description")
     private String description;
-
     @Column(name="photo")
     private byte[] photo;
 

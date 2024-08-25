@@ -15,22 +15,16 @@ public abstract class Offer {
     @SequenceGenerator(name="offer_seq_gen", sequenceName="OFFER_SEQ", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;
-    @Basic
     @Column(name = "title", nullable = false, unique = true)
     private String title;
-    @Basic
     @Column(name = "subtitle", nullable = false)
     private String subtitle;
-    @Basic
     @Column(name = "monthylPrice", nullable = false)
     private Double monthlyPrice;
-    @Basic
     @Column(name = "durationInMonth", nullable = false)
     private Integer durationInMonths;
-    @Basic
     @Column(name = "entryFee", nullable = false)
     private Double entryFee;
-    @Basic
     @Column(name = "isActive", nullable = false)
     private boolean isActive;
     @Enumerated(EnumType.STRING)

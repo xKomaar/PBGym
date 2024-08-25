@@ -10,11 +10,9 @@ public class Permission {
     @SequenceGenerator(name="permission_seq_gen", sequenceName="PERMISSION_SEQ", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;
-
     @Column(name = "name")
     @Enumerated(EnumType.STRING)
     private Permissions permission;
-
     @ManyToOne
     @JoinColumn(name = "worker_id")
     private Worker worker;
