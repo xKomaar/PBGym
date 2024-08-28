@@ -1,0 +1,69 @@
+package pl.pbgym.controller.pass;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import pl.pbgym.domain.user.AbstractUser;
+import pl.pbgym.domain.user.Member;
+import pl.pbgym.dto.offer.OfferNotActiveException;
+import pl.pbgym.dto.pass.PostPassRequestDto;
+import pl.pbgym.exception.offer.OfferNotFoundException;
+import pl.pbgym.exception.pass.MemberAlreadyHasActivePassException;
+import pl.pbgym.exception.user.member.MemberNotFoundException;
+import pl.pbgym.service.pass.PassService;
+
+@Controller
+@RequestMapping("/passes")
+@CrossOrigin
+public class PassController {
+
+    private final PassService passService;
+
+    @Autowired
+    public PassController(PassService passService) {
+        this.passService = passService;
+    }
+
+    @PostMapping("/{email}")
+    @Operation(summary = "WIP: Create a pass", description = "Create a pass for a member by email, " +
+            "possible for a member and an ADMIN and PASS_MANAGEMENT workers. IN THE FUTURE WILL REQUIRE PAYMENT (only from members). " +
+            "if the payment doesn't go through, the pass will be created but inactive. " +
+            "WORK IN PROGRESS: for now it only creates an active pass based on an offer without payment and any other things")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pass Activated"),
+            @ApiResponse(responseCode = "404", description = "Member OR Offer not found", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Member already has an active pass", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Offer not active OR authenticated user is not authorized to access this resource", content = @Content),
+    })
+    public ResponseEntity<String> createAndActivatePass(@PathVariable String email, @Valid @RequestBody PostPassRequestDto passRequestDto) {
+        //TODO: PAYMENT BEFORE ACTIVATION
+        AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (authenticatedUser instanceof Member && !authenticatedUser.getEmail().equals(email)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Authenticated user is not authorized to access this resource");
+        }
+        try {
+            passService.createPass(email, passRequestDto);
+        } catch (MemberNotFoundException | OfferNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (MemberAlreadyHasActivePassException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (OfferNotActiveException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
+        return ResponseEntity.ok().body("Pass has been successfully created and activated");
+    }
+
+
+
+    //TODO: payment and reactivation of a pass that already exists but is inactive
+
+    //getPasses
+}

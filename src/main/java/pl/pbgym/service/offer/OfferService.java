@@ -205,6 +205,10 @@ public class OfferService {
         return (offerRepository.findByTitle(title).isPresent());
     }
 
+    public boolean offerExists(Long id) {
+        return (offerRepository.findById(id).isPresent());
+    }
+
     private Class<? extends GetOfferResponseDto> determineOfferResponseDtoClass(Offer offer) {
         if (offer instanceof StandardOffer) {
             return GetStandardOfferResponseDto.class;

@@ -86,4 +86,8 @@ public class MemberService {
                 });
         return authenticationResponseDto;
     }
+
+    public boolean memberExists(String email) {
+        return memberRepository.findByEmail(email).isPresent();
+    }
 }

@@ -1,11 +1,9 @@
 package pl.pbgym.domain.pass;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import pl.pbgym.domain.user.AbstractUser;
-import pl.pbgym.domain.user.Address;
 import pl.pbgym.domain.user.Member;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -19,10 +17,13 @@ public class Pass {
     private Long id;
 
     @Column(name = "dateStart", nullable = false)
-    private Date dateStart;
+    private LocalDateTime dateStart;
 
     @Column(name = "dateEnd", nullable = false)
-    private Date dateEnd;
+    private LocalDateTime dateEnd;
+
+    @Column(name = "dateOfNextPayment", nullable = false)
+    private LocalDateTime dateOfNextPayment;
 
     @Column(name = "monthylPrice", nullable = false)
     private Double monthlyPrice;
@@ -45,20 +46,28 @@ public class Pass {
         this.id = id;
     }
 
-    public Date getDateStart() {
+    public LocalDateTime getDateStart() {
         return dateStart;
     }
 
-    public void setDateStart(Date dateStart) {
+    public void setDateStart(LocalDateTime dateStart) {
         this.dateStart = dateStart;
     }
 
-    public Date getDateEnd() {
+    public LocalDateTime getDateEnd() {
         return dateEnd;
     }
 
-    public void setDateEnd(Date dateEnd) {
+    public void setDateEnd(LocalDateTime dateEnd) {
         this.dateEnd = dateEnd;
+    }
+
+    public LocalDateTime getDateOfNextPayment() {
+        return dateOfNextPayment;
+    }
+
+    public void setDateOfNextPayment(LocalDateTime dateOfNextPayment) {
+        this.dateOfNextPayment = dateOfNextPayment;
     }
 
     public Double getMonthlyPrice() {
@@ -84,4 +93,5 @@ public class Pass {
     public void setMember(Member member) {
         this.member = member;
     }
+
 }
