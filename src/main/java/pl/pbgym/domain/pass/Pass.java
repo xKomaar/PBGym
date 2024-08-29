@@ -16,6 +16,9 @@ public class Pass {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Column(name = "title", nullable = false, unique = true)
+    private String title;
+
     @Column(name = "dateStart", nullable = false)
     private LocalDateTime dateStart;
 
@@ -44,6 +47,14 @@ public class Pass {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public LocalDateTime getDateStart() {

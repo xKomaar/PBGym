@@ -75,6 +75,7 @@ public class PassService {
         LocalDateTime dateEnd = dateStart.plusMonths(offer.getDurationInMonths()).withHour(23).withMinute(59).withSecond(59);
 
         Pass pass = new Pass();
+        pass.setTitle(offer.getTitle());
         pass.setDateStart(dateStart);
         pass.setDateOfNextPayment(dateOfNextPayment);
         pass.setDateEnd(dateEnd);

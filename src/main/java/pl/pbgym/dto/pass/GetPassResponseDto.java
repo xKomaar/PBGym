@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 public class GetPassResponseDto {
     private Long id;
+    private String title;
     private LocalDateTime dateStart;
     private LocalDateTime dateEnd;
     private LocalDateTime dateOfNextPayment;
@@ -19,6 +20,14 @@ public class GetPassResponseDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public LocalDateTime getDateStart() {
