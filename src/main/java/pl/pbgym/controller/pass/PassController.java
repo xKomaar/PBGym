@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.pbgym.domain.user.AbstractUser;
 import pl.pbgym.domain.user.Member;
 import pl.pbgym.dto.offer.OfferNotActiveException;
+import pl.pbgym.dto.pass.GetPassResponseDto;
 import pl.pbgym.dto.pass.PostPassRequestDto;
 import pl.pbgym.exception.offer.OfferNotFoundException;
 import pl.pbgym.exception.pass.MemberAlreadyHasActivePassException;
@@ -61,6 +62,27 @@ public class PassController {
         return ResponseEntity.ok().body("Pass has been successfully created and activated");
     }
 
+    @GetMapping("/{email}")
+    @Operation(summary = "WIP: Create a pass", description = "Create a pass for a member by email, " +
+            "possible for a member and an ADMIN and PASS_MANAGEMENT workers. IN THE FUTURE WILL REQUIRE PAYMENT (only from members). " +
+            "if the payment doesn't go through, the pass will be created but inactive. " +
+            "WORK IN PROGRESS: for now it only creates an active pass based on an offer without payment and any other things")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pass Fetched"),
+            @ApiResponse(responseCode = "404", description = "Member not found", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Authenticated user is not authorized to access this resource", content = @Content),
+    })
+    public ResponseEntity<GetPassResponseDto> getPass(@PathVariable String email) {
+        AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (authenticatedUser instanceof Member && !authenticatedUser.getEmail().equals(email)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        try {
+            return ResponseEntity.ok(passService.getPassByEmail(email));
+        } catch (MemberNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 
 
     //TODO: payment and reactivation of a pass that already exists but is inactive

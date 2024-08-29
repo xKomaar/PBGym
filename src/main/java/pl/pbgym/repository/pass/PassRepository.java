@@ -1,6 +1,7 @@
 package pl.pbgym.repository.pass;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import pl.pbgym.domain.pass.Pass;
@@ -11,5 +12,9 @@ public interface PassRepository extends JpaRepository<Pass, Long> {
 
     @Query("SELECT p FROM Pass p WHERE p.member.email = :email")
     Optional<Pass> findByMemberEmail(@Param("email") String email);
+
+    @Modifying
+    @Query("UPDATE Pass p SET p.isActive = false WHERE p.dateEnd < CURRENT_TIMESTAMP")
+    void deactivateExpiredPasses();
 
 }
