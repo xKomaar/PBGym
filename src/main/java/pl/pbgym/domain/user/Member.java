@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import pl.pbgym.domain.pass.Pass;
 
-import java.util.List;
-
 @Entity
 @Table(name="member")
 @PrimaryKeyJoinColumn(name = "member_id")
@@ -13,15 +11,15 @@ public class Member extends AbstractUser {
     public Member() {
     }
 
-    @OneToOne(mappedBy = "member", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "member", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JsonIgnore
-    private Pass passes;
+    private Pass pass;
 
-    public Pass getPasses() {
-        return passes;
+    public Pass getPass() {
+        return pass;
     }
 
-    public void setPasses(Pass passes) {
-        this.passes = passes;
+    public void setPass(Pass passes) {
+        this.pass = pass;
     }
 }

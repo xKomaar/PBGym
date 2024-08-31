@@ -18,7 +18,10 @@ import pl.pbgym.repository.user.PermissionRepository;
 import pl.pbgym.repository.user.WorkerRepository;
 import pl.pbgym.service.auth.AuthenticationService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkerService {
@@ -65,8 +68,8 @@ public class WorkerService {
         worker.ifPresentOrElse(w -> {
                     w.setPosition(updateWorkerAuthorityRequestDto.getPosition());
                     permissionRepository.deleteAll(w.getPermissions());
-                    if(!updateWorkerAuthorityRequestDto.getPermissions().isEmpty()) {
-                        for(PermissionType p : updateWorkerAuthorityRequestDto.getPermissions()) {
+                    if (!updateWorkerAuthorityRequestDto.getPermissions().isEmpty()) {
+                        for (PermissionType p : updateWorkerAuthorityRequestDto.getPermissions()) {
                             Permission permission = new Permission();
                             permission.setWorker(w);
                             permission.set(p);
@@ -83,7 +86,7 @@ public class WorkerService {
     public void updatePassword(String oldPassword, String newPassword, String email) {
         Optional<Worker> worker = workerRepository.findByEmail(email);
         worker.ifPresentOrElse(w -> {
-                    if(!passwordEncoder.matches(oldPassword, w.getPassword())) {
+                    if (!passwordEncoder.matches(oldPassword, w.getPassword())) {
                         throw new RuntimeException("Old password is incorrect");
                     } else {
                         w.setPassword(passwordEncoder.encode(newPassword));
@@ -116,5 +119,15 @@ public class WorkerService {
                     throw new EntityNotFoundException("User not found with email: " + email);
                 });
         return authenticationResponseDto;
+    }
+
+    public List<GetWorkerResponseDto> getAllWorkers() {
+        return workerRepository.findAll().stream()
+                .map(worker -> {
+                    GetWorkerResponseDto responseDto = modelMapper.map(worker, GetWorkerResponseDto.class);
+                    responseDto.setPermissions(worker.getMappedPermissions());
+                    return responseDto;
+                })
+                .collect(Collectors.toList());
     }
 }

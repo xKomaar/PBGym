@@ -25,6 +25,8 @@ import pl.pbgym.exception.user.worker.WorkerNotFoundException;
 import pl.pbgym.service.user.AbstractUserService;
 import pl.pbgym.service.user.worker.WorkerService;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/workers")
 @CrossOrigin
@@ -38,6 +40,20 @@ public class WorkerController {
     public WorkerController(WorkerService workerService, AbstractUserService abstractUserService) {
         this.workerService = workerService;
         this.abstractUserService = abstractUserService;
+    }
+
+    @GetMapping("/all")
+    @Operation(summary = "Get all workers", description = "Fetches all workers, possible only for ADMIN workers.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Worker found and returned successfully"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+    })
+    public ResponseEntity<List<GetWorkerResponseDto>> getAllWorkers() {
+        try {
+            return ResponseEntity.ok(workerService.getAllWorkers());
+        } catch (WorkerNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @GetMapping("/{email}")

@@ -34,7 +34,7 @@ public class Pass {
     @Column(name = "isActive", nullable = false)
     private boolean isActive;
 
-    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id", referencedColumnName = "member_id", nullable = false)
     private Member member;
 

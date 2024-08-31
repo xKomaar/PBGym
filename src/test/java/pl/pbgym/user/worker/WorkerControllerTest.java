@@ -531,4 +531,26 @@ public class WorkerControllerTest {
                         .content(jsonChangeEmailRequest))
                 .andExpect(status().isConflict());
     }
+
+    @Test
+    public void shouldReturnOkAndCorrectNumberOfWorkersWhenAdminGetsAllWorkers() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get("/workers/all")
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        List<GetWorkerResponseDto> workers = objectMapper.readValue(jsonResponse, objectMapper.getTypeFactory().constructCollectionType(List.class, GetWorkerResponseDto.class));
+
+        assertEquals(2, workers.size());
+    }
+
+    @Test
+    public void shouldReturnForbiddenWhenWorkerGetsAllWorkers() throws Exception {
+        mockMvc.perform(get("/workers/all")
+                        .header("Authorization", "Bearer " + workerJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+    }
 }
