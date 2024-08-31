@@ -11,9 +11,11 @@ import pl.pbgym.dto.auth.PostTrainerRequestDto;
 import pl.pbgym.dto.auth.PostWorkerRequestDto;
 import pl.pbgym.dto.offer.special.PostSpecialOfferRequestDto;
 import pl.pbgym.dto.offer.standard.PostStandardOfferRequestDto;
+import pl.pbgym.dto.pass.PostPassRequestDto;
 import pl.pbgym.repository.user.AbstractUserRepository;
 import pl.pbgym.service.auth.AuthenticationService;
 import pl.pbgym.service.offer.OfferService;
+import pl.pbgym.service.pass.PassService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,11 +31,14 @@ public class DataSeeder implements CommandLineRunner {
 
     private final OfferService offerService;
 
+    private final PassService passService;
+
     @Autowired
-    public DataSeeder(AbstractUserRepository abstractUserRepository, AuthenticationService authenticationService, OfferService offerService) {
+    public DataSeeder(AbstractUserRepository abstractUserRepository, AuthenticationService authenticationService, OfferService offerService, PassService passService) {
         this.abstractUserRepository = abstractUserRepository;
         this.authenticationService = authenticationService;
         this.offerService = offerService;
+        this.passService = passService;
     }
 
     @Override
@@ -43,6 +48,7 @@ public class DataSeeder implements CommandLineRunner {
         this.loadMemberData();
         this.loadTrainerData();
         this.loadOfferData();
+        this.loadPassDate();
     }
 
     private void loadWorkerData() {
@@ -183,4 +189,12 @@ public class DataSeeder implements CommandLineRunner {
         offerService.saveSpecialOffer(postSpecialOfferRequest);
     }
 
+    private void loadPassDate() {
+        Long offerId = offerService.getAllActiveOffers().getFirst().getId();
+
+        PostPassRequestDto postPassRequestDto = new PostPassRequestDto();
+        postPassRequestDto.setOfferId(offerId);
+
+        passService.createPass("test1@member.com", postPassRequestDto);
+    }
 }
