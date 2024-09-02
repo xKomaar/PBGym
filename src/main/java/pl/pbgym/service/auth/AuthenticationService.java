@@ -9,6 +9,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pbgym.domain.user.*;
+import pl.pbgym.domain.user.member.Member;
+import pl.pbgym.domain.user.trainer.Trainer;
+import pl.pbgym.domain.user.worker.Permission;
+import pl.pbgym.domain.user.worker.PermissionType;
+import pl.pbgym.domain.user.worker.Worker;
 import pl.pbgym.dto.auth.*;
 import pl.pbgym.repository.user.*;
 

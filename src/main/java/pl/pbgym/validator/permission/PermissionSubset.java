@@ -2,7 +2,7 @@ package pl.pbgym.validator.permission;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import pl.pbgym.domain.user.PermissionType;
+import pl.pbgym.domain.user.worker.PermissionType;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;

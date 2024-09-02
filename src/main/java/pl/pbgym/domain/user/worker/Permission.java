@@ -1,4 +1,4 @@
-package pl.pbgym.domain.user;
+package pl.pbgym.domain.user.worker;
 
 import jakarta.persistence.*;
 

@@ -14,7 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import pl.pbgym.domain.user.PermissionType;
+import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.dto.auth.*;
 import pl.pbgym.dto.user.worker.GetWorkerResponseDto;
 import pl.pbgym.dto.user.worker.UpdateWorkerAuthorityRequestDto;

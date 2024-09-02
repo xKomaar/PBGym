@@ -2,7 +2,7 @@ package pl.pbgym.validator.permission;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import pl.pbgym.domain.user.PermissionType;
+import pl.pbgym.domain.user.worker.PermissionType;
 
 import java.util.Arrays;
 import java.util.List;

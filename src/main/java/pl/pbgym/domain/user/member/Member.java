@@ -1,8 +1,9 @@
-package pl.pbgym.domain.user;
+package pl.pbgym.domain.user.member;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import pl.pbgym.domain.pass.Pass;
+import pl.pbgym.domain.user.AbstractUser;
 
 @Entity
 @Table(name="member")
@@ -14,6 +15,10 @@ public class Member extends AbstractUser {
     @OneToOne(mappedBy = "member", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JsonIgnore
     private Pass pass;
+
+    @OneToOne(mappedBy = "member", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    private CreditCardInfo creditCardInfo;
 
     public Pass getPass() {
         return pass;

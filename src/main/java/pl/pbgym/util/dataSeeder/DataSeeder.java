@@ -1,10 +1,10 @@
-package pl.pbgym.config.dataSeeder;
+package pl.pbgym.util.dataSeeder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import pl.pbgym.domain.user.PermissionType;
+import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.dto.auth.PostMemberRequestDto;
 import pl.pbgym.dto.auth.PostTrainerRequestDto;

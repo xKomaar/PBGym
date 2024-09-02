@@ -1,10 +1,9 @@
 package pl.pbgym.domain.pass;
 
 import jakarta.persistence.*;
-import pl.pbgym.domain.user.Member;
+import pl.pbgym.domain.user.member.Member;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name="pass")

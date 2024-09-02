@@ -1,6 +1,7 @@
-package pl.pbgym.domain.user;
+package pl.pbgym.domain.user.trainer;
 
 import jakarta.persistence.*;
+import pl.pbgym.domain.user.AbstractUser;
 
 @Entity
 @Table(name="trainer")

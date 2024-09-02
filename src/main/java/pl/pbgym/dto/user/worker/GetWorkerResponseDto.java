@@ -1,6 +1,6 @@
 package pl.pbgym.dto.user.worker;
 
-import pl.pbgym.domain.user.PermissionType;
+import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.dto.user.GetAddressResponseDto;
 
 import java.time.LocalDate;

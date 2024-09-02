@@ -1,7 +1,7 @@
 package pl.pbgym.repository.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.pbgym.domain.user.Member;
+import pl.pbgym.domain.user.member.Member;
 
 import java.util.Optional;
 

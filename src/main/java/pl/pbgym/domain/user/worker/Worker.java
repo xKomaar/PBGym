@@ -1,6 +1,9 @@
-package pl.pbgym.domain.user;
+package pl.pbgym.domain.user.worker;
 
 import jakarta.persistence.*;
+import pl.pbgym.domain.user.AbstractUser;
+import pl.pbgym.domain.user.worker.Permission;
+import pl.pbgym.domain.user.worker.PermissionType;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,9 @@
-package pl.pbgym.service.pass;
+package pl.pbgym.util.pass;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import pl.pbgym.service.pass.PassService;
 
 @Component
 public class PassScheduler {

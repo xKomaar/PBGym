@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pbgym.domain.offer.Offer;
 import pl.pbgym.domain.pass.Pass;
-import pl.pbgym.domain.user.Member;
-import pl.pbgym.dto.offer.OfferNotActiveException;
+import pl.pbgym.domain.user.member.Member;
+import pl.pbgym.exception.offer.OfferNotActiveException;
 import pl.pbgym.dto.pass.GetPassResponseDto;
 import pl.pbgym.dto.pass.PostPassRequestDto;
 import pl.pbgym.exception.offer.OfferNotFoundException;
@@ -16,11 +16,9 @@ import pl.pbgym.exception.user.member.MemberNotFoundException;
 import pl.pbgym.repository.offer.OfferRepository;
 import pl.pbgym.repository.pass.PassRepository;
 import pl.pbgym.repository.user.MemberRepository;
-import pl.pbgym.service.offer.OfferService;
 import pl.pbgym.service.user.member.MemberService;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class PassService {
