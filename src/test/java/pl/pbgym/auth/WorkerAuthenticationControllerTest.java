@@ -21,7 +21,7 @@ import pl.pbgym.service.auth.AuthenticationService;
 import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.repository.user.AbstractUserRepository;
 import pl.pbgym.repository.user.AddressRepository;
-import pl.pbgym.repository.user.PermissionRepository;
+import pl.pbgym.repository.user.worker.PermissionRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

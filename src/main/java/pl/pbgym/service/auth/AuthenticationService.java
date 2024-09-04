@@ -16,6 +16,10 @@ import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.domain.user.worker.Worker;
 import pl.pbgym.dto.auth.*;
 import pl.pbgym.repository.user.*;
+import pl.pbgym.repository.user.member.MemberRepository;
+import pl.pbgym.repository.user.trainer.TrainerRepository;
+import pl.pbgym.repository.user.worker.PermissionRepository;
+import pl.pbgym.repository.user.worker.WorkerRepository;
 
 @Service
 public class AuthenticationService {

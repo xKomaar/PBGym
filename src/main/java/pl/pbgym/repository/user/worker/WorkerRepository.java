@@ -1,4 +1,4 @@
-package pl.pbgym.repository.user;
+package pl.pbgym.repository.user.worker;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import pl.pbgym.domain.user.worker.Worker;

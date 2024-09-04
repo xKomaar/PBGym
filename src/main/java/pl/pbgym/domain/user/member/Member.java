@@ -27,4 +27,12 @@ public class Member extends AbstractUser {
     public void setPass(Pass passes) {
         this.pass = pass;
     }
+
+    public CreditCardInfo getCreditCardInfo() {
+        return creditCardInfo;
+    }
+
+    public void setCreditCardInfo(CreditCardInfo creditCardInfo) {
+        this.creditCardInfo = creditCardInfo;
+    }
 }

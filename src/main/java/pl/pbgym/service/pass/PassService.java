@@ -15,7 +15,7 @@ import pl.pbgym.exception.pass.MemberAlreadyHasActivePassException;
 import pl.pbgym.exception.user.member.MemberNotFoundException;
 import pl.pbgym.repository.offer.OfferRepository;
 import pl.pbgym.repository.pass.PassRepository;
-import pl.pbgym.repository.user.MemberRepository;
+import pl.pbgym.repository.user.member.MemberRepository;
 import pl.pbgym.service.user.member.MemberService;
 
 import java.time.LocalDateTime;

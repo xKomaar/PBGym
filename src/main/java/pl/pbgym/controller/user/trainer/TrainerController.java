@@ -20,6 +20,7 @@ import pl.pbgym.dto.auth.ChangeEmailRequestDto;
 import pl.pbgym.dto.auth.ChangePasswordRequestDto;
 import pl.pbgym.dto.user.trainer.UpdateTrainerRequestDto;
 import pl.pbgym.dto.user.trainer.GetTrainerResponseDto;
+import pl.pbgym.exception.user.IncorrectPasswordException;
 import pl.pbgym.exception.user.trainer.TrainerNotFoundException;
 import pl.pbgym.service.user.AbstractUserService;
 import pl.pbgym.service.user.trainer.TrainerService;
@@ -112,7 +113,7 @@ public class TrainerController {
             return ResponseEntity.status(HttpStatus.OK).body("Trainer password updated successfully");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (RuntimeException e) {
+        } catch (IncorrectPasswordException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }

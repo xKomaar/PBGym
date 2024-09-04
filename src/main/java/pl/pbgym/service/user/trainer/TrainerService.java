@@ -10,8 +10,9 @@ import pl.pbgym.domain.user.trainer.Trainer;
 import pl.pbgym.dto.auth.AuthenticationResponseDto;
 import pl.pbgym.dto.user.trainer.GetTrainerResponseDto;
 import pl.pbgym.dto.user.trainer.UpdateTrainerRequestDto;
+import pl.pbgym.exception.user.IncorrectPasswordException;
 import pl.pbgym.exception.user.trainer.TrainerNotFoundException;
-import pl.pbgym.repository.user.TrainerRepository;
+import pl.pbgym.repository.user.trainer.TrainerRepository;
 import pl.pbgym.service.auth.AuthenticationService;
 
 import java.util.Optional;
@@ -52,7 +53,7 @@ public class TrainerService {
         Optional<Trainer> trainer = trainerRepository.findByEmail(email);
         trainer.ifPresentOrElse(t -> {
                     if(!passwordEncoder.matches(oldPassword, t.getPassword())) {
-                        throw new RuntimeException("Old password is incorrect");
+                        throw new IncorrectPasswordException("Old password is incorrect");
                     } else {
                         t.setPassword(passwordEncoder.encode(newPassword));
                     }

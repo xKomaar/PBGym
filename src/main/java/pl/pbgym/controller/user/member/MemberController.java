@@ -19,6 +19,7 @@ import pl.pbgym.dto.auth.ChangeEmailRequestDto;
 import pl.pbgym.dto.auth.ChangePasswordRequestDto;
 import pl.pbgym.dto.user.member.GetMemberResponseDto;
 import pl.pbgym.dto.user.member.UpdateMemberRequestDto;
+import pl.pbgym.exception.user.IncorrectPasswordException;
 import pl.pbgym.exception.user.member.MemberNotFoundException;
 import pl.pbgym.service.user.AbstractUserService;
 import pl.pbgym.service.user.member.MemberService;
@@ -112,7 +113,7 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.OK).body("Member password updated successfully");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (RuntimeException e) {
+        } catch (IncorrectPasswordException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }

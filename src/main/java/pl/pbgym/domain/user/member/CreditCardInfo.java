@@ -13,7 +13,6 @@ public class CreditCardInfo {
     @SequenceGenerator(name="credit_card_seq_gen", sequenceName="CREDIT_CARD_SEQ", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;
-
     @JsonIgnore
     @Column(name = "cardNumber", nullable = false)
     private String cardNumber;

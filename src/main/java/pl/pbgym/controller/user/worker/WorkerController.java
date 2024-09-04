@@ -21,6 +21,7 @@ import pl.pbgym.dto.auth.ChangePasswordRequestDto;
 import pl.pbgym.dto.user.worker.UpdateWorkerAuthorityRequestDto;
 import pl.pbgym.dto.user.worker.UpdateWorkerRequestDto;
 import pl.pbgym.dto.user.worker.GetWorkerResponseDto;
+import pl.pbgym.exception.user.IncorrectPasswordException;
 import pl.pbgym.exception.user.worker.WorkerNotFoundException;
 import pl.pbgym.service.user.AbstractUserService;
 import pl.pbgym.service.user.worker.WorkerService;
@@ -169,7 +170,7 @@ public class WorkerController {
             return ResponseEntity.status(HttpStatus.OK).body("Worker password updated successfully");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (RuntimeException e) {
+        } catch (IncorrectPasswordException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }

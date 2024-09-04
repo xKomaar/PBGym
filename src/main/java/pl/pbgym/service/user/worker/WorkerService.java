@@ -13,9 +13,10 @@ import pl.pbgym.dto.auth.AuthenticationResponseDto;
 import pl.pbgym.dto.user.worker.UpdateWorkerAuthorityRequestDto;
 import pl.pbgym.dto.user.worker.UpdateWorkerRequestDto;
 import pl.pbgym.dto.user.worker.GetWorkerResponseDto;
+import pl.pbgym.exception.user.IncorrectPasswordException;
 import pl.pbgym.exception.user.worker.WorkerNotFoundException;
-import pl.pbgym.repository.user.PermissionRepository;
-import pl.pbgym.repository.user.WorkerRepository;
+import pl.pbgym.repository.user.worker.PermissionRepository;
+import pl.pbgym.repository.user.worker.WorkerRepository;
 import pl.pbgym.service.auth.AuthenticationService;
 
 import java.util.List;
@@ -86,7 +87,7 @@ public class WorkerService {
         Optional<Worker> worker = workerRepository.findByEmail(email);
         worker.ifPresentOrElse(w -> {
                     if (!passwordEncoder.matches(oldPassword, w.getPassword())) {
-                        throw new RuntimeException("Old password is incorrect");
+                        throw new IncorrectPasswordException("Old password is incorrect");
                     } else {
                         w.setPassword(passwordEncoder.encode(newPassword));
                     }

@@ -11,8 +11,9 @@ import pl.pbgym.domain.user.member.Member;
 import pl.pbgym.dto.auth.AuthenticationResponseDto;
 import pl.pbgym.dto.user.member.GetMemberResponseDto;
 import pl.pbgym.dto.user.member.UpdateMemberRequestDto;
+import pl.pbgym.exception.user.IncorrectPasswordException;
 import pl.pbgym.exception.user.member.MemberNotFoundException;
-import pl.pbgym.repository.user.MemberRepository;
+import pl.pbgym.repository.user.member.MemberRepository;
 import pl.pbgym.service.auth.AuthenticationService;
 
 import java.util.Optional;
@@ -53,7 +54,7 @@ public class MemberService {
         Optional<Member> member = memberRepository.findByEmail(email);
         member.ifPresentOrElse(m -> {
                     if(!passwordEncoder.matches(oldPassword, m.getPassword())) {
-                        throw new RuntimeException("Old password is incorrect");
+                        throw new IncorrectPasswordException("Old password is incorrect");
                     } else {
                         m.setPassword(passwordEncoder.encode(newPassword));
                     }
