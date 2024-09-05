@@ -33,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles(profiles = "test")
 @Profile("test")
-@DirtiesContext
 public class MemberAuthenticationControllerTest {
 
     @Autowired
