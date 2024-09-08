@@ -10,8 +10,8 @@ public class EncryptionUtil {
     private static final String TRANSFORMATION = "AES/ECB/PKCS5Padding";
     private final SecretKeySpec secretKeySpec;
 
-    public EncryptionUtil(String secretKey) {
-        byte[] keyBytes = secretKey.getBytes();
+    public EncryptionUtil(String base64SecretKey ) {
+        byte[] keyBytes = Base64.getDecoder().decode(base64SecretKey);
         this.secretKeySpec = new SecretKeySpec(keyBytes, ALGORITHM);
     }
 

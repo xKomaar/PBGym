@@ -9,10 +9,10 @@ import pl.pbgym.util.encryption.EncryptionUtil;
 public class EncryptionConfig {
 
     @Value("${env.ENCRYPTION_SECRET_KEY}")
-    private String secretKey;
+    private String base64SecretKey;
 
     @Bean
     public EncryptionUtil encryptionUtil() {
-        return new EncryptionUtil(secretKey);
+        return new EncryptionUtil(base64SecretKey);
     }
 }

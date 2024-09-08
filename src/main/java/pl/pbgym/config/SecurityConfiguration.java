@@ -3,6 +3,7 @@ package pl.pbgym.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -30,8 +31,8 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .headers((headers) -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-                .authorizeHttpRequests((auth) -> auth
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/registerMember", "/auth/authenticate").permitAll()
                         .requestMatchers("/auth/registerTrainer").hasAnyAuthority("ADMIN", "USER_MANAGEMENT")
                         .requestMatchers("/auth/registerWorker").hasAuthority("ADMIN")
@@ -45,6 +46,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/offers/public/active").permitAll()
                         .requestMatchers("/offers/**").hasAnyAuthority("ADMIN", "PASS_MANAGEMENT")
                         .requestMatchers("/passes/**").hasAnyAuthority("MEMBER", "ADMIN", "PASS_MANAGEMENT")
+                        .requestMatchers(HttpMethod.DELETE, "/creditCardInfo/**").hasAnyAuthority("MEMBER", "ADMIN", "USER_MANAGEMENT")
+                        .requestMatchers("/creditCardInfo/**").hasAuthority("MEMBER")
                         .requestMatchers("/swagger/**", "/swagger-ui/**", "v3/api-docs/**").permitAll()
                         .requestMatchers("/ping").permitAll()
                         .anyRequest().authenticated()

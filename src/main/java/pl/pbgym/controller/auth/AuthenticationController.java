@@ -15,7 +15,7 @@ import pl.pbgym.service.user.AbstractUserService;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin //TODO tu trzeba bedzie ustalic potem origin dla vue
+@CrossOrigin
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;

@@ -51,7 +51,7 @@ public abstract class AbstractUser implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority;
         return switch (this) {
-            case Member member -> Collections.singletonList(new SimpleGrantedAuthority("USER"));
+            case Member member -> Collections.singletonList(new SimpleGrantedAuthority("MEMBER"));
             case Trainer trainer -> Collections.singletonList(new SimpleGrantedAuthority("TRAINER"));
             case Worker worker -> Stream.concat(
                         Stream.of(new SimpleGrantedAuthority("WORKER")),

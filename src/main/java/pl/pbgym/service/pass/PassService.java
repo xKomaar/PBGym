@@ -41,26 +41,24 @@ public class PassService {
     @Transactional
     public void createPass(String email, PostPassRequestDto passRequestDto) {
         memberRepository.findByEmail(email).ifPresentOrElse(
-                (member -> {
-                    offerRepository.findById(passRequestDto.getOfferId()).ifPresentOrElse(
-                            (offer) -> {
-                                if (!offer.isActive()) {
-                                    throw new OfferNotActiveException("Offer is not active with id " + passRequestDto.getOfferId());
-                                }
-                                passRepository.findByMemberEmail(email).ifPresent((pass) -> {
-                                    if (pass.isActive()) {
-                                        throw new MemberAlreadyHasActivePassException("Member already has an active pass!");
-                                    }
-                                });
-
-                                Pass pass = createPassClass(member, offer);
-                                passRepository.save(pass);
-                            },
-                            () -> {
-                                throw new OfferNotFoundException("Offer not found with id " + passRequestDto.getOfferId());
+                (member -> offerRepository.findById(passRequestDto.getOfferId()).ifPresentOrElse(
+                        offer -> {
+                            if (!offer.isActive()) {
+                                throw new OfferNotActiveException("Offer is not active with id " + passRequestDto.getOfferId());
                             }
-                    );
-                }),
+                            passRepository.findByMemberEmail(email).ifPresent(pass -> {
+                                if (pass.isActive()) {
+                                    throw new MemberAlreadyHasActivePassException("Member already has an active pass!");
+                                }
+                            });
+
+                            Pass pass = createPassClass(member, offer);
+                            passRepository.save(pass);
+                        },
+                        () -> {
+                            throw new OfferNotFoundException("Offer not found with id " + passRequestDto.getOfferId());
+                        }
+                )),
                 () -> {
                     throw new MemberNotFoundException("Member not found with email " + email);
                 }
