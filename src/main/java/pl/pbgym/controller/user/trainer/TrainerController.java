@@ -63,7 +63,7 @@ public class TrainerController {
 
     @PutMapping("/{email}")
     @Operation(summary = "Update a trainer by email", description = "Fetches the trainer details by their email and updates their data, " +
-            "possible only for ADMIN and USER_MANAGEMENT workers and for the trainer who owns the data.")
+            "possible only for ADMIN and USER_MANAGEMENT workers and for the trainer who owns the data. Gender types: MALE, FEMALE, OTHER")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Trainer found and updated successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),

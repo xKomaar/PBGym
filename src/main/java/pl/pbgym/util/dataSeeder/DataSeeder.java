@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import pl.pbgym.domain.user.Gender;
 import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.dto.auth.PostMemberRequestDto;
@@ -68,6 +69,7 @@ public class DataSeeder implements CommandLineRunner {
         adminWorkerRequest.setPhoneNumber("123456789");
         adminWorkerRequest.setIdCardNumber("ABC123456");
         adminWorkerRequest.setPosition("Owner");
+        adminWorkerRequest.setGender(Gender.FEMALE);
         adminWorkerRequest.setAddress(postAddressRequestDto);
 
         List<PermissionType> permissions = new ArrayList<>();
@@ -86,6 +88,7 @@ public class DataSeeder implements CommandLineRunner {
         postMemberRequestDto.setBirthdate(LocalDate.of(2002, 5, 10));
         postMemberRequestDto.setPesel("12345678912");
         postMemberRequestDto.setPhoneNumber("123123123");
+        postMemberRequestDto.setGender(Gender.MALE);
 
         PostAddressRequestDto postAddressRequestDto = new PostAddressRequestDto();
         postAddressRequestDto.setCity("Bialystok");
@@ -105,6 +108,7 @@ public class DataSeeder implements CommandLineRunner {
         postMemberRequestDto2.setBirthdate(LocalDate.of(1999, 2, 3));
         postMemberRequestDto2.setPesel("12345678912");
         postMemberRequestDto2.setPhoneNumber("123123123");
+        postMemberRequestDto2.setGender(Gender.OTHER);
 
         PostAddressRequestDto postAddressRequestDto2 = new PostAddressRequestDto();
         postAddressRequestDto2.setCity("Hajnowka");
@@ -126,6 +130,7 @@ public class DataSeeder implements CommandLineRunner {
         postTrainerRequestDto.setBirthdate(LocalDate.of(19983, 12, 24));
         postTrainerRequestDto.setPesel("12345678912");
         postTrainerRequestDto.setPhoneNumber("123123123");
+        postTrainerRequestDto.setGender(Gender.MALE);
 
         PostAddressRequestDto postAddressRequestDto = new PostAddressRequestDto();
         postAddressRequestDto.setCity("Bialystok");

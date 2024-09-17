@@ -17,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import pl.pbgym.domain.user.Gender;
 import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
 import pl.pbgym.dto.auth.PostMemberRequestDto;
@@ -68,6 +69,7 @@ public class MemberAuthenticationControllerTest {
         memberRegisterRequest.setBirthdate(LocalDate.of(2002, 5, 10));
         memberRegisterRequest.setPesel("12345678912");
         memberRegisterRequest.setPhoneNumber("123123123");
+        memberRegisterRequest.setGender(Gender.FEMALE);
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
@@ -95,6 +97,7 @@ public class MemberAuthenticationControllerTest {
         memberRegisterRequest1.setBirthdate(LocalDate.of(2002, 5, 10));
         memberRegisterRequest1.setPesel("12345678912");
         memberRegisterRequest1.setPhoneNumber("123123123");
+        memberRegisterRequest1.setGender(Gender.FEMALE);
 
         PostMemberRequestDto memberRegisterRequest2 = new PostMemberRequestDto();
         memberRegisterRequest2.setEmail("test2@member.com");
@@ -104,6 +107,7 @@ public class MemberAuthenticationControllerTest {
         memberRegisterRequest2.setBirthdate(LocalDate.of(2003, 5, 10));
         memberRegisterRequest2.setPesel("98765432112");
         memberRegisterRequest2.setPhoneNumber("321321321");
+        memberRegisterRequest2.setGender(Gender.FEMALE);
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
@@ -137,6 +141,7 @@ public class MemberAuthenticationControllerTest {
         memberRegisterRequest.setBirthdate(null);
         memberRegisterRequest.setPesel("123");
         memberRegisterRequest.setPhoneNumber("123");
+        memberRegisterRequest.setGender(Gender.MALE);
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("i");
@@ -164,6 +169,7 @@ public class MemberAuthenticationControllerTest {
         memberRegisterRequest.setBirthdate(null);
         memberRegisterRequest.setPesel("123");
         memberRegisterRequest.setPhoneNumber("123");
+        memberRegisterRequest.setGender(null);
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("");
@@ -191,6 +197,7 @@ public class MemberAuthenticationControllerTest {
         memberRegisterRequest.setBirthdate(LocalDate.of(2002, 5, 10));
         memberRegisterRequest.setPesel("12345678912");
         memberRegisterRequest.setPhoneNumber("123123123");
+        memberRegisterRequest.setGender(Gender.FEMALE);
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity(" ");
@@ -218,6 +225,7 @@ public class MemberAuthenticationControllerTest {
         registerRequest.setBirthdate(LocalDate.of(1990, 1, 1));
         registerRequest.setPesel("12345678912");
         registerRequest.setPhoneNumber("123456789");
+        registerRequest.setGender(Gender.FEMALE);
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");

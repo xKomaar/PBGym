@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import pl.pbgym.controller.offer.OfferController;
 import pl.pbgym.domain.offer.Offer;
 import pl.pbgym.domain.offer.SpecialOffer;
+import pl.pbgym.domain.user.Gender;
 import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
@@ -88,6 +89,7 @@ public class OfferControllerTest {
         postWorkerRequestDto.setPhoneNumber("123123123");
         postWorkerRequestDto.setIdCardNumber("ABD123456");
         postWorkerRequestDto.setPosition("Worker");
+        postWorkerRequestDto.setGender(Gender.MALE);
 
         List<PermissionType> permissionTypeList = new ArrayList<>();
         permissionTypeList.add(PermissionType.PASS_MANAGEMENT);

@@ -35,6 +35,9 @@ public abstract class AbstractUser implements UserDetails {
     private String surname;
     @Column(name = "birthdate", nullable = false)
     private LocalDate birthdate;
+    @Column(name = "gender", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
     @Column(name = "pesel", nullable = false)
     private String pesel;
     @Column(name = "phone_number", nullable = false)
@@ -64,6 +67,10 @@ public abstract class AbstractUser implements UserDetails {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getEmail() {
@@ -128,6 +135,14 @@ public abstract class AbstractUser implements UserDetails {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
     @Override

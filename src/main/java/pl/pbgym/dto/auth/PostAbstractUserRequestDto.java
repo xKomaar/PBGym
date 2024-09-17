@@ -2,6 +2,8 @@ package pl.pbgym.dto.auth;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import pl.pbgym.domain.user.Gender;
+import pl.pbgym.validator.gender.GenderSubset;
 
 import java.time.LocalDate;
 
@@ -29,6 +31,14 @@ public abstract class PostAbstractUserRequestDto {
 
     @NotNull(message = "Birthdate is required.")
     private LocalDate birthdate;
+
+    @NotNull(message = "Gender is required.")
+    @GenderSubset(anyOf = {
+            Gender.FEMALE,
+            Gender.MALE,
+            Gender.OTHER
+    }, message = "Gender need to be MALE, FEMALE or OTHER")
+    private Gender gender;
 
     @NotBlank(message = "Pesel is required.")
     @Pattern(regexp = "^\\d{11}$", message = "Pesel must consist of 11 digits.")
@@ -106,5 +116,13 @@ public abstract class PostAbstractUserRequestDto {
 
     public void setAddress(PostAddressRequestDto address) {
         this.address = address;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 }

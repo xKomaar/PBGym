@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import pl.pbgym.controller.user.member.MemberController;
+import pl.pbgym.domain.user.Gender;
 import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.dto.auth.*;
 import pl.pbgym.dto.user.member.GetMemberResponseDto;
@@ -72,6 +73,7 @@ public class MemberControllerTest {
         postMemberRequestDto.setBirthdate(LocalDate.of(2002, 5, 10));
         postMemberRequestDto.setPesel("12345678912");
         postMemberRequestDto.setPhoneNumber("123123123");
+        postMemberRequestDto.setGender(Gender.FEMALE);
 
         PostAddressRequestDto postAddressRequestDto = new PostAddressRequestDto();
         postAddressRequestDto.setCity("City");
@@ -99,6 +101,7 @@ public class MemberControllerTest {
         adminWorkerRequest.setPhoneNumber("123456789");
         adminWorkerRequest.setIdCardNumber("ABC123456");
         adminWorkerRequest.setPosition("Owner");
+        adminWorkerRequest.setGender(Gender.OTHER);
         adminWorkerRequest.setAddress(postAddressRequestDto2);
 
         List<PermissionType> permissionTypeList = new ArrayList<>();
@@ -123,6 +126,7 @@ public class MemberControllerTest {
         managerWorkerRequest.setPhoneNumber("123456789");
         managerWorkerRequest.setIdCardNumber("ABC123456");
         managerWorkerRequest.setPosition("Manager");
+        managerWorkerRequest.setGender(Gender.MALE);
         managerWorkerRequest.setAddress(postAddressRequestDto3);
 
         List<PermissionType> permissionTypeList2 = new ArrayList<>();

@@ -18,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.pbgym.controller.auth.AuthenticationController;
+import pl.pbgym.domain.user.Gender;
 import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
 import pl.pbgym.dto.auth.PostWorkerRequestDto;
@@ -89,6 +90,7 @@ public class WorkerAuthenticationControllerTest {
         adminWorkerRequest.setPhoneNumber("123456789");
         adminWorkerRequest.setIdCardNumber("ABC123456");
         adminWorkerRequest.setPosition("Owner");
+        adminWorkerRequest.setGender(Gender.MALE);
         adminWorkerRequest.setAddress(postAddressRequestDto);
 
         List<PermissionType> permissions = new ArrayList<>();
@@ -112,6 +114,7 @@ public class WorkerAuthenticationControllerTest {
         workerRegisterRequest.setPesel("12345678912");
         workerRegisterRequest.setPhoneNumber("123123123");
         workerRegisterRequest.setIdCardNumber("XYZ987654");
+        workerRegisterRequest.setGender(Gender.MALE);
         workerRegisterRequest.setPosition("Position");
         workerRegisterRequest.setPermissions(new ArrayList<>());
 
@@ -145,6 +148,7 @@ public class WorkerAuthenticationControllerTest {
         workerRegisterRequest1.setPhoneNumber("123123123");
         workerRegisterRequest1.setIdCardNumber("XYZ987654");
         workerRegisterRequest1.setPosition("Position");
+        workerRegisterRequest1.setGender(Gender.MALE);
         workerRegisterRequest1.setPermissions(new ArrayList<>());
 
         PostAddressRequestDto address1 = new PostAddressRequestDto();
@@ -165,6 +169,7 @@ public class WorkerAuthenticationControllerTest {
         workerRegisterRequest2.setPhoneNumber("321321321");
         workerRegisterRequest2.setIdCardNumber("XYZ654321");
         workerRegisterRequest2.setPosition("Position");
+        workerRegisterRequest2.setGender(Gender.MALE);
         workerRegisterRequest2.setPermissions(new ArrayList<>());
 
         PostAddressRequestDto address2 = new PostAddressRequestDto();
@@ -204,6 +209,7 @@ public class WorkerAuthenticationControllerTest {
         workerRegisterRequest.setPhoneNumber("123");
         workerRegisterRequest.setIdCardNumber("ABC123");
         workerRegisterRequest.setPosition("Position");
+        workerRegisterRequest.setGender(Gender.MALE);
         workerRegisterRequest.setPermissions(new ArrayList<>());
 
         PostAddressRequestDto address = new PostAddressRequestDto();
@@ -235,6 +241,7 @@ public class WorkerAuthenticationControllerTest {
         workerRegisterRequest.setPhoneNumber("123");
         workerRegisterRequest.setIdCardNumber("ABC123");
         workerRegisterRequest.setPosition("Position");
+        workerRegisterRequest.setGender(null);
         workerRegisterRequest.setPermissions(new ArrayList<>());
 
         PostAddressRequestDto address = new PostAddressRequestDto();
@@ -266,6 +273,7 @@ public class WorkerAuthenticationControllerTest {
         workerRegisterRequest.setPhoneNumber("123123123");
         workerRegisterRequest.setIdCardNumber("XYZ987654");
         workerRegisterRequest.setPosition("Position");
+        workerRegisterRequest.setGender(Gender.MALE);
         workerRegisterRequest.setPermissions(new ArrayList<>());
 
         PostAddressRequestDto address = new PostAddressRequestDto();
@@ -297,6 +305,7 @@ public class WorkerAuthenticationControllerTest {
         workerRegisterRequest.setPhoneNumber("123456789");
         workerRegisterRequest.setIdCardNumber("ABC123456");
         workerRegisterRequest.setPosition("Position");
+        workerRegisterRequest.setGender(Gender.MALE);
         workerRegisterRequest.setPermissions(new ArrayList<>());
 
         PostAddressRequestDto address = new PostAddressRequestDto();

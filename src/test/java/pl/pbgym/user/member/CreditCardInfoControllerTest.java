@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import pl.pbgym.domain.user.Gender;
 import pl.pbgym.domain.user.member.CreditCardInfo;
 import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.dto.auth.PostAddressRequestDto;
@@ -74,6 +75,7 @@ public class CreditCardInfoControllerTest {
         postMemberRequestDto.setBirthdate(LocalDate.of(2002, 5, 10));
         postMemberRequestDto.setPesel("12345678912");
         postMemberRequestDto.setPhoneNumber("123123123");
+        postMemberRequestDto.setGender(Gender.MALE);
 
         PostAddressRequestDto postAddressRequestDto = new PostAddressRequestDto();
         postAddressRequestDto.setCity("City");
@@ -101,6 +103,7 @@ public class CreditCardInfoControllerTest {
         managerWorkerRequest.setPhoneNumber("123456789");
         managerWorkerRequest.setIdCardNumber("ABC123456");
         managerWorkerRequest.setPosition("Manager");
+        managerWorkerRequest.setGender(Gender.MALE);
         managerWorkerRequest.setAddress(postAddressRequestDto2);
 
         List<PermissionType> permissionTypeList2 = new ArrayList<>();

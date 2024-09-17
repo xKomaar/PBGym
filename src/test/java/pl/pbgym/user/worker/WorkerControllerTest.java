@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import pl.pbgym.controller.user.worker.WorkerController;
+import pl.pbgym.domain.user.Gender;
 import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.dto.auth.*;
 import pl.pbgym.dto.user.worker.GetWorkerResponseDto;
@@ -73,6 +74,7 @@ public class WorkerControllerTest {
         postWorkerRequestDto.setPhoneNumber("123123123");
         postWorkerRequestDto.setIdCardNumber("ABD123456");
         postWorkerRequestDto.setPosition("Worker");
+        postWorkerRequestDto.setGender(Gender.MALE);
         postWorkerRequestDto.setPermissions(new ArrayList<>());
 
         PostAddressRequestDto postAddressRequestDto = new PostAddressRequestDto();
@@ -101,6 +103,7 @@ public class WorkerControllerTest {
         adminWorkerRequest.setPhoneNumber("123456789");
         adminWorkerRequest.setIdCardNumber("ABC123456");
         adminWorkerRequest.setPosition("Owner");
+        adminWorkerRequest.setGender(Gender.FEMALE);
         adminWorkerRequest.setAddress(postAddressRequestDto2);
 
         List<PermissionType> permissionTypeList = new ArrayList<>();

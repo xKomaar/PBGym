@@ -18,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.pbgym.controller.auth.AuthenticationController;
+import pl.pbgym.domain.user.Gender;
 import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
 import pl.pbgym.dto.auth.PostTrainerRequestDto;
@@ -91,6 +92,7 @@ public class TrainerAuthenticationControllerTest {
         adminWorkerRequest.setPhoneNumber("123456789");
         adminWorkerRequest.setIdCardNumber("ABC123456");
         adminWorkerRequest.setPosition("Owner");
+        adminWorkerRequest.setGender(Gender.MALE);
         adminWorkerRequest.setAddress(postAddressRequestDto);
 
         List<PermissionType> permissions = new ArrayList<>();
@@ -112,6 +114,7 @@ public class TrainerAuthenticationControllerTest {
         trainerRegisterRequest.setBirthdate(LocalDate.of(1995, 8, 15));
         trainerRegisterRequest.setPesel("98765432198");
         trainerRegisterRequest.setPhoneNumber("987654321");
+        trainerRegisterRequest.setGender(Gender.MALE);
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
@@ -141,6 +144,7 @@ public class TrainerAuthenticationControllerTest {
         trainerRegisterRequest1.setBirthdate(LocalDate.of(1995, 8, 15));
         trainerRegisterRequest1.setPesel("98765432198");
         trainerRegisterRequest1.setPhoneNumber("987654321");
+        trainerRegisterRequest1.setGender(Gender.MALE);
 
         PostAddressRequestDto address1 = new PostAddressRequestDto();
         address1.setCity("City");
@@ -158,6 +162,7 @@ public class TrainerAuthenticationControllerTest {
         trainerRegisterRequest2.setBirthdate(LocalDate.of(2000, 10, 20));
         trainerRegisterRequest2.setPesel("12345678900");
         trainerRegisterRequest2.setPhoneNumber("123456789");
+        trainerRegisterRequest2.setGender(Gender.OTHER);
 
         PostAddressRequestDto address2 = new PostAddressRequestDto();
         address2.setCity("City");
@@ -194,6 +199,7 @@ public class TrainerAuthenticationControllerTest {
         trainerRegisterRequest.setBirthdate(null);
         trainerRegisterRequest.setPesel("123");
         trainerRegisterRequest.setPhoneNumber("123");
+        trainerRegisterRequest.setGender(Gender.FEMALE);
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("i");
@@ -222,6 +228,7 @@ public class TrainerAuthenticationControllerTest {
         trainerRegisterRequest.setBirthdate(null);
         trainerRegisterRequest.setPesel("123");
         trainerRegisterRequest.setPhoneNumber("123");
+        trainerRegisterRequest.setGender(null);
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("");
@@ -250,6 +257,7 @@ public class TrainerAuthenticationControllerTest {
         trainerRegisterRequest.setBirthdate(LocalDate.of(1995, 8, 15));
         trainerRegisterRequest.setPesel("98765432198");
         trainerRegisterRequest.setPhoneNumber("987654321");
+        trainerRegisterRequest.setGender(Gender.MALE);
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity(" ");
@@ -278,6 +286,7 @@ public class TrainerAuthenticationControllerTest {
         trainerRegisterRequest.setBirthdate(LocalDate.of(1990, 1, 1));
         trainerRegisterRequest.setPesel("12345678912");
         trainerRegisterRequest.setPhoneNumber("123456789");
+        trainerRegisterRequest.setGender(Gender.MALE);
 
         PostAddressRequestDto address = new PostAddressRequestDto();
         address.setCity("City");
