@@ -130,7 +130,7 @@ public class WorkerControllerTest {
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         GetWorkerResponseDto response = objectMapper.readValue(jsonResponse, GetWorkerResponseDto.class);
 
-        assertEquals(11, response.getClass().getDeclaredFields().length);
+        assertEquals(12, response.getClass().getDeclaredFields().length);
         assertNotNull(response);
         assertEquals(workerEmail, response.getEmail());
     }
@@ -146,7 +146,7 @@ public class WorkerControllerTest {
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         GetWorkerResponseDto response = objectMapper.readValue(jsonResponse, GetWorkerResponseDto.class);
 
-        assertEquals(11, response.getClass().getDeclaredFields().length);
+        assertEquals(12, response.getClass().getDeclaredFields().length);
         assertNotNull(response);
         assertEquals(workerEmail, response.getEmail());
     }
