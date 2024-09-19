@@ -11,7 +11,7 @@ import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.domain.user.worker.Worker;
 import pl.pbgym.dto.auth.AuthenticationResponseDto;
 import pl.pbgym.dto.user.worker.UpdateWorkerAuthorityRequestDto;
-import pl.pbgym.dto.user.worker.UpdateWorkerRequestDto;
+import pl.pbgym.dto.user.worker.UpdateWorkerAdminRequestDto;
 import pl.pbgym.dto.user.worker.GetWorkerResponseDto;
 import pl.pbgym.exception.user.IncorrectPasswordException;
 import pl.pbgym.exception.user.worker.WorkerNotFoundException;
@@ -54,9 +54,9 @@ public class WorkerService {
     }
 
     @Transactional
-    public void updateWorker(String email, UpdateWorkerRequestDto updateWorkerRequestDto) {
+    public void updateWorker(String email, UpdateWorkerAdminRequestDto updateWorkerAdminRequestDto) {
         Optional<Worker> worker = workerRepository.findByEmail(email);
-        worker.ifPresentOrElse(w -> modelMapper.map(updateWorkerRequestDto, w),
+        worker.ifPresentOrElse(w -> modelMapper.map(updateWorkerAdminRequestDto, w),
                 () -> {
                     throw new WorkerNotFoundException("Worker not found with email: " + email);
                 });

@@ -211,13 +211,18 @@ public class MemberControllerTest {
     @Test
     public void shouldReturnOkWhenMemberUpdatesHisOwnData() throws Exception {
         UpdateMemberRequestDto updateRequest = new UpdateMemberRequestDto();
+        updateRequest.setName("Test");
+        updateRequest.setSurname("User");
+        updateRequest.setBirthdate(LocalDate.of(2002, 5, 10));
+        updateRequest.setPesel("12345678912");
         updateRequest.setPhoneNumber("987654321");
+        updateRequest.setGender(Gender.FEMALE);
 
         PostAddressRequestDto updatedAddress = new PostAddressRequestDto();
         updatedAddress.setCity("NewCity");
-        updatedAddress.setStreetName("NewStreet");
-        updatedAddress.setBuildingNumber("2");
-        updatedAddress.setPostalCode("16-123");
+        updatedAddress.setStreetName("OtherStreet");
+        updatedAddress.setBuildingNumber("6");
+        updatedAddress.setPostalCode("19-123");
 
         updateRequest.setAddress(updatedAddress);
 
@@ -246,13 +251,18 @@ public class MemberControllerTest {
     @Test
     public void shouldReturnOkWhenAdminUpdatesMemberData() throws Exception {
         UpdateMemberRequestDto updateRequest = new UpdateMemberRequestDto();
+        updateRequest.setName("Test");
+        updateRequest.setSurname("User");
+        updateRequest.setBirthdate(LocalDate.of(2002, 5, 10));
+        updateRequest.setPesel("12345678912");
         updateRequest.setPhoneNumber("123123123");
+        updateRequest.setGender(Gender.FEMALE);
 
         PostAddressRequestDto updatedAddress = new PostAddressRequestDto();
         updatedAddress.setCity("UpdatedCity");
-        updatedAddress.setStreetName("UpdatedStreet");
-        updatedAddress.setBuildingNumber("3");
-        updatedAddress.setPostalCode("17-123");
+        updatedAddress.setStreetName("OtherStreet");
+        updatedAddress.setBuildingNumber("6");
+        updatedAddress.setPostalCode("19-123");
 
         updateRequest.setAddress(updatedAddress);
 
@@ -281,13 +291,18 @@ public class MemberControllerTest {
     @Test
     public void shouldReturnOkWhenManagerUpdatesMemberData() throws Exception {
         UpdateMemberRequestDto updateRequest = new UpdateMemberRequestDto();
+        updateRequest.setName("Test");
+        updateRequest.setSurname("User");
+        updateRequest.setBirthdate(LocalDate.of(2002, 5, 10));
+        updateRequest.setPesel("12345678912");
         updateRequest.setPhoneNumber("000000000");
+        updateRequest.setGender(Gender.FEMALE);
 
         PostAddressRequestDto updatedAddress = new PostAddressRequestDto();
         updatedAddress.setCity("ManagerCity");
-        updatedAddress.setStreetName("ManagerStreet");
-        updatedAddress.setBuildingNumber("4");
-        updatedAddress.setPostalCode("18-123");
+        updatedAddress.setStreetName("OtherStreet");
+        updatedAddress.setBuildingNumber("6");
+        updatedAddress.setPostalCode("19-123");
 
         updateRequest.setAddress(updatedAddress);
 
@@ -316,12 +331,17 @@ public class MemberControllerTest {
     @Test
     public void shouldReturnNotFoundWhenUpdatingNonExistingMember() throws Exception {
         UpdateMemberRequestDto updateRequest = new UpdateMemberRequestDto();
-        updateRequest.setPhoneNumber("111111111");
+        updateRequest.setName("Test");
+        updateRequest.setSurname("User");
+        updateRequest.setBirthdate(LocalDate.of(2002, 5, 10));
+        updateRequest.setPesel("12345678912");
+        updateRequest.setPhoneNumber("123123123");
+        updateRequest.setGender(Gender.FEMALE);
 
         PostAddressRequestDto updatedAddress = new PostAddressRequestDto();
-        updatedAddress.setCity("NonExistingCity");
-        updatedAddress.setStreetName("NonExistingStreet");
-        updatedAddress.setBuildingNumber("5");
+        updatedAddress.setCity("OtherCity");
+        updatedAddress.setStreetName("OtherStreet");
+        updatedAddress.setBuildingNumber("6");
         updatedAddress.setPostalCode("19-123");
 
         updateRequest.setAddress(updatedAddress);
@@ -338,7 +358,12 @@ public class MemberControllerTest {
     @Test
     public void shouldReturnForbiddenWhenMemberUpdatesAnotherMemberData() throws Exception {
         UpdateMemberRequestDto updateRequest = new UpdateMemberRequestDto();
-        updateRequest.setPhoneNumber("111111111");
+        updateRequest.setName("Test");
+        updateRequest.setSurname("User");
+        updateRequest.setBirthdate(LocalDate.of(2002, 5, 10));
+        updateRequest.setPesel("12345678912");
+        updateRequest.setPhoneNumber("123123123");
+        updateRequest.setGender(Gender.FEMALE);
 
         PostAddressRequestDto updatedAddress = new PostAddressRequestDto();
         updatedAddress.setCity("OtherCity");

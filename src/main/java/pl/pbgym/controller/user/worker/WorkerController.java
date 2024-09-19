@@ -19,7 +19,7 @@ import pl.pbgym.dto.auth.AuthenticationResponseDto;
 import pl.pbgym.dto.auth.ChangeEmailRequestDto;
 import pl.pbgym.dto.auth.ChangePasswordRequestDto;
 import pl.pbgym.dto.user.worker.UpdateWorkerAuthorityRequestDto;
-import pl.pbgym.dto.user.worker.UpdateWorkerRequestDto;
+import pl.pbgym.dto.user.worker.UpdateWorkerAdminRequestDto;
 import pl.pbgym.dto.user.worker.GetWorkerResponseDto;
 import pl.pbgym.exception.user.IncorrectPasswordException;
 import pl.pbgym.exception.user.worker.WorkerNotFoundException;
@@ -85,26 +85,16 @@ public class WorkerController {
 
     @PutMapping("/{email}")
     @Operation(summary = "Update a worker by email", description = "Fetches the worker details by their email and updates their data, " +
-            "possible only for ADMIN workers and for the worker who owns the data. Gender types: MALE, FEMALE, OTHER")
+            "possible only for ADMIN workers. Gender types: MALE, FEMALE, OTHER")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Worker found and updated successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
             @ApiResponse(responseCode = "404", description = "Worker not found", content = @Content)
     })
     public ResponseEntity<String> updateWorker(@PathVariable String email,
-                                               @Valid @RequestBody UpdateWorkerRequestDto updateWorkerRequestDto) {
-
-        AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        //if worker isn't an admin, the id must match (he must be himself)
-        if (authenticatedUser instanceof Worker) {
-            if (!((Worker) authenticatedUser).getMappedPermissions().contains(PermissionType.ADMIN)) {
-                if (!authenticatedUser.getEmail().equals(email)) {
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-                }
-            }
-        }
+                                               @Valid @RequestBody UpdateWorkerAdminRequestDto updateWorkerAdminRequestDto) {
         try {
-            workerService.updateWorker(email, updateWorkerRequestDto);
+            workerService.updateWorker(email, updateWorkerAdminRequestDto);
             return ResponseEntity.status(HttpStatus.OK).body("Worker updated successfully");
         } catch (WorkerNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -177,8 +167,7 @@ public class WorkerController {
 
     @PutMapping("/changeEmail/{email}")
     @Operation(summary = "Change a worker email by email", description = "Fetches the worker details by their email and changes their email, " +
-            "possible only for ADMIN workers and for the worker who owns the data. " +
-            "Returns a new JWT, because after changing the email, re-authentication is needed.")
+            "possible only for ADMIN workers.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Worker found and updated successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
@@ -188,15 +177,6 @@ public class WorkerController {
     public ResponseEntity<AuthenticationResponseDto> changeEmail(@PathVariable String email,
                                                                  @Valid @RequestBody ChangeEmailRequestDto changeEmailRequestDto) {
 
-        AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        //if worker isn't an admin, the id must match (he must be himself)
-        if (authenticatedUser instanceof Worker) {
-            if (!((Worker) authenticatedUser).getMappedPermissions().contains(PermissionType.ADMIN)) {
-                if (!authenticatedUser.getEmail().equals(email)) {
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-                }
-            }
-        }
         if(!email.equals(changeEmailRequestDto.getNewEmail())) {
             if (abstractUserService.userExists(changeEmailRequestDto.getNewEmail())) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).build();

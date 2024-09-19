@@ -211,7 +211,12 @@ public class TrainerControllerTest {
     @Test
     public void shouldReturnOkWhenTrainerUpdatesHisOwnData() throws Exception {
         UpdateTrainerRequestDto updateRequest = new UpdateTrainerRequestDto();
+        updateRequest.setName("Test");
+        updateRequest.setSurname("User");
+        updateRequest.setBirthdate(LocalDate.of(2002, 5, 10));
+        updateRequest.setPesel("12345678912");
         updateRequest.setPhoneNumber("987654321");
+        updateRequest.setGender(Gender.MALE);
 
         PostAddressRequestDto updatedAddress = new PostAddressRequestDto();
         updatedAddress.setCity("TrainerCity");
@@ -248,13 +253,18 @@ public class TrainerControllerTest {
     @Test
     public void shouldReturnOkWhenAdminUpdatesTrainerData() throws Exception {
         UpdateTrainerRequestDto updateRequest = new UpdateTrainerRequestDto();
-        updateRequest.setPhoneNumber("123123123");
+        updateRequest.setName("Test");
+        updateRequest.setSurname("User");
+        updateRequest.setBirthdate(LocalDate.of(2002, 5, 10));
+        updateRequest.setPesel("12345678912");
+        updateRequest.setPhoneNumber("987654321");
+        updateRequest.setGender(Gender.MALE);
 
         PostAddressRequestDto updatedAddress = new PostAddressRequestDto();
         updatedAddress.setCity("UpdatedCity");
-        updatedAddress.setStreetName("UpdatedStreet");
-        updatedAddress.setBuildingNumber("3");
-        updatedAddress.setPostalCode("17-123");
+        updatedAddress.setStreetName("TrainerStreet");
+        updatedAddress.setBuildingNumber("2");
+        updatedAddress.setPostalCode("11-111");
 
         updateRequest.setAddress(updatedAddress);
         updateRequest.setDescription("Admin updated description");
@@ -277,7 +287,7 @@ public class TrainerControllerTest {
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         GetTrainerResponseDto response = objectMapper.readValue(jsonResponse, GetTrainerResponseDto.class);
 
-        assertEquals("123123123", response.getPhoneNumber());
+        assertEquals("987654321", response.getPhoneNumber());
         assertEquals("UpdatedCity", response.getAddress().getCity());
         assertEquals("Admin updated description", response.getDescription());
     }
@@ -285,13 +295,18 @@ public class TrainerControllerTest {
     @Test
     public void shouldReturnOkWhenUserManagerUpdatesTrainerData() throws Exception {
         UpdateTrainerRequestDto updateRequest = new UpdateTrainerRequestDto();
+        updateRequest.setName("Test");
+        updateRequest.setSurname("Userasd");
+        updateRequest.setBirthdate(LocalDate.of(2002, 5, 10));
+        updateRequest.setPesel("12345678912");
         updateRequest.setPhoneNumber("000000000");
+        updateRequest.setGender(Gender.MALE);
 
         PostAddressRequestDto updatedAddress = new PostAddressRequestDto();
         updatedAddress.setCity("ManagerCity");
-        updatedAddress.setStreetName("ManagerStreet");
-        updatedAddress.setBuildingNumber("4");
-        updatedAddress.setPostalCode("18-123");
+        updatedAddress.setStreetName("TrainerStreet");
+        updatedAddress.setBuildingNumber("2");
+        updatedAddress.setPostalCode("11-111");
 
         updateRequest.setAddress(updatedAddress);
         updateRequest.setDescription("Manager updated description");
@@ -317,21 +332,27 @@ public class TrainerControllerTest {
         assertEquals("000000000", response.getPhoneNumber());
         assertEquals("ManagerCity", response.getAddress().getCity());
         assertEquals("Manager updated description", response.getDescription());
+        assertEquals("Userasd", response.getSurname());
     }
 
     @Test
     public void shouldReturnForbiddenWhenTrainerUpdatesAnotherTrainerData() throws Exception {
         UpdateTrainerRequestDto updateRequest = new UpdateTrainerRequestDto();
-        updateRequest.setPhoneNumber("111111111");
+        updateRequest.setName("Test");
+        updateRequest.setSurname("Userasd");
+        updateRequest.setBirthdate(LocalDate.of(2002, 5, 10));
+        updateRequest.setPesel("12345678912");
+        updateRequest.setPhoneNumber("000000000");
+        updateRequest.setGender(Gender.MALE);
 
         PostAddressRequestDto updatedAddress = new PostAddressRequestDto();
-        updatedAddress.setCity("OtherCity");
-        updatedAddress.setStreetName("OtherStreet");
-        updatedAddress.setBuildingNumber("5");
-        updatedAddress.setPostalCode("19-123");
+        updatedAddress.setCity("TrainerCity");
+        updatedAddress.setStreetName("TrainerStreet");
+        updatedAddress.setBuildingNumber("2");
+        updatedAddress.setPostalCode("11-111");
 
         updateRequest.setAddress(updatedAddress);
-        updateRequest.setDescription("Forbidden update");
+        updateRequest.setDescription("Updated description");
 
         String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
 
@@ -345,16 +366,21 @@ public class TrainerControllerTest {
     @Test
     public void shouldReturnNotFoundWhenAdminUpdatesNonExistingTrainerData() throws Exception {
         UpdateTrainerRequestDto updateRequest = new UpdateTrainerRequestDto();
-        updateRequest.setPhoneNumber("111111111");
+        updateRequest.setName("Test");
+        updateRequest.setSurname("Userasd");
+        updateRequest.setBirthdate(LocalDate.of(2002, 5, 10));
+        updateRequest.setPesel("12345678912");
+        updateRequest.setPhoneNumber("000000000");
+        updateRequest.setGender(Gender.MALE);
 
         PostAddressRequestDto updatedAddress = new PostAddressRequestDto();
-        updatedAddress.setCity("NonExistingCity");
-        updatedAddress.setStreetName("NonExistingStreet");
-        updatedAddress.setBuildingNumber("5");
-        updatedAddress.setPostalCode("19-123");
+        updatedAddress.setCity("TrainerCity");
+        updatedAddress.setStreetName("TrainerStreet");
+        updatedAddress.setBuildingNumber("2");
+        updatedAddress.setPostalCode("11-111");
 
         updateRequest.setAddress(updatedAddress);
-        updateRequest.setDescription("Non-existing update");
+        updateRequest.setDescription("Updated description");
 
         String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
 

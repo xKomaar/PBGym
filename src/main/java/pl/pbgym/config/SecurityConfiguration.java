@@ -36,18 +36,24 @@ public class SecurityConfiguration {
                         .requestMatchers("/auth/registerMember", "/auth/authenticate").permitAll()
                         .requestMatchers("/auth/registerTrainer").hasAnyAuthority("ADMIN", "USER_MANAGEMENT")
                         .requestMatchers("/auth/registerWorker").hasAuthority("ADMIN")
+
                         .requestMatchers("/members/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "MEMBER")
                         .requestMatchers("/members/changePassword/", "/members/changeEmail/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "MEMBER")
+
                         .requestMatchers("/trainers/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "TRAINER")
                         .requestMatchers("/trainers/changePassword/", "/trainers/changeEmail/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "TRAINER")
+
                         .requestMatchers("/workers/all").hasAuthority("ADMIN")
-                        .requestMatchers("/workers/").hasAnyAuthority("ADMIN", "WORKER")
-                        .requestMatchers("/workers/changePassword/", "/workers/changeEmail/").hasAnyAuthority("ADMIN", "WORKER")
+                        .requestMatchers(HttpMethod.PUT, "/workers/{email}", "/workers/changeEmail/{email}").hasAuthority("ADMIN")
+                        .requestMatchers("/workers/", "/workers/changePassword/").hasAnyAuthority("ADMIN", "WORKER")
+
                         .requestMatchers("/offers/public/active").permitAll()
                         .requestMatchers("/offers/**").hasAnyAuthority("ADMIN", "PASS_MANAGEMENT")
                         .requestMatchers("/passes/**").hasAnyAuthority("MEMBER", "ADMIN", "PASS_MANAGEMENT")
+
                         .requestMatchers(HttpMethod.DELETE, "/creditCardInfo/**").hasAnyAuthority("MEMBER", "ADMIN", "USER_MANAGEMENT")
                         .requestMatchers("/creditCardInfo/**").hasAuthority("MEMBER")
+
                         .requestMatchers("/swagger/**", "/swagger-ui/**", "v3/api-docs/**").permitAll()
                         .requestMatchers("/ping").permitAll()
                         .anyRequest().authenticated()
