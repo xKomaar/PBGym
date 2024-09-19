@@ -2,8 +2,6 @@ package pl.pbgym.domain.user.worker;
 
 import jakarta.persistence.*;
 import pl.pbgym.domain.user.AbstractUser;
-import pl.pbgym.domain.user.worker.Permission;
-import pl.pbgym.domain.user.worker.PermissionType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +14,8 @@ public class Worker extends AbstractUser {
     private String idCardNumber;
     @Column(name="position")
     private String position;
-    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Permission> permissions;
-
-    public Worker() {
-    }
 
     public String getIdCardNumber() {
         return idCardNumber;

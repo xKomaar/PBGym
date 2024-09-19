@@ -15,7 +15,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import pl.pbgym.controller.user.worker.WorkerController;
 import pl.pbgym.domain.user.Gender;
 import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.dto.auth.*;
@@ -251,6 +250,17 @@ public class WorkerControllerTest {
                         .content(jsonUpdateRequest))
                 .andExpect(status().isOk());
 
+        permissionTypeList = List.of(PermissionType.PASS_MANAGEMENT, PermissionType.USER_MANAGEMENT, PermissionType.BLOG);
+        updateRequest.setPermissions(permissionTypeList);
+        updateRequest.setPosition("Manager");
+
+        jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
+        mockMvc.perform(put("/workers/authority/{email}", workerEmail)
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonUpdateRequest))
+                .andExpect(status().isOk());
+
         MvcResult mvcResult = mockMvc.perform(get("/workers/{email}", workerEmail)
                         .header("Authorization", "Bearer " + adminJwt)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -262,6 +272,7 @@ public class WorkerControllerTest {
 
         assertEquals("Manager", response.getPosition());
         assertTrue(response.getPermissions().containsAll(permissionTypeList));
+        assertEquals(response.getPermissions().size(), permissionTypeList.size());
     }
 
     @Test

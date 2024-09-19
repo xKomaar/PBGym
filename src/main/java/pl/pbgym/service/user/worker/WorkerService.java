@@ -67,7 +67,7 @@ public class WorkerService {
         Optional<Worker> worker = workerRepository.findByEmail(email);
         worker.ifPresentOrElse(w -> {
                     w.setPosition(updateWorkerAuthorityRequestDto.getPosition());
-                    permissionRepository.deleteAll(w.getPermissions());
+                    w.getPermissions().clear();
                     if (!updateWorkerAuthorityRequestDto.getPermissions().isEmpty()) {
                         for (PermissionType p : updateWorkerAuthorityRequestDto.getPermissions()) {
                             Permission permission = new Permission();
