@@ -1,5 +1,6 @@
 package pl.pbgym.dto.user.worker;
 
+import pl.pbgym.domain.user.Gender;
 import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.dto.user.GetAddressResponseDto;
 
@@ -17,6 +18,7 @@ public class GetWorkerResponseDto {
     private GetAddressResponseDto address;
     private String idCardNumber;
     private String position;
+    private Gender gender;
     private List<PermissionType> permissions;
 
     public GetWorkerResponseDto() {
@@ -108,5 +110,13 @@ public class GetWorkerResponseDto {
 
     public void setPermissions(List<PermissionType> permissions) {
         this.permissions = permissions;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 }

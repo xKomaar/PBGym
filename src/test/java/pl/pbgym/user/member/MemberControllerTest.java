@@ -155,7 +155,7 @@ public class MemberControllerTest {
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         GetMemberResponseDto response = objectMapper.readValue(jsonResponse, GetMemberResponseDto.class);
 
-        assertEquals(8, response.getClass().getDeclaredFields().length);
+        assertEquals(9, response.getClass().getDeclaredFields().length);
         assertNotNull(response);
         assertEquals(memberEmail, response.getEmail());
     }
@@ -171,7 +171,7 @@ public class MemberControllerTest {
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         GetMemberResponseDto response = objectMapper.readValue(jsonResponse, GetMemberResponseDto.class);
 
-        assertEquals(8, response.getClass().getDeclaredFields().length);
+        assertEquals(9, response.getClass().getDeclaredFields().length);
         assertNotNull(response);
         assertEquals(memberEmail, response.getEmail());
     }
@@ -187,7 +187,7 @@ public class MemberControllerTest {
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         GetMemberResponseDto response = objectMapper.readValue(jsonResponse, GetMemberResponseDto.class);
 
-        assertEquals(8, response.getClass().getDeclaredFields().length);
+        assertEquals(9, response.getClass().getDeclaredFields().length);
         assertNotNull(response);
         assertEquals(memberEmail, response.getEmail());
     }

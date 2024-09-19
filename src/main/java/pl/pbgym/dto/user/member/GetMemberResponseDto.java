@@ -1,5 +1,6 @@
 package pl.pbgym.dto.user.member;
 
+import pl.pbgym.domain.user.Gender;
 import pl.pbgym.dto.user.GetAddressResponseDto;
 
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ public class GetMemberResponseDto {
     private LocalDate birthdate;
     private String pesel;
     private String phoneNumber;
+    private Gender gender;
     private GetAddressResponseDto address;
 
     public GetMemberResponseDto() {
@@ -80,5 +82,13 @@ public class GetMemberResponseDto {
 
     public void setAddress(GetAddressResponseDto address) {
         this.address = address;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 }

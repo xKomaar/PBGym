@@ -155,7 +155,7 @@ public class TrainerControllerTest {
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         GetTrainerResponseDto response = objectMapper.readValue(jsonResponse, GetTrainerResponseDto.class);
 
-        assertEquals(10, response.getClass().getDeclaredFields().length);
+        assertEquals(11, response.getClass().getDeclaredFields().length);
         assertNotNull(response);
         assertEquals(trainerEmail, response.getEmail());
     }
@@ -171,7 +171,7 @@ public class TrainerControllerTest {
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         GetTrainerResponseDto response = objectMapper.readValue(jsonResponse, GetTrainerResponseDto.class);
 
-        assertEquals(10, response.getClass().getDeclaredFields().length);
+        assertEquals(11, response.getClass().getDeclaredFields().length);
         assertNotNull(response);
         assertEquals(trainerEmail, response.getEmail());
     }
@@ -187,7 +187,7 @@ public class TrainerControllerTest {
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         GetTrainerResponseDto response = objectMapper.readValue(jsonResponse, GetTrainerResponseDto.class);
 
-        assertEquals(10, response.getClass().getDeclaredFields().length);
+        assertEquals(11, response.getClass().getDeclaredFields().length);
         assertNotNull(response);
         assertEquals(trainerEmail, response.getEmail());
     }
