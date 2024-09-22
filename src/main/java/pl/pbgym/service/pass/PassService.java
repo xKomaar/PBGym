@@ -39,6 +39,7 @@ public class PassService {
     }
 
     @Transactional
+    //TODO: PAYMENT BEFORE ACTIVATION
     public void createPass(String email, PostPassRequestDto passRequestDto) {
         memberRepository.findByEmail(email).ifPresentOrElse(
                 (member -> offerRepository.findById(passRequestDto.getOfferId()).ifPresentOrElse(
