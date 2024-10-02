@@ -18,6 +18,8 @@ import pl.pbgym.dto.pass.GetPassResponseDto;
 import pl.pbgym.dto.pass.PostPassRequestDto;
 import pl.pbgym.exception.offer.OfferNotFoundException;
 import pl.pbgym.exception.pass.MemberAlreadyHasActivePassException;
+import pl.pbgym.exception.payment.NoPaymentMethodException;
+import pl.pbgym.exception.payment.PaymentMethodExpiredException;
 import pl.pbgym.exception.user.member.MemberNotFoundException;
 import pl.pbgym.service.pass.PassService;
 
@@ -42,10 +44,9 @@ public class PassController {
             @ApiResponse(responseCode = "200", description = "Pass Activated"),
             @ApiResponse(responseCode = "404", description = "Member OR Offer not found", content = @Content),
             @ApiResponse(responseCode = "409", description = "Member already has an active pass", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Offer not active OR authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Offer not active OR no payment method OR payment method expired OR authenticated user is not authorized to access this resource", content = @Content),
     })
     public ResponseEntity<String> createAndActivatePass(@PathVariable String email, @Valid @RequestBody PostPassRequestDto passRequestDto) {
-        //TODO: PAYMENT BEFORE ACTIVATION
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (authenticatedUser instanceof Member && !authenticatedUser.getEmail().equals(email)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Authenticated user is not authorized to access this resource");
@@ -56,7 +57,7 @@ public class PassController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (MemberAlreadyHasActivePassException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (OfferNotActiveException e) {
+        } catch (OfferNotActiveException | NoPaymentMethodException | PaymentMethodExpiredException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
         return ResponseEntity.ok().body("Pass has been successfully created and activated");
@@ -81,7 +82,4 @@ public class PassController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
-
-    //TODO: payment and reactivation of a pass that already exists but is inactive
 }

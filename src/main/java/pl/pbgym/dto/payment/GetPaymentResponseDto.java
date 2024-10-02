@@ -1,40 +1,22 @@
-package pl.pbgym.domain.payment;
+package pl.pbgym.dto.payment;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import pl.pbgym.domain.user.member.CreditCardInfo;
+import pl.pbgym.dto.user.member.GetCreditCardInfoResponseDto;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "payment")
-public class Payment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payment_seq_gen")
-    @SequenceGenerator(name = "payment_seq_gen", sequenceName = "PAYMENT_SEQ", allocationSize = 1)
-    @Column(name = "id", nullable = false)
+public class GetPaymentResponseDto {
     private Long id;
-    @Column(name = "amount", nullable = false)
     private Double amount;
-    @Column(name = "dateTime", nullable = false)
     private LocalDateTime dateTime;
-
-    @Column(name = "cardNumber", nullable = false)
     private String cardNumber;
-    @Column(name = "expirationMonth", nullable = false)
     private String expirationMonth;
-    @Column(name = "expirationYear", nullable = false)
     private String expirationYear;
-    @Column(name = "name", nullable = false)
     private String name;
-    @Column(name = "surname", nullable = false)
     private String surname;
-    @Column(name = "email", nullable = false)
     private String email;
-    @Column(name = "pesel", nullable = false)
     private String pesel;
-
-    public Payment() {
-        this.setDateTime(LocalDateTime.now());
-    }
 
     public Long getId() {
         return id;

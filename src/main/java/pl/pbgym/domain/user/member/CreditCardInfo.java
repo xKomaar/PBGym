@@ -35,10 +35,6 @@ public class CreditCardInfo {
     @JoinColumn(name = "member_id", referencedColumnName = "member_id", nullable = false)
     private Member member;
 
-    @OneToMany(mappedBy = "creditCardInfo", fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-    @JsonIgnore
-    private List<Payment> payments;
-
 
     public Long getId() {
         return id;
@@ -86,13 +82,5 @@ public class CreditCardInfo {
 
     public void setMember(Member member) {
         this.member = member;
-    }
-
-    public List<Payment> getPayments() {
-        return payments;
-    }
-
-    public void setPayments(List<Payment> payments) {
-        this.payments = payments;
     }
 }

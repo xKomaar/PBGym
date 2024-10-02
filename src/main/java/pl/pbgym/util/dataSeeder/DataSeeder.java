@@ -13,10 +13,12 @@ import pl.pbgym.dto.auth.PostWorkerRequestDto;
 import pl.pbgym.dto.offer.special.PostSpecialOfferRequestDto;
 import pl.pbgym.dto.offer.standard.PostStandardOfferRequestDto;
 import pl.pbgym.dto.pass.PostPassRequestDto;
+import pl.pbgym.dto.user.member.PostCreditCardInfoRequestDto;
 import pl.pbgym.repository.user.AbstractUserRepository;
 import pl.pbgym.service.auth.AuthenticationService;
 import pl.pbgym.service.offer.OfferService;
 import pl.pbgym.service.pass.PassService;
+import pl.pbgym.service.user.member.CreditCardInfoService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,19 +29,18 @@ import java.util.List;
 public class DataSeeder implements CommandLineRunner {
 
     private final AbstractUserRepository abstractUserRepository;
-
     private final AuthenticationService authenticationService;
-
     private final OfferService offerService;
-
     private final PassService passService;
+    private final CreditCardInfoService creditCardInfoService;
 
     @Autowired
-    public DataSeeder(AbstractUserRepository abstractUserRepository, AuthenticationService authenticationService, OfferService offerService, PassService passService) {
+    public DataSeeder(AbstractUserRepository abstractUserRepository, AuthenticationService authenticationService, OfferService offerService, PassService passService, CreditCardInfoService creditCardInfoService) {
         this.abstractUserRepository = abstractUserRepository;
         this.authenticationService = authenticationService;
         this.offerService = offerService;
         this.passService = passService;
+        this.creditCardInfoService = creditCardInfoService;
     }
 
     @Override
@@ -100,6 +101,14 @@ public class DataSeeder implements CommandLineRunner {
 
         authenticationService.registerMember(postMemberRequestDto);
 
+        PostCreditCardInfoRequestDto creditCardInfoRequestDto = new PostCreditCardInfoRequestDto();
+        creditCardInfoRequestDto.setCardNumber("4111111111111111");
+        creditCardInfoRequestDto.setExpirationMonth("12");
+        creditCardInfoRequestDto.setExpirationYear("25");
+        creditCardInfoRequestDto.setCvc("123");
+
+        creditCardInfoService.saveCreditCardInfo(postMemberRequestDto.getEmail(), creditCardInfoRequestDto);
+
         PostMemberRequestDto postMemberRequestDto2 = new PostMemberRequestDto();
         postMemberRequestDto2.setEmail("test2@member.com");
         postMemberRequestDto2.setPassword("12345678");
@@ -119,6 +128,14 @@ public class DataSeeder implements CommandLineRunner {
         postMemberRequestDto2.setAddress(postAddressRequestDto2);
 
         authenticationService.registerMember(postMemberRequestDto2);
+
+        PostCreditCardInfoRequestDto creditCardInfoRequestDto2 = new PostCreditCardInfoRequestDto();
+        creditCardInfoRequestDto2.setCardNumber("4112222211111111");
+        creditCardInfoRequestDto2.setExpirationMonth("11");
+        creditCardInfoRequestDto2.setExpirationYear("26");
+        creditCardInfoRequestDto2.setCvc("321");
+
+        creditCardInfoService.saveCreditCardInfo(postMemberRequestDto2.getEmail(), creditCardInfoRequestDto2);
     }
 
     private void loadTrainerData() {

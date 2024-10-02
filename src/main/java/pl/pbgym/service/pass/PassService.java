@@ -12,10 +12,13 @@ import pl.pbgym.dto.pass.GetPassResponseDto;
 import pl.pbgym.dto.pass.PostPassRequestDto;
 import pl.pbgym.exception.offer.OfferNotFoundException;
 import pl.pbgym.exception.pass.MemberAlreadyHasActivePassException;
+import pl.pbgym.exception.payment.NoPaymentMethodException;
+import pl.pbgym.exception.payment.PaymentMethodExpiredException;
 import pl.pbgym.exception.user.member.MemberNotFoundException;
 import pl.pbgym.repository.offer.OfferRepository;
 import pl.pbgym.repository.pass.PassRepository;
 import pl.pbgym.repository.user.member.MemberRepository;
+import pl.pbgym.service.payment.PaymentService;
 import pl.pbgym.service.user.member.MemberService;
 
 import java.time.LocalDateTime;
@@ -28,18 +31,19 @@ public class PassService {
     private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
     private final MemberService memberService;
+    private final PaymentService paymentService;
 
     @Autowired
-    public PassService(OfferRepository offerRepository, PassRepository passRepository, MemberRepository memberRepository, ModelMapper modelMapper, MemberService memberService) {
+    public PassService(OfferRepository offerRepository, PassRepository passRepository, MemberRepository memberRepository, ModelMapper modelMapper, MemberService memberService, PaymentService paymentService) {
         this.offerRepository = offerRepository;
         this.passRepository = passRepository;
         this.memberRepository = memberRepository;
         this.modelMapper = modelMapper;
         this.memberService = memberService;
+        this.paymentService = paymentService;
     }
 
     @Transactional
-    //TODO: PAYMENT BEFORE ACTIVATION
     public void createPass(String email, PostPassRequestDto passRequestDto) {
         memberRepository.findByEmail(email).ifPresentOrElse(
                 (member -> offerRepository.findById(passRequestDto.getOfferId()).ifPresentOrElse(
@@ -52,6 +56,14 @@ public class PassService {
                                     throw new MemberAlreadyHasActivePassException("Member already has an active pass!");
                                 }
                             });
+
+                            try {
+                                paymentService.registerPayment(offer.getMonthlyPrice(), member);
+                            } catch (NoPaymentMethodException e) {
+                                throw new NoPaymentMethodException("No payment method, pass not created.");
+                            } catch (PaymentMethodExpiredException e) {
+                                throw new PaymentMethodExpiredException("Payment method expired, pass not created");
+                            }
 
                             Pass pass = createPassClass(member, offer);
                             passRepository.save(pass);
