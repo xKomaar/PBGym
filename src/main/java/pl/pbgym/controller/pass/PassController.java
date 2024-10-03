@@ -36,10 +36,9 @@ public class PassController {
     }
 
     @PostMapping("/{email}")
-    @Operation(summary = "WIP: Create a pass", description = "Create a pass for a member by email, " +
-            "possible for a member and an ADMIN and PASS_MANAGEMENT workers. IN THE FUTURE WILL REQUIRE PAYMENT (only from members). " +
-            "if the payment doesn't go through, the pass will be created but inactive. " +
-            "WORK IN PROGRESS: for now it only creates an active pass based on an offer without payment and any other things")
+    @Operation(summary = "Create a pass", description = "Create a pass for a member by email, " +
+            "possible for a member and an ADMIN and PASS_MANAGEMENT workers. (but there is no logic for workers for now). " +
+            "Member MUST have a not expired payment method. If the payment doesn't go through, the pass will not be created.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Pass Activated"),
             @ApiResponse(responseCode = "404", description = "Member OR Offer not found", content = @Content),

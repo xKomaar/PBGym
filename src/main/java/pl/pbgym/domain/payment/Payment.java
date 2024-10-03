@@ -16,7 +16,6 @@ public class Payment {
     private Double amount;
     @Column(name = "dateTime", nullable = false)
     private LocalDateTime dateTime;
-
     @Column(name = "cardNumber", nullable = false)
     private String cardNumber;
     @Column(name = "expirationMonth", nullable = false)
