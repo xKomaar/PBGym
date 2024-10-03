@@ -2,6 +2,7 @@ package pl.pbgym.service.payment;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.pbgym.domain.payment.Payment;
 import pl.pbgym.domain.payment.Payment;
 import pl.pbgym.domain.user.member.CreditCardInfo;
@@ -37,6 +38,7 @@ public class PaymentService {
         this.modelMapper = modelMapper;
     }
 
+    @Transactional
     public void registerPayment(Double amount, Member member) {
         if(member.getCreditCardInfo() == null) {
             throw new NoPaymentMethodException("No credit card information");

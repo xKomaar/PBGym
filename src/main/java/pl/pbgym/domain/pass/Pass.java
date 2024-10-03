@@ -3,6 +3,7 @@ package pl.pbgym.domain.pass;
 import jakarta.persistence.*;
 import pl.pbgym.domain.user.member.Member;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,8 +25,8 @@ public class Pass {
     @Column(name = "dateEnd", nullable = false)
     private LocalDateTime dateEnd;
 
-    @Column(name = "dateOfNextPayment", nullable = false)
-    private LocalDateTime dateOfNextPayment;
+    @Column(name = "dateOfNextPayment", nullable = true)
+    private LocalDate dateOfNextPayment;
 
     @Column(name = "monthylPrice", nullable = false)
     private Double monthlyPrice;
@@ -72,11 +73,11 @@ public class Pass {
         this.dateEnd = dateEnd;
     }
 
-    public LocalDateTime getDateOfNextPayment() {
+    public LocalDate getDateOfNextPayment() {
         return dateOfNextPayment;
     }
 
-    public void setDateOfNextPayment(LocalDateTime dateOfNextPayment) {
+    public void setDateOfNextPayment(LocalDate dateOfNextPayment) {
         this.dateOfNextPayment = dateOfNextPayment;
     }
 

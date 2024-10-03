@@ -7,9 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.pbgym.domain.offer.Offer;
 import pl.pbgym.domain.pass.Pass;
 import pl.pbgym.domain.user.member.Member;
-import pl.pbgym.exception.offer.OfferNotActiveException;
 import pl.pbgym.dto.pass.GetPassResponseDto;
 import pl.pbgym.dto.pass.PostPassRequestDto;
+import pl.pbgym.exception.offer.OfferNotActiveException;
 import pl.pbgym.exception.offer.OfferNotFoundException;
 import pl.pbgym.exception.pass.MemberAlreadyHasActivePassException;
 import pl.pbgym.exception.payment.NoPaymentMethodException;
@@ -21,7 +21,10 @@ import pl.pbgym.repository.user.member.MemberRepository;
 import pl.pbgym.service.payment.PaymentService;
 import pl.pbgym.service.user.member.MemberService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PassService {
@@ -51,7 +54,8 @@ public class PassService {
                             if (!offer.isActive()) {
                                 throw new OfferNotActiveException("Offer is not active with id " + passRequestDto.getOfferId());
                             }
-                            passRepository.findByMemberEmail(email).ifPresent(pass -> {
+                            Optional<Pass> currentPass = passRepository.findByMemberEmail(email);
+                            currentPass.ifPresent(pass -> {
                                 if (pass.isActive()) {
                                     throw new MemberAlreadyHasActivePassException("Member already has an active pass!");
                                 }
@@ -65,6 +69,8 @@ public class PassService {
                                 throw new PaymentMethodExpiredException("Payment method expired, pass not created");
                             }
 
+                            //if there is an inactive pass, it can be deleted and replaced with new one
+                            currentPass.ifPresent(passRepository::delete);
                             Pass pass = createPassClass(member, offer);
                             passRepository.save(pass);
                         },
@@ -80,7 +86,7 @@ public class PassService {
 
     private static Pass createPassClass(Member member, Offer offer) {
         LocalDateTime dateStart = LocalDateTime.now();
-        LocalDateTime dateOfNextPayment = dateStart.plusMonths(1).withHour(23).withMinute(59).withSecond(59);
+        LocalDate dateOfNextPayment = dateStart.toLocalDate().plusMonths(1);
         LocalDateTime dateEnd = dateStart.plusMonths(offer.getDurationInMonths()).withHour(23).withMinute(59).withSecond(59);
 
         Pass pass = new Pass();
@@ -108,5 +114,41 @@ public class PassService {
     @Transactional
     public void deactivateExpiredPasses() {
         passRepository.deactivateExpiredPasses();
+    }
+
+    @Transactional
+    public void chargeForActivePasses() {
+        List<Pass> passes = passRepository.findAllActive();
+        LocalDate today = LocalDate.now();
+        passes.forEach(pass -> {
+            LocalDate nextPaymentDate = pass.getDateOfNextPayment();
+            if (nextPaymentDate.equals(today)) {
+                try {
+                    this.chargeForAPass(pass);
+
+                    if(pass.getDateOfNextPayment().plusMonths(1).getMonthValue() ==
+                            pass.getDateEnd().getMonthValue()) {
+                        //this was the last payment (upfront)
+                        pass.setDateOfNextPayment(null);
+                    } else {
+                        pass.setDateOfNextPayment(pass.getDateOfNextPayment().plusMonths(1));
+                    }
+                } catch (NoPaymentMethodException | PaymentMethodExpiredException e) {
+                    //deactivate a pass if the payment doesn't come through
+                    pass.setActive(false);
+                }
+            }
+        });
+    }
+
+    @Transactional
+    public void chargeForAPass(Pass pass) {
+        try {
+            paymentService.registerPayment(pass.getMonthlyPrice(), pass.getMember());
+        } catch (NoPaymentMethodException e) {
+            throw new NoPaymentMethodException("No payment method, pass deactivated.");
+        } catch (PaymentMethodExpiredException e) {
+            throw new PaymentMethodExpiredException("Payment method expired, pass deactivated");
+        }
     }
 }
