@@ -252,7 +252,7 @@ public class WorkerControllerTest {
 
         permissionTypeList = List.of(PermissionType.PASS_MANAGEMENT, PermissionType.USER_MANAGEMENT, PermissionType.BLOG);
         updateRequest.setPermissions(permissionTypeList);
-        updateRequest.setPosition("Manager");
+        updateRequest.setPosition("Executive Manager");
 
         jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
         mockMvc.perform(put("/workers/authority/{email}", workerEmail)
@@ -270,7 +270,7 @@ public class WorkerControllerTest {
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         GetWorkerResponseDto response = objectMapper.readValue(jsonResponse, GetWorkerResponseDto.class);
 
-        assertEquals("Manager", response.getPosition());
+        assertEquals("Executive Manager", response.getPosition());
         assertTrue(response.getPermissions().containsAll(permissionTypeList));
         assertEquals(response.getPermissions().size(), permissionTypeList.size());
     }

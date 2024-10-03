@@ -12,7 +12,7 @@ import java.util.List;
 public class UpdateWorkerAuthorityRequestDto {
     @Size(min = 2, message = "Position can't be shorter than 2 characters.")
     @Size(max = 100, message = "Position can't be longer than 100 characters.")
-    @Pattern(regexp = "^[A-ZŻŹĆĄŚĘŁÓŃ][a-zżźćńółęąś]*$", message = "Position has to begin with a capital letter and involve only letters.")
+    @Pattern(regexp = "^[A-ZŻŹĆĄŚĘŁÓŃ][a-zżźćńółęąś]*(\\s[A-ZŻŹĆĄŚĘŁÓŃ][a-zżźćńółęąś]*)*$", message = "Every word in position must begin with a capital letter.")
     @NotBlank(message = "Position is required.")
     private String position;
 
