@@ -13,13 +13,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.pbgym.domain.user.AbstractUser;
 import pl.pbgym.domain.user.member.Member;
-import pl.pbgym.exception.offer.OfferNotActiveException;
 import pl.pbgym.dto.pass.GetPassResponseDto;
 import pl.pbgym.dto.pass.PostPassRequestDto;
+import pl.pbgym.exception.offer.OfferNotActiveException;
 import pl.pbgym.exception.offer.OfferNotFoundException;
 import pl.pbgym.exception.pass.MemberAlreadyHasActivePassException;
-import pl.pbgym.exception.payment.NoPaymentMethodException;
-import pl.pbgym.exception.payment.PaymentMethodExpiredException;
+import pl.pbgym.exception.pass.PassNotCreatedDueToPaymentFailure;
 import pl.pbgym.exception.user.member.MemberNotFoundException;
 import pl.pbgym.service.pass.PassService;
 
@@ -56,7 +55,7 @@ public class PassController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (MemberAlreadyHasActivePassException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (OfferNotActiveException | NoPaymentMethodException | PaymentMethodExpiredException e) {
+        } catch (OfferNotActiveException | PassNotCreatedDueToPaymentFailure e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
         return ResponseEntity.ok().body("Pass has been successfully created and activated");

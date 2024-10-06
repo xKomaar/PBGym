@@ -39,8 +39,9 @@ public class PaymentService {
     }
 
     @Transactional
-    public void registerPayment(Double amount, Member member) {
-        if(member.getCreditCardInfo() == null) {
+    public void registerPayment(Double amount, Member member)
+            throws NoPaymentMethodException, PaymentMethodExpiredException {
+        if(member == null || member.getCreditCardInfo() == null) {
             throw new NoPaymentMethodException("No credit card information");
         } else {
             if (isCreditCardExpired(creditCardInfoService.getHiddenCreditCardInfo(member.getEmail()))) {

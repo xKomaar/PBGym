@@ -1,5 +1,6 @@
 package pl.pbgym.dto.pass;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class GetPassResponseDto {
@@ -7,7 +8,7 @@ public class GetPassResponseDto {
     private String title;
     private LocalDateTime dateStart;
     private LocalDateTime dateEnd;
-    private LocalDateTime dateOfNextPayment;
+    private LocalDate dateOfNextPayment;
     private Double monthlyPrice;
     private boolean isActive;
 
@@ -46,11 +47,11 @@ public class GetPassResponseDto {
         this.dateEnd = dateEnd;
     }
 
-    public LocalDateTime getDateOfNextPayment() {
+    public LocalDate getDateOfNextPayment() {
         return dateOfNextPayment;
     }
 
-    public void setDateOfNextPayment(LocalDateTime dateOfNextPayment) {
+    public void setDateOfNextPayment(LocalDate dateOfNextPayment) {
         this.dateOfNextPayment = dateOfNextPayment;
     }
 
