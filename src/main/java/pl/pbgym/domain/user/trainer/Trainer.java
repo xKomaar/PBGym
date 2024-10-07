@@ -1,7 +1,10 @@
 package pl.pbgym.domain.user.trainer;
 
 import jakarta.persistence.*;
+import pl.pbgym.domain.gym_entry.GymEntry;
 import pl.pbgym.domain.user.AbstractUser;
+
+import java.util.List;
 
 @Entity
 @Table(name="trainer")
@@ -11,7 +14,8 @@ public class Trainer extends AbstractUser {
     private String description;
     @Column(name="photo")
     private byte[] photo;
-
+    @OneToMany(mappedBy = "abstractUser", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<GymEntry> gymEntries;
     public String getDescription() {
         return description;
     }
@@ -26,5 +30,13 @@ public class Trainer extends AbstractUser {
 
     public void setPhoto(byte[] photo) {
         this.photo = photo;
+    }
+
+    public List<GymEntry> getGymEntries() {
+        return gymEntries;
+    }
+
+    public void setGymEntries(List<GymEntry> gymEntries) {
+        this.gymEntries = gymEntries;
     }
 }

@@ -32,6 +32,7 @@ import pl.pbgym.repository.pass.PassRepository;
 import pl.pbgym.repository.payment.PaymentRepository;
 import pl.pbgym.repository.user.AbstractUserRepository;
 import pl.pbgym.repository.user.AddressRepository;
+import pl.pbgym.repository.user.member.CreditCardInfoRepository;
 import pl.pbgym.service.auth.AuthenticationService;
 import pl.pbgym.service.offer.OfferService;
 import pl.pbgym.service.pass.PassService;
@@ -74,6 +75,8 @@ public class PassControllerAndPaymentTest {
     private PassService passService;
     @Autowired
     private CreditCardInfoService creditCardInfoService;
+    @Autowired
+    private CreditCardInfoRepository creditCardInfoRepository;
     private String adminJwt;
     private String memberJwt;
     private Long offerId;
@@ -92,6 +95,7 @@ public class PassControllerAndPaymentTest {
         offerRepository.deleteAll();
         passRepository.deleteAll();
         paymentRepository.deleteAll();
+        creditCardInfoRepository.deleteAll();
 
         PostMemberRequestDto postMemberRequestDto = new PostMemberRequestDto();
         postMemberRequestDto.setEmail(memberEmail);
