@@ -54,6 +54,10 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, "/creditCardInfo/**").hasAnyAuthority("MEMBER", "ADMIN", "USER_MANAGEMENT")
                         .requestMatchers("/creditCardInfo/**").hasAuthority("MEMBER")
 
+                        .requestMatchers("/gym/count").permitAll()
+                        //Workers can let members in and out of the gym
+                        .requestMatchers("/gym/").hasAuthority("WORKER")
+
                         .requestMatchers("/swagger/**", "/swagger-ui/**", "v3/api-docs/**").permitAll()
                         .requestMatchers("/ping").permitAll()
                         .anyRequest().authenticated()
