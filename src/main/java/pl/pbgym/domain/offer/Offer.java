@@ -29,7 +29,7 @@ public abstract class Offer {
     private boolean isActive;
     @Enumerated(EnumType.STRING)
     private OfferType type;
-    @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @Nullable
     private List<OfferProperty> properties;
 

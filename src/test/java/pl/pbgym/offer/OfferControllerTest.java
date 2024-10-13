@@ -434,6 +434,8 @@ public class OfferControllerTest {
         postOfferRequestDto.setEntryFee(10.0);
         postOfferRequestDto.setDurationInMonths(12);
         postOfferRequestDto.setActive(true);
+        postOfferRequestDto.setProperties(List.of("Property1", "Property2", "Property3", "Property4"));
+
 
         mockMvc.perform(post("/offers/standard")
                         .header("Authorization", "Bearer " + workerJwt)
@@ -448,6 +450,7 @@ public class OfferControllerTest {
         updatedOfferRequestDto.setEntryFee(15.0);
         updatedOfferRequestDto.setDurationInMonths(18);
         updatedOfferRequestDto.setActive(false);
+        updatedOfferRequestDto.setProperties(List.of("Property5", "Property6"));
 
         mockMvc.perform(put("/offers/standard/Standard Offer")
                         .header("Authorization", "Bearer " + workerJwt)
@@ -463,6 +466,7 @@ public class OfferControllerTest {
         assertEquals(15.0, response.getEntryFee(), 0);
         assertFalse(response.isActive());
         assertEquals(18, response.getDurationInMonths(),0);
+        assertEquals(2, response.getProperties().size());
     }
 
     @Test

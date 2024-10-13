@@ -37,7 +37,7 @@ public class UserCounterService {
                 }
             }
             // If the user is on the list, we register an exit.
-            // If the user is not on the list, we implement an entry
+            // If the user is not on the list, we register an entry
             if(idsOfUsersAtTheGym.contains(userId)) {
                 GymEntry gymEntry = tempGymEntries.stream()
                         .filter(entry -> entry.getAbstractUser().getId().equals(userId))

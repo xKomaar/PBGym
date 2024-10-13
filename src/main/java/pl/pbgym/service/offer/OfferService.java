@@ -138,7 +138,7 @@ public class OfferService {
         Optional<StandardOffer> standardOffer = standardOfferRepository.findByTitle(title);
         standardOffer.ifPresentOrElse(offer -> {
                     this.mapOfferToPostOfferRequestDto(offer, dto);
-                    offerPropertyRepository.deleteAll(offer.getProperties());
+                    offer.getProperties().clear();
                     saveOfferProperties(dto.getProperties(), offer);
                 },
                 () -> {
@@ -154,7 +154,7 @@ public class OfferService {
                     offer.setSpecialOfferText(dto.getSpecialOfferText());
                     offer.setBorderText(dto.getBorderText());
                     offer.setPreviousPriceInfo(dto.getPreviousPriceInfo());
-                    offerPropertyRepository.deleteAll(offer.getProperties());
+                    offer.getProperties().clear();
                     saveOfferProperties(dto.getProperties(), offer);
                 },
                 () -> {
