@@ -8,16 +8,14 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import pl.pbgym.exception.user_counter.NoActivePassException;
 import pl.pbgym.exception.user_counter.WorkerNotAllowedToBeScannedException;
 import pl.pbgym.service.user_counter.UserCounterService;
 
 @Controller
 @RequestMapping("/gym")
+@CrossOrigin
 public class GymEntryController {
 
     private final UserCounterService userCounterService;
