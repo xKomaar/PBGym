@@ -15,15 +15,26 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import pl.pbgym.controller.user.member.MemberController;
 import pl.pbgym.domain.user.Gender;
 import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.dto.auth.*;
+import pl.pbgym.dto.offer.standard.PostStandardOfferRequestDto;
+import pl.pbgym.dto.pass.PostPassRequestDto;
+import pl.pbgym.dto.statistics.GetGymEntryResponseDto;
 import pl.pbgym.dto.user.member.GetMemberResponseDto;
+import pl.pbgym.dto.user.member.PostCreditCardInfoRequestDto;
 import pl.pbgym.dto.user.member.UpdateMemberRequestDto;
+import pl.pbgym.repository.gym_entry.GymEntryRepository;
+import pl.pbgym.repository.offer.OfferRepository;
+import pl.pbgym.repository.pass.PassRepository;
+import pl.pbgym.repository.payment.PaymentRepository;
 import pl.pbgym.repository.user.AbstractUserRepository;
 import pl.pbgym.repository.user.AddressRepository;
+import pl.pbgym.repository.user.member.CreditCardInfoRepository;
 import pl.pbgym.service.auth.AuthenticationService;
+import pl.pbgym.service.offer.OfferService;
+import pl.pbgym.service.pass.PassService;
+import pl.pbgym.service.user.member.CreditCardInfoService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -54,6 +65,22 @@ public class MemberControllerTest {
     private String managerJwt;
     private String memberJwt;
     private String memberEmail = "test1@member.com";
+    @Autowired
+    private PassService passService;
+    @Autowired
+    private CreditCardInfoService creditCardInfoService;
+    @Autowired
+    private CreditCardInfoRepository creditCardInfoRepository;
+    @Autowired
+    private OfferRepository offerRepository;
+    @Autowired
+    private PassRepository passRepository;
+    @Autowired
+    private PaymentRepository paymentRepository;
+    @Autowired
+    private GymEntryRepository gymEntryRepository;
+    @Autowired
+    private OfferService offerService;
 
     @Before
     public void setUp() {
@@ -64,6 +91,13 @@ public class MemberControllerTest {
 
         abstractUserRepository.deleteAll();
         addressRepository.deleteAll();
+        abstractUserRepository.deleteAll();
+        addressRepository.deleteAll();
+        offerRepository.deleteAll();
+        passRepository.deleteAll();
+        paymentRepository.deleteAll();
+        creditCardInfoRepository.deleteAll();
+        gymEntryRepository.deleteAll();
 
         PostMemberRequestDto postMemberRequestDto = new PostMemberRequestDto();
         postMemberRequestDto.setEmail(memberEmail);
@@ -143,6 +177,29 @@ public class MemberControllerTest {
 
         memberJwt = authenticationService.authenticate(
                 new PostAuthenticationRequestDto(memberEmail, "12345678")).getJwt();
+
+        PostCreditCardInfoRequestDto creditCardInfoRequestDto = new PostCreditCardInfoRequestDto();
+        creditCardInfoRequestDto.setCardNumber("4111111111111111");
+        creditCardInfoRequestDto.setExpirationMonth("12");
+        creditCardInfoRequestDto.setExpirationYear("25");
+        creditCardInfoRequestDto.setCvc("123");
+
+        creditCardInfoService.saveCreditCardInfo(memberEmail, creditCardInfoRequestDto);
+
+        PostStandardOfferRequestDto postStandardOfferRequest = new PostStandardOfferRequestDto();
+        postStandardOfferRequest.setTitle("Standardowa Oferta 6msc");
+        postStandardOfferRequest.setSubtitle("Kup karnet już dzisiaj");
+        postStandardOfferRequest.setMonthlyPrice(300.0);
+        postStandardOfferRequest.setEntryFee(10.0);
+        postStandardOfferRequest.setDurationInMonths(6);
+        postStandardOfferRequest.setProperties(List.of("Siła - bądź silny", "Super treningi", "Kochaj sport kochaj życie"));
+        postStandardOfferRequest.setActive(true);
+
+        offerService.saveStandardOffer(postStandardOfferRequest);
+
+        PostPassRequestDto passRequest = new PostPassRequestDto();
+        passRequest.setOfferId(offerService.getStandardOfferByTitle("Standardowa Oferta 6msc").getId());
+        passService.createPass(memberEmail, passRequest);
     }
     @Test
     public void shouldReturnOkWhenMemberFetchesHisOwnData() throws Exception {
@@ -546,5 +603,32 @@ public class MemberControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonChangeEmailRequest))
                 .andExpect(status().isConflict());
+    }
+
+    @Test
+    public void shouldReturnOkWhenFetchingOwnGymHistory() throws Exception {
+        mockMvc.perform(post("/gym/registerQRscan/{email}", memberEmail)
+                        .header("Authorization", "Bearer " + memberJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        mockMvc.perform(post("/gym/registerQRscan/{email}", memberEmail)
+                        .header("Authorization", "Bearer " + memberJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        MvcResult gymEntriesResult =  mockMvc.perform(get("/members/getOwnGymEntries")
+                        .header("Authorization", "Bearer " + memberJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = gymEntriesResult.getResponse().getContentAsString();
+        List<GetGymEntryResponseDto> gymEntries = objectMapper.readValue(jsonResponse, objectMapper.getTypeFactory().constructCollectionType(List.class, GetGymEntryResponseDto.class));
+
+        assertEquals(1, gymEntries.size());
+        GetGymEntryResponseDto dto = gymEntries.get(0);
+        assertEquals(memberEmail, dto.getEmail());
+        assertNotNull(dto.getDateTimeOfEntry());
+        assertNotNull(dto.getDateTimeOfExit());
     }
 }

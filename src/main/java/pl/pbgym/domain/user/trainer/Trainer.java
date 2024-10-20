@@ -1,7 +1,7 @@
 package pl.pbgym.domain.user.trainer;
 
 import jakarta.persistence.*;
-import pl.pbgym.domain.gym_entry.GymEntry;
+import pl.pbgym.domain.statistics.GymEntry;
 import pl.pbgym.domain.user.AbstractUser;
 
 import java.util.List;

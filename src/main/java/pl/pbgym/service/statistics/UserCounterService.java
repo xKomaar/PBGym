@@ -1,8 +1,8 @@
-package pl.pbgym.service.user_counter;
+package pl.pbgym.service.statistics;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-import pl.pbgym.domain.gym_entry.GymEntry;
+import pl.pbgym.domain.statistics.GymEntry;
 import pl.pbgym.domain.user.member.Member;
 import pl.pbgym.domain.user.worker.Worker;
 import pl.pbgym.exception.user_counter.NoActivePassException;
@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class UserCounterService {
 
-    private final Set<Long> idsOfUsersAtTheGym = ConcurrentHashMap.newKeySet();
+    private final Set<String> emailsOfUsersAtTheGym = ConcurrentHashMap.newKeySet();
     private final Set<GymEntry> tempGymEntries = ConcurrentHashMap.newKeySet();
     private final AbstractUserRepository abstractUserRepository;
     private final GymEntryRepository gymEntryRepository;
@@ -27,42 +27,42 @@ public class UserCounterService {
         this.gymEntryRepository = gymEntryRepository;
     }
 
-    public void registerUserAction(Long userId) {
-        abstractUserRepository.findById(userId).ifPresentOrElse(abstractUser -> {
+    public void registerUserAction(String email) {
+        abstractUserRepository.findByEmail(email).ifPresentOrElse(abstractUser -> {
             if(abstractUser instanceof Worker) {
                 throw new WorkerNotAllowedToBeScannedException("Worker is not allowed here!");
             } else if(abstractUser instanceof Member member) {
                 if(member.getPass() == null || !member.getPass().isActive()) {
-                    throw new NoActivePassException("Member with id " + userId + "doesn't have an active pass!");
+                    throw new NoActivePassException("Member with email " + email + "doesn't have an active pass!");
                 }
             }
             // If the user is on the list, we register an exit.
             // If the user is not on the list, we register an entry
-            if(idsOfUsersAtTheGym.contains(userId)) {
+            if(emailsOfUsersAtTheGym.contains(email)) {
                 GymEntry gymEntry = tempGymEntries.stream()
-                        .filter(entry -> entry.getAbstractUser().getId().equals(userId))
+                        .filter(entry -> entry.getAbstractUser().getEmail().equals(email))
                         .findFirst()
-                        .orElseThrow(() -> new EntityNotFoundException("GymEntry not found for userId: " + userId));
+                        .orElseThrow(() -> new EntityNotFoundException("GymEntry not found for email: " + email));
 
                 gymEntry.setDateTimeOfExit(LocalDateTime.now());
                 gymEntryRepository.save(gymEntry);
 
                 tempGymEntries.remove(gymEntry);
-                idsOfUsersAtTheGym.remove(userId);
+                emailsOfUsersAtTheGym.remove(email);
             }
             else {
                 GymEntry gymEntry = new GymEntry();
                 gymEntry.setDateTimeOfEntry(LocalDateTime.now());
                 gymEntry.setAbstractUser(abstractUser);
                 tempGymEntries.add(gymEntry);
-                idsOfUsersAtTheGym.add(userId);
+                emailsOfUsersAtTheGym.add(email);
             }
         }, () -> {
-            throw new EntityNotFoundException("User with id " + userId + " not found");
+            throw new EntityNotFoundException("User with email " + email + " not found");
         });
     }
 
     public int getCurrentUserCount() {
-        return idsOfUsersAtTheGym.size();
+        return emailsOfUsersAtTheGym.size();
     }
 }

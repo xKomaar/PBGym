@@ -18,12 +18,16 @@ import pl.pbgym.domain.user.trainer.Trainer;
 import pl.pbgym.dto.auth.AuthenticationResponseDto;
 import pl.pbgym.dto.auth.ChangeEmailRequestDto;
 import pl.pbgym.dto.auth.ChangePasswordRequestDto;
+import pl.pbgym.dto.statistics.GetGymEntryResponseDto;
 import pl.pbgym.dto.user.trainer.UpdateTrainerRequestDto;
 import pl.pbgym.dto.user.trainer.GetTrainerResponseDto;
 import pl.pbgym.exception.user.IncorrectPasswordException;
 import pl.pbgym.exception.user.trainer.TrainerNotFoundException;
+import pl.pbgym.service.statistics.StatisticsService;
 import pl.pbgym.service.user.AbstractUserService;
 import pl.pbgym.service.user.trainer.TrainerService;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/trainers")
@@ -31,13 +35,14 @@ import pl.pbgym.service.user.trainer.TrainerService;
 public class TrainerController {
 
     private final TrainerService trainerService;
-
     private final AbstractUserService abstractUserService;
+    private final StatisticsService statisticsService;
 
     @Autowired
-    public TrainerController(TrainerService trainerService, AbstractUserService abstractUserService) {
+    public TrainerController(TrainerService trainerService, AbstractUserService abstractUserService, StatisticsService statisticsService) {
         this.trainerService = trainerService;
         this.abstractUserService = abstractUserService;
+        this.statisticsService = statisticsService;
     }
 
     @GetMapping("/{email}")
@@ -146,5 +151,21 @@ public class TrainerController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+    @GetMapping("/getOwnGymEntries")
+    @Operation(summary = "Get own gym entry history", description = "Fetches a gym entry history of a trainer, " +
+            "possible only for the trainer who owns the data.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Gym Entry history fetched successfully"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
+    })
+    public ResponseEntity<List<GetGymEntryResponseDto>> getOwnGymEntries() {
+
+        AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!(authenticatedUser instanceof Trainer)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(statisticsService.getAllByUserEmail(authenticatedUser.getEmail()));
     }
 }

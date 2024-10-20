@@ -1,4 +1,4 @@
-package pl.pbgym.domain.gym_entry;
+package pl.pbgym.domain.statistics;
 
 import jakarta.persistence.*;
 import pl.pbgym.domain.user.AbstractUser;

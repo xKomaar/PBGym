@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.pbgym.exception.user_counter.NoActivePassException;
 import pl.pbgym.exception.user_counter.WorkerNotAllowedToBeScannedException;
-import pl.pbgym.service.user_counter.UserCounterService;
+import pl.pbgym.service.statistics.UserCounterService;
 
 @Controller
 @RequestMapping("/gym")
@@ -24,7 +24,7 @@ public class GymEntryController {
         this.userCounterService = userCounterService;
     }
 
-    @PostMapping("/registerQRscan/{userId}")
+    @PostMapping("/registerQRscan/{email}")
     @Operation(summary = "Register a scan of users QR code", description = "Gets the id from the QR code and " +
             "distinguishes if the action is an exit or an entry to the gym. Accessible ONLY FOR WORKERS.")
     @ApiResponses(value = {
@@ -33,9 +33,9 @@ public class GymEntryController {
                     "authenticated user is not authorized to access this resource", content = @Content),
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
     })
-    public ResponseEntity<String> userEnters(@PathVariable Long userId) {
+    public ResponseEntity<String> userEnters(@PathVariable String email) {
         try {
-            userCounterService.registerUserAction(userId);
+            userCounterService.registerUserAction(email);
         } catch (WorkerNotAllowedToBeScannedException | NoActivePassException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (EntityNotFoundException e) {

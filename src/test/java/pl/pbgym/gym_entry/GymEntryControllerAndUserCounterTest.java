@@ -15,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import pl.pbgym.domain.gym_entry.GymEntry;
+import pl.pbgym.domain.statistics.GymEntry;
 import pl.pbgym.domain.user.Gender;
 import pl.pbgym.dto.auth.*;
 import pl.pbgym.dto.offer.standard.PostStandardOfferRequestDto;
@@ -79,9 +79,6 @@ public class GymEntryControllerAndUserCounterTest {
     private String memberEmail = "test@member.com";
     private String trainerEmail = "test@trainer.com";
     private String workerJwt;
-    private Long memberId;
-    private Long trainerId;
-    private Long workerId;
 
     @Before
     public void setUp() {
@@ -122,7 +119,6 @@ public class GymEntryControllerAndUserCounterTest {
         authenticationService.registerWorker(postWorkerRequestDto);
         workerJwt = authenticationService.authenticate(
                 new PostAuthenticationRequestDto(workerEmail, "12345678")).getJwt();
-        workerId = abstractUserRepository.findByEmail(workerEmail).get().getId();
 
         PostMemberRequestDto postMemberRequestDto = new PostMemberRequestDto();
         postMemberRequestDto.setEmail(memberEmail);
@@ -143,7 +139,6 @@ public class GymEntryControllerAndUserCounterTest {
         postMemberRequestDto.setAddress(postAddressRequestDto2);
 
         authenticationService.registerMember(postMemberRequestDto);
-        memberId = abstractUserRepository.findByEmail(memberEmail).get().getId();
 
         PostCreditCardInfoRequestDto creditCardInfoRequestDto = new PostCreditCardInfoRequestDto();
         creditCardInfoRequestDto.setCardNumber("4111111111111111");
@@ -187,12 +182,11 @@ public class GymEntryControllerAndUserCounterTest {
         postTrainerRequestDto.setAddress(postAddressRequestDto3);
 
         authenticationService.registerTrainer(postTrainerRequestDto);
-        trainerId = abstractUserRepository.findByEmail(trainerEmail).get().getId();
     }
 
     @Test
     public void testMemberEntryExitAndGymEntryPersistence() throws Exception {
-        mockMvc.perform(post("/gym/registerQRscan/" + memberId)
+        mockMvc.perform(post("/gym/registerQRscan/" + memberEmail)
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -206,7 +200,7 @@ public class GymEntryControllerAndUserCounterTest {
         int countAfterEntry = Integer.parseInt(resultAfterEntry.getResponse().getContentAsString());
         assertEquals(1, countAfterEntry);
 
-        mockMvc.perform(post("/gym/registerQRscan/" + memberId)
+        mockMvc.perform(post("/gym/registerQRscan/" + memberEmail)
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -222,7 +216,7 @@ public class GymEntryControllerAndUserCounterTest {
 
         // Verify GymEntry persistance
         Optional<GymEntry> gymEntry = gymEntryRepository.findAll().stream()
-                .filter(entry -> entry.getAbstractUser().getId().equals(memberId))
+                .filter(entry -> entry.getAbstractUser().getEmail().equals(memberEmail))
                 .findFirst();
 
         assertTrue(gymEntry.isPresent());
@@ -232,7 +226,7 @@ public class GymEntryControllerAndUserCounterTest {
 
     @Test
     public void testTrainerEntryExitAndGymEntryPersistence() throws Exception {
-        mockMvc.perform(post("/gym/registerQRscan/" + trainerId)
+        mockMvc.perform(post("/gym/registerQRscan/" + trainerEmail)
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -246,7 +240,7 @@ public class GymEntryControllerAndUserCounterTest {
         int countAfterEntry = Integer.parseInt(resultAfterEntry.getResponse().getContentAsString());
         assertEquals(1, countAfterEntry);
 
-        mockMvc.perform(post("/gym/registerQRscan/" + trainerId)
+        mockMvc.perform(post("/gym/registerQRscan/" + trainerEmail)
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -262,7 +256,7 @@ public class GymEntryControllerAndUserCounterTest {
 
         // Verify GymEntry persistence
         Optional<GymEntry> gymEntry = gymEntryRepository.findAll().stream()
-                .filter(entry -> entry.getAbstractUser().getId().equals(trainerId))
+                .filter(entry -> entry.getAbstractUser().getEmail().equals(trainerEmail))
                 .findFirst();
 
         assertTrue(gymEntry.isPresent());
@@ -272,7 +266,7 @@ public class GymEntryControllerAndUserCounterTest {
 
     @Test
     public void testScanWorkerShouldFail() throws Exception {
-        mockMvc.perform(post("/gym/registerQRscan/" + workerId)
+        mockMvc.perform(post("/gym/registerQRscan/" + workerEmail)
                         .header("Authorization", "Bearer " + workerJwt)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());

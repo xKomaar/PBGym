@@ -2,7 +2,7 @@ package pl.pbgym.domain.user.member;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import pl.pbgym.domain.gym_entry.GymEntry;
+import pl.pbgym.domain.statistics.GymEntry;
 import pl.pbgym.domain.pass.Pass;
 import pl.pbgym.domain.user.AbstractUser;
 

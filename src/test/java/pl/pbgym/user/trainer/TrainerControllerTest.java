@@ -19,6 +19,7 @@ import pl.pbgym.controller.user.trainer.TrainerController;
 import pl.pbgym.domain.user.Gender;
 import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.dto.auth.*;
+import pl.pbgym.dto.statistics.GetGymEntryResponseDto;
 import pl.pbgym.dto.user.trainer.GetTrainerResponseDto;
 import pl.pbgym.dto.user.trainer.UpdateTrainerRequestDto;
 import pl.pbgym.repository.user.AbstractUserRepository;
@@ -576,5 +577,32 @@ public class TrainerControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonChangeEmailRequest))
                 .andExpect(status().isConflict());
+    }
+
+    @Test
+    public void shouldReturnOkWhenFetchingOwnGymHistory() throws Exception {
+        mockMvc.perform(post("/gym/registerQRscan/{email}", trainerEmail)
+                        .header("Authorization", "Bearer " + trainerJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        mockMvc.perform(post("/gym/registerQRscan/{email}", trainerEmail)
+                        .header("Authorization", "Bearer " + trainerJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        MvcResult gymEntriesResult =  mockMvc.perform(get("/trainers/getOwnGymEntries")
+                        .header("Authorization", "Bearer " + trainerJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = gymEntriesResult.getResponse().getContentAsString();
+        List<GetGymEntryResponseDto> gymEntries = objectMapper.readValue(jsonResponse, objectMapper.getTypeFactory().constructCollectionType(List.class, GetGymEntryResponseDto.class));
+
+        assertEquals(1, gymEntries.size());
+        GetGymEntryResponseDto dto = gymEntries.get(0);
+        assertEquals(trainerEmail, dto.getEmail());
+        assertNotNull(dto.getDateTimeOfEntry());
+        assertNotNull(dto.getDateTimeOfExit());
     }
 }
