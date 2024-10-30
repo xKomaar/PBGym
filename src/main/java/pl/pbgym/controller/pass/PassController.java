@@ -13,14 +13,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.pbgym.domain.user.AbstractUser;
 import pl.pbgym.domain.user.member.Member;
+import pl.pbgym.dto.pass.GetHistoricalPassResponseDto;
 import pl.pbgym.dto.pass.GetPassResponseDto;
 import pl.pbgym.dto.pass.PostPassRequestDto;
+import pl.pbgym.dto.payment.GetPaymentResponseDto;
 import pl.pbgym.exception.offer.OfferNotActiveException;
 import pl.pbgym.exception.offer.OfferNotFoundException;
 import pl.pbgym.exception.pass.MemberAlreadyHasActivePassException;
 import pl.pbgym.exception.pass.PassNotCreatedDueToPaymentFailure;
 import pl.pbgym.exception.user.member.MemberNotFoundException;
 import pl.pbgym.service.pass.PassService;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/passes")
@@ -76,6 +80,28 @@ public class PassController {
         }
         try {
             return ResponseEntity.ok(passService.getPassByEmail(email));
+        } catch (MemberNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @GetMapping("/passHistory/{email}")
+    @Operation(summary = "Get pass history by email", description = "Fetches a pass history of a member, " +
+            "possible only for ADMIN and USER_MANAGEMENT workers and for the member who owns the data. ")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Payment history fetched successfully"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Member not found", content = @Content)
+    })
+    public ResponseEntity<List<GetHistoricalPassResponseDto>> getPassHistory(@PathVariable String email) {
+
+        AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (authenticatedUser instanceof Member && !authenticatedUser.getEmail().equals(email)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(passService.getHistoricalPassesByEmail(email));
         } catch (MemberNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

@@ -37,11 +37,13 @@ public class SecurityConfiguration {
                         .requestMatchers("/auth/registerTrainer").hasAnyAuthority("ADMIN", "USER_MANAGEMENT")
                         .requestMatchers("/auth/registerWorker").hasAuthority("ADMIN")
 
-                        .requestMatchers("/members/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "MEMBER")
+                        .requestMatchers("/members/getOwnPayments", "members/getOwnGymEntries").hasAuthority("MEMBER")
                         .requestMatchers("/members/changePassword/", "/members/changeEmail/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "MEMBER")
+                        .requestMatchers("/members/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "MEMBER")
 
-                        .requestMatchers("/trainers/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "TRAINER")
+                        .requestMatchers("trainers/getOwnGymEntries").hasAuthority("TRAINER")
                         .requestMatchers("/trainers/changePassword/", "/trainers/changeEmail/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "TRAINER")
+                        .requestMatchers("/trainers/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "TRAINER")
 
                         .requestMatchers("/workers/all").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/workers/{email}", "/workers/changeEmail/{email}").hasAuthority("ADMIN")
@@ -49,6 +51,7 @@ public class SecurityConfiguration {
 
                         .requestMatchers("/offers/public/active").permitAll()
                         .requestMatchers("/offers/**").hasAnyAuthority("ADMIN", "PASS_MANAGEMENT")
+
                         .requestMatchers("/passes/**").hasAnyAuthority("MEMBER", "ADMIN", "PASS_MANAGEMENT")
 
                         .requestMatchers(HttpMethod.DELETE, "/creditCardInfo/**").hasAnyAuthority("MEMBER", "ADMIN", "USER_MANAGEMENT")

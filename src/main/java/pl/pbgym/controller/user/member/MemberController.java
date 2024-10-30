@@ -169,6 +169,7 @@ public class MemberController {
         if (!(authenticatedUser instanceof Member)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+
         return ResponseEntity.status(HttpStatus.OK).body(statisticsService.getAllGymEntriesByUserEmail(authenticatedUser.getEmail()));
     }
 
@@ -185,6 +186,7 @@ public class MemberController {
         if (!(authenticatedUser instanceof Member)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+
         return ResponseEntity.status(HttpStatus.OK).body(paymentService.getAllPaymentsByEmail(authenticatedUser.getEmail()));
     }
 }
