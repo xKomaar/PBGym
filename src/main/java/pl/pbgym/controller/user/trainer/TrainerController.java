@@ -166,6 +166,6 @@ public class TrainerController {
         if (!(authenticatedUser instanceof Trainer)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        return ResponseEntity.status(HttpStatus.OK).body(statisticsService.getAllByUserEmail(authenticatedUser.getEmail()));
+        return ResponseEntity.status(HttpStatus.OK).body(statisticsService.getAllGymEntriesByUserEmail(authenticatedUser.getEmail()));
     }
 }

@@ -27,7 +27,6 @@ public class PostWorkerRequestDto extends PostAbstractUserRequestDto {
             PermissionType.PASS_MANAGEMENT,
             PermissionType.GROUP_CLASSES_MANAGEMENT,
             PermissionType.BLOG,
-            PermissionType.SHOP_MANAGEMENT
     }, message = "Permission need to be of ADMIN, STATISTICS, USER_MANAGEMENT," +
             " NEWSLETTER, PASS_MANAGEMENT, GROUP_CLASSES_MANAGEMENT, BLOG, SHOP_MANAGEMENT")
     @NotNull

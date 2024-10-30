@@ -4,13 +4,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pbgym.domain.payment.Payment;
-import pl.pbgym.domain.payment.Payment;
-import pl.pbgym.domain.user.member.CreditCardInfo;
 import pl.pbgym.domain.user.member.Member;
 import pl.pbgym.dto.payment.GetPaymentResponseDto;
 import pl.pbgym.dto.user.member.GetCreditCardInfoResponseDto;
-import pl.pbgym.dto.user.member.GetFullCreditCardInfoRequest;
-import pl.pbgym.dto.user.member.GetMemberResponseDto;
 import pl.pbgym.exception.payment.NoPaymentMethodException;
 import pl.pbgym.exception.payment.PaymentMethodExpiredException;
 import pl.pbgym.exception.user.member.MemberNotFoundException;
@@ -19,9 +15,7 @@ import pl.pbgym.service.user.member.CreditCardInfoService;
 import pl.pbgym.service.user.member.MemberService;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PaymentService {
@@ -63,32 +57,16 @@ public class PaymentService {
     }
 
     public List<GetPaymentResponseDto> getAllPaymentsByEmail(String email) {
-        GetMemberResponseDto memberResponseDto;
         try {
-            memberResponseDto = memberService.getMemberByEmail(email);
+            memberService.getMemberByEmail(email);
         } catch (MemberNotFoundException e) {
             throw new MemberNotFoundException(e.getMessage());
         }
         List<Payment> payments = paymentRepository.findAllByMemberEmail(email);
         return payments
                 .stream()
-                .map(p -> {
-                    GetPaymentResponseDto paymentDto = new GetPaymentResponseDto();
-                    GetCreditCardInfoResponseDto hiddenCreditCardInfo = creditCardInfoService.getHiddenCreditCardInfo(email);
-                    paymentDto.setId(p.getId());
-                    paymentDto.setAmount(p.getAmount());
-                    paymentDto.setCardNumber(hiddenCreditCardInfo.getCardNumber());
-                    paymentDto.setExpirationMonth(hiddenCreditCardInfo.getExpirationMonth());
-                    paymentDto.setExpirationYear(hiddenCreditCardInfo.getExpirationYear());
-
-                    paymentDto.setName(memberResponseDto.getName());
-                    paymentDto.setSurname(memberResponseDto.getSurname());
-                    paymentDto.setEmail(memberResponseDto.getEmail());
-                    paymentDto.setPesel(memberResponseDto.getPesel());
-                    return paymentDto;
-                })
+                .map(payment -> modelMapper.map(payment, GetPaymentResponseDto.class))
                 .toList();
-
     }
 
     private boolean isCreditCardExpired(GetCreditCardInfoResponseDto creditCardInfo) {

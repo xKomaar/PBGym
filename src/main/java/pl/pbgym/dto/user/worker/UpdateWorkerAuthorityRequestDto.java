@@ -24,7 +24,6 @@ public class UpdateWorkerAuthorityRequestDto {
             PermissionType.PASS_MANAGEMENT,
             PermissionType.GROUP_CLASSES_MANAGEMENT,
             PermissionType.BLOG,
-            PermissionType.SHOP_MANAGEMENT
     })
     @NotNull
     private List<PermissionType> permissions;

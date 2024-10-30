@@ -17,11 +17,13 @@ import pl.pbgym.domain.user.member.Member;
 import pl.pbgym.dto.auth.AuthenticationResponseDto;
 import pl.pbgym.dto.auth.ChangeEmailRequestDto;
 import pl.pbgym.dto.auth.ChangePasswordRequestDto;
+import pl.pbgym.dto.payment.GetPaymentResponseDto;
 import pl.pbgym.dto.statistics.GetGymEntryResponseDto;
 import pl.pbgym.dto.user.member.GetMemberResponseDto;
 import pl.pbgym.dto.user.member.UpdateMemberRequestDto;
 import pl.pbgym.exception.user.IncorrectPasswordException;
 import pl.pbgym.exception.user.member.MemberNotFoundException;
+import pl.pbgym.service.payment.PaymentService;
 import pl.pbgym.service.statistics.StatisticsService;
 import pl.pbgym.service.user.AbstractUserService;
 import pl.pbgym.service.user.member.MemberService;
@@ -36,12 +38,14 @@ public class MemberController {
     private final MemberService memberService;
     private final AbstractUserService abstractUserService;
     private final StatisticsService statisticsService;
+    private final PaymentService paymentService;
 
     @Autowired
-    public MemberController(MemberService memberService, AbstractUserService abstractUserService, StatisticsService statisticsService) {
+    public MemberController(MemberService memberService, AbstractUserService abstractUserService, StatisticsService statisticsService, PaymentService paymentService) {
         this.memberService = memberService;
         this.abstractUserService = abstractUserService;
         this.statisticsService = statisticsService;
+        this.paymentService = paymentService;
     }
 
     @GetMapping("/{email}")
@@ -165,6 +169,22 @@ public class MemberController {
         if (!(authenticatedUser instanceof Member)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        return ResponseEntity.status(HttpStatus.OK).body(statisticsService.getAllByUserEmail(authenticatedUser.getEmail()));
+        return ResponseEntity.status(HttpStatus.OK).body(statisticsService.getAllGymEntriesByUserEmail(authenticatedUser.getEmail()));
+    }
+
+    @GetMapping("/getOwnPayments")
+    @Operation(summary = "Get own payment history", description = "Fetches a payment history of a member, " +
+            "possible only for the member who owns the data.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Payment history fetched successfully"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
+    })
+    public ResponseEntity<List<GetPaymentResponseDto>> getOwnPayments() {
+
+        AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!(authenticatedUser instanceof Member)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(paymentService.getAllPaymentsByEmail(authenticatedUser.getEmail()));
     }
 }
