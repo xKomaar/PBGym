@@ -20,6 +20,7 @@ import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.dto.auth.*;
 import pl.pbgym.dto.offer.standard.PostStandardOfferRequestDto;
 import pl.pbgym.dto.pass.PostPassRequestDto;
+import pl.pbgym.dto.payment.GetPaymentResponseDto;
 import pl.pbgym.dto.statistics.GetGymEntryResponseDto;
 import pl.pbgym.dto.user.member.GetMemberResponseDto;
 import pl.pbgym.dto.user.member.PostCreditCardInfoRequestDto;
@@ -630,5 +631,23 @@ public class MemberControllerTest {
         assertEquals(memberEmail, dto.getEmail());
         assertNotNull(dto.getDateTimeOfEntry());
         assertNotNull(dto.getDateTimeOfExit());
+    }
+
+    @Test
+    public void shouldReturnOkWhenFetchingOwnPaymentHistory() throws Exception {
+        MvcResult paymentsResult =  mockMvc.perform(get("/members/getOwnPayments")
+                        .header("Authorization", "Bearer " + memberJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = paymentsResult.getResponse().getContentAsString();
+        List<GetPaymentResponseDto> payments = objectMapper.readValue(jsonResponse, objectMapper.getTypeFactory().constructCollectionType(List.class, GetPaymentResponseDto.class));
+
+        assertEquals(1, payments.size());
+        GetPaymentResponseDto dto = payments.get(0);
+        assertEquals(memberEmail, dto.getEmail());
+        assertNotNull(dto.getDateTime());
+        assertNotNull(dto.getCardNumber());
     }
 }

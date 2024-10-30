@@ -31,9 +31,6 @@ public class Pass {
     @Column(name = "monthylPrice", nullable = false)
     private Double monthlyPrice;
 
-    @Column(name = "isActive", nullable = false)
-    private boolean isActive;
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id", referencedColumnName = "member_id", nullable = false)
     private Member member;
@@ -87,14 +84,6 @@ public class Pass {
 
     public void setMonthlyPrice(Double monthlyPrice) {
         this.monthlyPrice = monthlyPrice;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
     }
 
     public Member getMember() {

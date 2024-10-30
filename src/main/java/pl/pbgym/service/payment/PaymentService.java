@@ -43,11 +43,12 @@ public class PaymentService {
             }
         }
 
+        GetCreditCardInfoResponseDto creditCardInfoResponseDto = creditCardInfoService.getHiddenCreditCardInfo(member.getEmail());
         Payment payment = new Payment();
         payment.setAmount(amount);
-        payment.setCardNumber(member.getCreditCardInfo().getCardNumber());
-        payment.setExpirationMonth(member.getCreditCardInfo().getExpirationMonth());
-        payment.setExpirationYear(member.getCreditCardInfo().getExpirationYear());
+        payment.setCardNumber(creditCardInfoResponseDto.getCardNumber());
+        payment.setExpirationMonth(creditCardInfoResponseDto.getExpirationMonth());
+        payment.setExpirationYear(creditCardInfoResponseDto.getExpirationYear());
         payment.setName(member.getName());
         payment.setSurname(member.getSurname());
         payment.setEmail(member.getEmail());

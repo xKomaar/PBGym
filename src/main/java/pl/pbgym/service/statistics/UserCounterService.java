@@ -32,7 +32,7 @@ public class UserCounterService {
             if(abstractUser instanceof Worker) {
                 throw new WorkerNotAllowedToBeScannedException("Worker is not allowed here!");
             } else if(abstractUser instanceof Member member) {
-                if(member.getPass() == null || !member.getPass().isActive()) {
+                if(member.getPass() == null) {
                     throw new NoActivePassException("Member with email " + email + "doesn't have an active pass!");
                 }
             }

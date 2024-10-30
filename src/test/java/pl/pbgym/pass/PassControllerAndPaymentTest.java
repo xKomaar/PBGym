@@ -24,10 +24,13 @@ import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
 import pl.pbgym.dto.auth.PostMemberRequestDto;
 import pl.pbgym.dto.auth.PostWorkerRequestDto;
 import pl.pbgym.dto.offer.standard.PostStandardOfferRequestDto;
+import pl.pbgym.dto.pass.GetHistoricalPassResponseDto;
 import pl.pbgym.dto.pass.GetPassResponseDto;
 import pl.pbgym.dto.pass.PostPassRequestDto;
+import pl.pbgym.dto.payment.GetPaymentResponseDto;
 import pl.pbgym.dto.user.member.PostCreditCardInfoRequestDto;
 import pl.pbgym.repository.offer.OfferRepository;
+import pl.pbgym.repository.pass.HistoricalPassRepository;
 import pl.pbgym.repository.pass.PassRepository;
 import pl.pbgym.repository.payment.PaymentRepository;
 import pl.pbgym.repository.user.AbstractUserRepository;
@@ -42,6 +45,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -67,6 +71,8 @@ public class PassControllerAndPaymentTest {
     private OfferRepository offerRepository;
     @Autowired
     private PassRepository passRepository;
+    @Autowired
+    private HistoricalPassRepository historicalPassRepository;
     @Autowired
     private PaymentRepository paymentRepository;
     @Autowired
@@ -94,6 +100,7 @@ public class PassControllerAndPaymentTest {
         addressRepository.deleteAll();
         offerRepository.deleteAll();
         passRepository.deleteAll();
+        historicalPassRepository.deleteAll();
         paymentRepository.deleteAll();
         creditCardInfoRepository.deleteAll();
 
@@ -253,35 +260,6 @@ public class PassControllerAndPaymentTest {
     }
 
     @Test
-    public void memberWithInactivePassBuysNewPass() throws Exception {
-        // Create an inactive pass
-        PostPassRequestDto inactivePassRequest = new PostPassRequestDto();
-        inactivePassRequest.setOfferId(offerId);
-        passService.createPass(memberEmail, inactivePassRequest);
-        Pass pass = passRepository.findByMemberEmail(memberEmail).get();
-        pass.setActive(false);
-        passRepository.save(pass);
-
-        PostPassRequestDto passRequest = new PostPassRequestDto();
-        passRequest.setOfferId(offerId);
-
-        mockMvc.perform(post("/passes/" + memberEmail)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(passRequest))
-                        .header("Authorization", "Bearer " + memberJwt))
-                .andExpect(status().isOk());
-
-        // Verify the old pass was replaced
-        List<Pass> passes = passRepository.findAll();
-        assertEquals(1, passes.size());
-        assertTrue(passes.get(0).isActive());
-
-        // Verify payment was made
-        List<Payment> payments = paymentRepository.findAllByMemberEmail(memberEmail);
-        assertFalse(payments.isEmpty());
-    }
-
-    @Test
     public void chargeForActivePasses() {
         // Create passes with the next payment date set to today
         PostPassRequestDto passRequest = new PostPassRequestDto();
@@ -333,11 +311,11 @@ public class PassControllerAndPaymentTest {
         assertEquals(offerPrice + 10.0, payments.get(0).getAmount());
 
         GetPassResponseDto getPassResponseDto = passService.getPassByEmail(memberEmail);
-        assertFalse(getPassResponseDto.isActive());
+        assertNull(getPassResponseDto);
     }
 
     @Test
-    public void deactivateExpiredPasses() {
+    public void deactivateExpiredPassesAndReadHistory() throws Exception {
         // Create a pass with the end date set to tomorrow
         PostPassRequestDto passRequest = new PostPassRequestDto();
         passRequest.setOfferId(offerId);
@@ -349,9 +327,25 @@ public class PassControllerAndPaymentTest {
         // Invoke deactivateExpiredPasses
         passService.deactivateExpiredPasses();
 
-        // Verify pass is deactivated
-        Pass updatedPass = passRepository.findById(pass.getId()).get();
-        assertFalse(updatedPass.isActive());
+        // Verify pass is deleted (moved to history)
+        Optional<Pass> deactivatedPass = passRepository.findById(pass.getId());
+        assertFalse(deactivatedPass.isPresent());
+
+        mockMvc.perform(get("/passes/passHistory/" + memberEmail)
+                        .header("Authorization", "Bearer " + adminJwt))
+                .andExpect(status().isOk());
+
+        MvcResult result = mockMvc.perform(get("/passes/passHistory/" + memberEmail)
+                        .header("Authorization", "Bearer " + memberJwt))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String responseJson = result.getResponse().getContentAsString();
+        List<GetHistoricalPassResponseDto> historicalPasses = objectMapper.readValue(responseJson, objectMapper.getTypeFactory().constructCollectionType(List.class, GetHistoricalPassResponseDto.class));
+
+        assertEquals(1, historicalPasses.size());
+        GetHistoricalPassResponseDto historicalPass = historicalPasses.get(0);
+        assertEquals(pass.getTitle(), historicalPass.getTitle());
     }
 
     @Test
@@ -380,7 +374,6 @@ public class PassControllerAndPaymentTest {
         assertNotNull(getPassResponse.getDateStart());
         assertNotNull(getPassResponse.getDateEnd());
         assertEquals(getPassResponse.getDateStart().toLocalDate().plusMonths(1), getPassResponse.getDateOfNextPayment());
-        assertTrue(getPassResponse.isActive());
     }
 
     @Test

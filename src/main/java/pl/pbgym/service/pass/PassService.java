@@ -63,9 +63,7 @@ public class PassService {
                             }
                             Optional<Pass> currentPass = passRepository.findByMemberEmail(email);
                             currentPass.ifPresent(pass -> {
-                                if (pass.isActive()) {
-                                    throw new MemberAlreadyHasActivePassException("Member already has an active pass!");
-                                }
+                                throw new MemberAlreadyHasActivePassException("Member already has an active pass!");
                             });
 
                             try {
@@ -103,7 +101,6 @@ public class PassService {
         pass.setDateOfNextPayment(dateOfNextPayment);
         pass.setDateEnd(dateEnd);
         pass.setMonthlyPrice(offer.getMonthlyPrice());
-        pass.setActive(true);
         pass.setMember(member);
         return pass;
     }
@@ -139,17 +136,17 @@ public class PassService {
 
     @Transactional
     public void deactivatePass(Pass pass) {
-        pass.setActive(false);
-
         HistoricalPass historicalPass = modelMapper.map(pass, HistoricalPass.class);
         historicalPass.setDateEnd(LocalDateTime.now());
 
         historicalPassRepository.save(historicalPass);
+
+        passRepository.delete(pass);
     }
 
     @Transactional(noRollbackFor = {NoPaymentMethodException.class, PaymentMethodExpiredException.class})
     public void chargeForActivePasses() {
-        List<Pass> passes = passRepository.findAllActive();
+        List<Pass> passes = passRepository.findAll();
         LocalDate today = LocalDate.now();
         passes.forEach(pass -> {
             if (pass.getDateOfNextPayment().equals(today)) {

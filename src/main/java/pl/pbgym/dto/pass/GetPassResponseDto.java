@@ -10,7 +10,6 @@ public class GetPassResponseDto {
     private LocalDateTime dateEnd;
     private LocalDate dateOfNextPayment;
     private Double monthlyPrice;
-    private boolean isActive;
 
     public GetPassResponseDto() {
     }
@@ -61,13 +60,5 @@ public class GetPassResponseDto {
 
     public void setMonthlyPrice(Double monthlyPrice) {
         this.monthlyPrice = monthlyPrice;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
     }
 }

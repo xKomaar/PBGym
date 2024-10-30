@@ -16,8 +16,4 @@ public interface PassRepository extends JpaRepository<Pass, Long> {
 
     @Query("SELECT p FROM Pass p WHERE p.dateEnd < CURRENT_TIMESTAMP")
     List<Pass> getExpiredPassesForDeactivation();
-
-    @Query("SELECT p FROM Pass p WHERE p.isActive = true")
-    List<Pass> findAllActive();
-
 }
