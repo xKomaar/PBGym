@@ -57,16 +57,15 @@ public class PaymentService {
     }
 
     public List<GetPaymentResponseDto> getAllPaymentsByEmail(String email) {
-        try {
-            memberService.getMemberByEmail(email);
-        } catch (MemberNotFoundException e) {
-            throw new MemberNotFoundException(e.getMessage());
+        if(memberService.memberExists(email)) {
+            List<Payment> payments = paymentRepository.findAllByMemberEmail(email);
+            return payments
+                    .stream()
+                    .map(payment -> modelMapper.map(payment, GetPaymentResponseDto.class))
+                    .toList();
+        } else {
+            throw new MemberNotFoundException("Member not found!");
         }
-        List<Payment> payments = paymentRepository.findAllByMemberEmail(email);
-        return payments
-                .stream()
-                .map(payment -> modelMapper.map(payment, GetPaymentResponseDto.class))
-                .toList();
     }
 
     private boolean isCreditCardExpired(GetCreditCardInfoResponseDto creditCardInfo) {

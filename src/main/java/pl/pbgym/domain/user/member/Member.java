@@ -2,6 +2,7 @@ package pl.pbgym.domain.user.member;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import pl.pbgym.domain.pass.HistoricalPass;
 import pl.pbgym.domain.statistics.GymEntry;
 import pl.pbgym.domain.pass.Pass;
 import pl.pbgym.domain.user.AbstractUser;
@@ -20,6 +21,10 @@ public class Member extends AbstractUser {
     private CreditCardInfo creditCardInfo;
     @OneToMany(mappedBy = "abstractUser", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<GymEntry> gymEntries;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    private List<HistoricalPass> historicalPasses;
 
     public Pass getPass() {
         return pass;
@@ -43,5 +48,13 @@ public class Member extends AbstractUser {
 
     public void setGymEntries(List<GymEntry> gymEntries) {
         this.gymEntries = gymEntries;
+    }
+
+    public List<HistoricalPass> getHistoricalPasses() {
+        return historicalPasses;
+    }
+
+    public void setHistoricalPasses(List<HistoricalPass> historicalPasses) {
+        this.historicalPasses = historicalPasses;
     }
 }

@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import pl.pbgym.domain.offer.Offer;
+import pl.pbgym.domain.pass.HistoricalPass;
 import pl.pbgym.domain.pass.Pass;
 import pl.pbgym.domain.user.member.Member;
+import pl.pbgym.dto.pass.GetHistoricalPassResponseDto;
 import pl.pbgym.dto.pass.GetPassResponseDto;
 import pl.pbgym.dto.pass.PostPassRequestDto;
 import pl.pbgym.exception.offer.OfferNotActiveException;
@@ -18,6 +20,7 @@ import pl.pbgym.exception.payment.NoPaymentMethodException;
 import pl.pbgym.exception.payment.PaymentMethodExpiredException;
 import pl.pbgym.exception.user.member.MemberNotFoundException;
 import pl.pbgym.repository.offer.OfferRepository;
+import pl.pbgym.repository.pass.HistoricalPassRepository;
 import pl.pbgym.repository.pass.PassRepository;
 import pl.pbgym.repository.user.member.MemberRepository;
 import pl.pbgym.service.payment.PaymentService;
@@ -33,15 +36,17 @@ public class PassService {
 
     private final OfferRepository offerRepository;
     private final PassRepository passRepository;
+    private final HistoricalPassRepository historicalPassRepository;
     private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
     private final MemberService memberService;
     private final PaymentService paymentService;
 
     @Autowired
-    public PassService(OfferRepository offerRepository, PassRepository passRepository, MemberRepository memberRepository, ModelMapper modelMapper, MemberService memberService, PaymentService paymentService) {
+    public PassService(OfferRepository offerRepository, PassRepository passRepository, HistoricalPassRepository historicalPassRepository, MemberRepository memberRepository, ModelMapper modelMapper, MemberService memberService, PaymentService paymentService) {
         this.offerRepository = offerRepository;
         this.passRepository = passRepository;
+        this.historicalPassRepository = historicalPassRepository;
         this.memberRepository = memberRepository;
         this.modelMapper = modelMapper;
         this.memberService = memberService;
@@ -114,9 +119,32 @@ public class PassService {
         }
     }
 
+    public List<GetHistoricalPassResponseDto> getHistoricalPassesByEmail(String email) {
+        if(memberService.memberExists(email)) {
+            return historicalPassRepository.findAllByMemberEmail(email)
+                    .stream()
+                    .map(historicalPass -> modelMapper.map(historicalPass, GetHistoricalPassResponseDto.class))
+                    .toList();
+        }
+        else {
+            throw new MemberNotFoundException("Member not found with email " + email);
+        }
+    }
+
     @Transactional
     public void deactivateExpiredPasses() {
-        passRepository.deactivateExpiredPasses();
+        List<Pass> passes = passRepository.getExpiredPassesForDeactivation();
+        passes.forEach(this::deactivatePass);
+    }
+
+    @Transactional
+    public void deactivatePass(Pass pass) {
+        pass.setActive(false);
+
+        HistoricalPass historicalPass = modelMapper.map(pass, HistoricalPass.class);
+        historicalPass.setDateEnd(LocalDateTime.now());
+
+        historicalPassRepository.save(historicalPass);
     }
 
     @Transactional(noRollbackFor = {NoPaymentMethodException.class, PaymentMethodExpiredException.class})
@@ -137,7 +165,7 @@ public class PassService {
                     }
                 } catch (NoPaymentMethodException | PaymentMethodExpiredException e) {
                     //deactivate a pass if the payment doesn't come through
-                    pass.setActive(false);
+                    this.deactivatePass(pass);
                 }
             }
         });
