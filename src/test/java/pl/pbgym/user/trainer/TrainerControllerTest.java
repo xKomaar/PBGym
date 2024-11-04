@@ -15,7 +15,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import pl.pbgym.controller.user.trainer.TrainerController;
 import pl.pbgym.domain.user.Gender;
 import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.dto.auth.*;
@@ -604,5 +603,19 @@ public class TrainerControllerTest {
         assertEquals(trainerEmail, dto.getEmail());
         assertNotNull(dto.getDateTimeOfEntry());
         assertNotNull(dto.getDateTimeOfExit());
+    }
+
+    @Test
+    public void shouldReturnOkAndCorrectNumberOfTrainersWhenManagerGetsAllTrainers() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get("/trainers/all")
+                        .header("Authorization", "Bearer " + managerJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        List<GetTrainerResponseDto> trainers = objectMapper.readValue(jsonResponse, objectMapper.getTypeFactory().constructCollectionType(List.class, GetTrainerResponseDto.class));
+
+        assertEquals(1, trainers.size());
     }
 }

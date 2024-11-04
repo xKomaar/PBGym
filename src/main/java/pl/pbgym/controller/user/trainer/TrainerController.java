@@ -19,8 +19,8 @@ import pl.pbgym.dto.auth.AuthenticationResponseDto;
 import pl.pbgym.dto.auth.ChangeEmailRequestDto;
 import pl.pbgym.dto.auth.ChangePasswordRequestDto;
 import pl.pbgym.dto.statistics.GetGymEntryResponseDto;
-import pl.pbgym.dto.user.trainer.UpdateTrainerRequestDto;
 import pl.pbgym.dto.user.trainer.GetTrainerResponseDto;
+import pl.pbgym.dto.user.trainer.UpdateTrainerRequestDto;
 import pl.pbgym.exception.user.IncorrectPasswordException;
 import pl.pbgym.exception.user.trainer.TrainerNotFoundException;
 import pl.pbgym.service.statistics.StatisticsService;
@@ -64,6 +64,16 @@ public class TrainerController {
         } catch (TrainerNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+    @GetMapping("/all")
+    @Operation(summary = "Get all workers", description = "Fetches all trainers, possible for ADMIN and USER_MANAGEMENT workers.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Trainers returned successfully"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+    })
+    public ResponseEntity<List<GetTrainerResponseDto>> getAllMembers() {
+        return ResponseEntity.ok(trainerService.getAllTrainers());
     }
 
     @PutMapping("/{email}")

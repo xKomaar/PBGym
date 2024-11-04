@@ -21,8 +21,10 @@ import pl.pbgym.dto.user.member.GetPaymentResponseDto;
 import pl.pbgym.dto.statistics.GetGymEntryResponseDto;
 import pl.pbgym.dto.user.member.GetMemberResponseDto;
 import pl.pbgym.dto.user.member.UpdateMemberRequestDto;
+import pl.pbgym.dto.user.worker.GetWorkerResponseDto;
 import pl.pbgym.exception.user.IncorrectPasswordException;
 import pl.pbgym.exception.user.member.MemberNotFoundException;
+import pl.pbgym.exception.user.worker.WorkerNotFoundException;
 import pl.pbgym.service.user.member.PaymentService;
 import pl.pbgym.service.statistics.StatisticsService;
 import pl.pbgym.service.user.AbstractUserService;
@@ -66,6 +68,16 @@ public class MemberController {
         } catch (MemberNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+    @GetMapping("/all")
+    @Operation(summary = "Get all workers", description = "Fetches all workers, possible for ADMIN and USER_MANAGEMENT workers.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Members returned successfully"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+    })
+    public ResponseEntity<List<GetMemberResponseDto>> getAllMembers() {
+        return ResponseEntity.ok(memberService.getAllMembers());
     }
 
     @PutMapping("/{email}")

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pbgym.domain.user.trainer.Trainer;
 import pl.pbgym.dto.auth.AuthenticationResponseDto;
+import pl.pbgym.dto.user.member.GetMemberResponseDto;
 import pl.pbgym.dto.user.trainer.GetTrainerResponseDto;
 import pl.pbgym.dto.user.trainer.UpdateTrainerRequestDto;
 import pl.pbgym.exception.user.IncorrectPasswordException;
@@ -15,7 +16,9 @@ import pl.pbgym.exception.user.trainer.TrainerNotFoundException;
 import pl.pbgym.repository.user.trainer.TrainerRepository;
 import pl.pbgym.service.auth.AuthenticationService;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TrainerService {
@@ -37,6 +40,12 @@ public class TrainerService {
         Optional<Trainer> trainer = trainerRepository.findByEmail(email);
         return trainer.map(m -> modelMapper.map(m, GetTrainerResponseDto.class))
                 .orElseThrow(() -> new TrainerNotFoundException("Trainer not found with email: " + email));
+    }
+
+    public List<GetTrainerResponseDto> getAllTrainers() {
+        return trainerRepository.findAll().stream()
+                .map(trainer ->  modelMapper.map(trainer, GetTrainerResponseDto.class))
+                .collect(Collectors.toList());
     }
 
     @Transactional

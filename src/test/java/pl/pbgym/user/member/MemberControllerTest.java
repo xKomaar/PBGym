@@ -20,18 +20,18 @@ import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.dto.auth.*;
 import pl.pbgym.dto.offer.standard.PostStandardOfferRequestDto;
 import pl.pbgym.dto.pass.PostPassRequestDto;
-import pl.pbgym.dto.user.member.GetPaymentResponseDto;
 import pl.pbgym.dto.statistics.GetGymEntryResponseDto;
 import pl.pbgym.dto.user.member.GetMemberResponseDto;
+import pl.pbgym.dto.user.member.GetPaymentResponseDto;
 import pl.pbgym.dto.user.member.PostCreditCardInfoRequestDto;
 import pl.pbgym.dto.user.member.UpdateMemberRequestDto;
 import pl.pbgym.repository.gym_entry.GymEntryRepository;
 import pl.pbgym.repository.offer.OfferRepository;
 import pl.pbgym.repository.pass.PassRepository;
-import pl.pbgym.repository.user.member.PaymentRepository;
 import pl.pbgym.repository.user.AbstractUserRepository;
 import pl.pbgym.repository.user.AddressRepository;
 import pl.pbgym.repository.user.member.CreditCardInfoRepository;
+import pl.pbgym.repository.user.member.PaymentRepository;
 import pl.pbgym.service.auth.AuthenticationService;
 import pl.pbgym.service.offer.OfferService;
 import pl.pbgym.service.pass.PassService;
@@ -649,5 +649,19 @@ public class MemberControllerTest {
         assertEquals(memberEmail, dto.getEmail());
         assertNotNull(dto.getDateTime());
         assertNotNull(dto.getCardNumber());
+    }
+
+    @Test
+    public void shouldReturnOkAndCorrectNumberOfMembersWhenManagerGetsAllMembers() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get("/members/all")
+                        .header("Authorization", "Bearer " + managerJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        List<GetMemberResponseDto> members = objectMapper.readValue(jsonResponse, objectMapper.getTypeFactory().constructCollectionType(List.class, GetMemberResponseDto.class));
+
+        assertEquals(1, members.size());
     }
 }

@@ -16,7 +16,9 @@ import pl.pbgym.exception.user.member.MemberNotFoundException;
 import pl.pbgym.repository.user.member.MemberRepository;
 import pl.pbgym.service.auth.AuthenticationService;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MemberService {
@@ -38,6 +40,12 @@ public class MemberService {
         Optional<Member> member = memberRepository.findByEmail(email);
         return member.map(m -> modelMapper.map(m, GetMemberResponseDto.class))
                 .orElseThrow(() -> new MemberNotFoundException("Member not found with email: " + email));
+    }
+
+    public List<GetMemberResponseDto> getAllMembers() {
+        return memberRepository.findAll().stream()
+                .map(member ->  modelMapper.map(member, GetMemberResponseDto.class))
+                .collect(Collectors.toList());
     }
 
     @Transactional

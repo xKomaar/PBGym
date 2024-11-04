@@ -46,15 +46,11 @@ public class WorkerController {
     @GetMapping("/all")
     @Operation(summary = "Get all workers", description = "Fetches all workers, possible only for ADMIN workers.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Worker found and returned successfully"),
+            @ApiResponse(responseCode = "200", description = "Workers returned successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
     })
     public ResponseEntity<List<GetWorkerResponseDto>> getAllWorkers() {
-        try {
-            return ResponseEntity.ok(workerService.getAllWorkers());
-        } catch (WorkerNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        return ResponseEntity.ok(workerService.getAllWorkers());
     }
 
     @GetMapping("/{email}")
