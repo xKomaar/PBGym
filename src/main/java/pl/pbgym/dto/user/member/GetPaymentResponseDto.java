@@ -1,4 +1,4 @@
-package pl.pbgym.dto.payment;
+package pl.pbgym.dto.user.member;
 
 import jakarta.persistence.Column;
 import pl.pbgym.domain.user.member.CreditCardInfo;

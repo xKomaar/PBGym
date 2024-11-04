@@ -24,7 +24,7 @@ import pl.pbgym.dto.user.member.PostCreditCardInfoRequestDto;
 import pl.pbgym.repository.gym_entry.GymEntryRepository;
 import pl.pbgym.repository.offer.OfferRepository;
 import pl.pbgym.repository.pass.PassRepository;
-import pl.pbgym.repository.payment.PaymentRepository;
+import pl.pbgym.repository.user.member.PaymentRepository;
 import pl.pbgym.repository.user.AbstractUserRepository;
 import pl.pbgym.repository.user.AddressRepository;
 import pl.pbgym.repository.user.member.CreditCardInfoRepository;

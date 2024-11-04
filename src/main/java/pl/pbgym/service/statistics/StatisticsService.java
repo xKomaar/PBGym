@@ -2,12 +2,12 @@ package pl.pbgym.service.statistics;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import pl.pbgym.domain.payment.Payment;
+import pl.pbgym.domain.user.member.Payment;
 import pl.pbgym.domain.statistics.GymEntry;
-import pl.pbgym.dto.payment.GetPaymentResponseDto;
+import pl.pbgym.dto.user.member.GetPaymentResponseDto;
 import pl.pbgym.dto.statistics.GetGymEntryResponseDto;
 import pl.pbgym.repository.gym_entry.GymEntryRepository;
-import pl.pbgym.repository.payment.PaymentRepository;
+import pl.pbgym.repository.user.member.PaymentRepository;
 
 import java.util.Collections;
 import java.util.List;

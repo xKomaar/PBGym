@@ -2,9 +2,6 @@ package pl.pbgym.domain.user.member;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import pl.pbgym.domain.payment.Payment;
-
-import java.util.List;
 
 @Entity
 @Table(name = "credit_card_info")

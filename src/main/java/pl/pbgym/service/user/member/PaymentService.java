@@ -1,16 +1,16 @@
-package pl.pbgym.service.payment;
+package pl.pbgym.service.user.member;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.pbgym.domain.payment.Payment;
+import pl.pbgym.domain.user.member.Payment;
 import pl.pbgym.domain.user.member.Member;
-import pl.pbgym.dto.payment.GetPaymentResponseDto;
+import pl.pbgym.dto.user.member.GetPaymentResponseDto;
 import pl.pbgym.dto.user.member.GetCreditCardInfoResponseDto;
 import pl.pbgym.exception.payment.NoPaymentMethodException;
 import pl.pbgym.exception.payment.PaymentMethodExpiredException;
 import pl.pbgym.exception.user.member.MemberNotFoundException;
-import pl.pbgym.repository.payment.PaymentRepository;
+import pl.pbgym.repository.user.member.PaymentRepository;
 import pl.pbgym.service.user.member.CreditCardInfoService;
 import pl.pbgym.service.user.member.MemberService;
 

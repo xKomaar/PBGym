@@ -16,7 +16,6 @@ import pl.pbgym.domain.user.member.Member;
 import pl.pbgym.dto.pass.GetHistoricalPassResponseDto;
 import pl.pbgym.dto.pass.GetPassResponseDto;
 import pl.pbgym.dto.pass.PostPassRequestDto;
-import pl.pbgym.dto.payment.GetPaymentResponseDto;
 import pl.pbgym.exception.offer.OfferNotActiveException;
 import pl.pbgym.exception.offer.OfferNotFoundException;
 import pl.pbgym.exception.pass.MemberAlreadyHasActivePassException;

@@ -1,4 +1,4 @@
-package pl.pbgym.domain.payment;
+package pl.pbgym.domain.user.member;
 
 import jakarta.persistence.*;
 

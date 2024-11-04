@@ -4,7 +4,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import pl.pbgym.domain.offer.Offer;
 import pl.pbgym.domain.pass.HistoricalPass;
 import pl.pbgym.domain.pass.Pass;
@@ -23,7 +22,7 @@ import pl.pbgym.repository.offer.OfferRepository;
 import pl.pbgym.repository.pass.HistoricalPassRepository;
 import pl.pbgym.repository.pass.PassRepository;
 import pl.pbgym.repository.user.member.MemberRepository;
-import pl.pbgym.service.payment.PaymentService;
+import pl.pbgym.service.user.member.PaymentService;
 import pl.pbgym.service.user.member.MemberService;
 
 import java.time.LocalDate;
