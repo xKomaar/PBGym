@@ -1,5 +1,6 @@
 package pl.pbgym.dto.user.trainer;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.validation.Valid;
@@ -7,8 +8,10 @@ import jakarta.validation.constraints.*;
 import pl.pbgym.domain.user.Gender;
 import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.validator.gender.GenderSubset;
+import pl.pbgym.validator.list.ListSize;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class UpdateTrainerRequestDto {
 
@@ -47,10 +50,18 @@ public class UpdateTrainerRequestDto {
     private PostAddressRequestDto address;
 
     @Basic
+    @Nullable
     private String description;
 
-    @Column(name="photo")
+    @Nullable
     private byte[] photo;
+
+    @NotNull
+    private boolean visible;
+
+    @Nullable
+    @ListSize(maxCount = 6)
+    private List<String> trainerTags;
 
     public String getName() {
         return name;
@@ -122,5 +133,22 @@ public class UpdateTrainerRequestDto {
 
     public void setPhoto(byte[] photo) {
         this.photo = photo;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    @Nullable
+    public List<String> getTrainerTags() {
+        return trainerTags;
+    }
+
+    public void setTrainerTags(@Nullable List<String> trainerTags) {
+        this.trainerTags = trainerTags;
     }
 }

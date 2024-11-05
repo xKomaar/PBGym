@@ -23,14 +23,17 @@ import pl.pbgym.dto.user.trainer.GetTrainerResponseDto;
 import pl.pbgym.dto.user.trainer.UpdateTrainerRequestDto;
 import pl.pbgym.repository.user.AbstractUserRepository;
 import pl.pbgym.repository.user.AddressRepository;
+import pl.pbgym.repository.user.trainer.TrainerTagRepository;
 import pl.pbgym.service.auth.AuthenticationService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,6 +53,8 @@ public class TrainerControllerTest {
     private AddressRepository addressRepository;
     @Autowired
     private AuthenticationService authenticationService;
+    @Autowired
+    private TrainerTagRepository trainerTagRepository;
     private String adminJwt;
     private String managerJwt;
     private String trainerJwt;
@@ -64,6 +69,7 @@ public class TrainerControllerTest {
 
         abstractUserRepository.deleteAll();
         addressRepository.deleteAll();
+        trainerTagRepository.deleteAll();
 
         PostTrainerRequestDto postTrainerRequestDto = new PostTrainerRequestDto();
         postTrainerRequestDto.setEmail(trainerEmail);
@@ -155,9 +161,10 @@ public class TrainerControllerTest {
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         GetTrainerResponseDto response = objectMapper.readValue(jsonResponse, GetTrainerResponseDto.class);
 
-        assertEquals(11, response.getClass().getDeclaredFields().length);
+        assertEquals(13, response.getClass().getDeclaredFields().length);
         assertNotNull(response);
         assertEquals(trainerEmail, response.getEmail());
+        assertEquals(false, response.isVisible());
     }
 
     @Test
@@ -171,9 +178,10 @@ public class TrainerControllerTest {
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         GetTrainerResponseDto response = objectMapper.readValue(jsonResponse, GetTrainerResponseDto.class);
 
-        assertEquals(11, response.getClass().getDeclaredFields().length);
+        assertEquals(13, response.getClass().getDeclaredFields().length);
         assertNotNull(response);
         assertEquals(trainerEmail, response.getEmail());
+        assertEquals(false, response.isVisible());
     }
 
     @Test
@@ -187,9 +195,10 @@ public class TrainerControllerTest {
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         GetTrainerResponseDto response = objectMapper.readValue(jsonResponse, GetTrainerResponseDto.class);
 
-        assertEquals(11, response.getClass().getDeclaredFields().length);
+        assertEquals(13, response.getClass().getDeclaredFields().length);
         assertNotNull(response);
         assertEquals(trainerEmail, response.getEmail());
+        assertEquals(false, response.isVisible());
     }
 
     @Test
@@ -217,6 +226,7 @@ public class TrainerControllerTest {
         updateRequest.setPesel("12345678912");
         updateRequest.setPhoneNumber("987654321");
         updateRequest.setGender(Gender.MALE);
+        updateRequest.setVisible(true);
 
         PostAddressRequestDto updatedAddress = new PostAddressRequestDto();
         updatedAddress.setCity("TrainerCity");
@@ -226,6 +236,9 @@ public class TrainerControllerTest {
 
         updateRequest.setAddress(updatedAddress);
         updateRequest.setDescription("Updated description");
+
+        List<String> trainerTags = Arrays.asList("Tag1", "Tag2", "Tag3");
+        updateRequest.setTrainerTags(trainerTags);
 
         String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
 
@@ -248,7 +261,44 @@ public class TrainerControllerTest {
         assertEquals("987654321", response.getPhoneNumber());
         assertEquals("TrainerCity", response.getAddress().getCity());
         assertEquals("Updated description", response.getDescription());
+        assertNotNull(response.getTrainerTags());
+        assertEquals(3, response.getTrainerTags().size());
+        assertTrue(response.getTrainerTags().containsAll(trainerTags));
     }
+
+    @Test
+    public void shouldReturnBadRequestWhenUpdatingWithTooManyTags() throws Exception {
+        UpdateTrainerRequestDto updateRequest = new UpdateTrainerRequestDto();
+        updateRequest.setName("Test");
+        updateRequest.setSurname("User");
+        updateRequest.setBirthdate(LocalDate.of(2002, 5, 10));
+        updateRequest.setPesel("12345678912");
+        updateRequest.setPhoneNumber("123456789");
+        updateRequest.setGender(Gender.MALE);
+        updateRequest.setVisible(true);
+
+        PostAddressRequestDto updatedAddress = new PostAddressRequestDto();
+        updatedAddress.setCity("City");
+        updatedAddress.setStreetName("Street");
+        updatedAddress.setBuildingNumber("1");
+        updatedAddress.setPostalCode("15-123");
+
+        updateRequest.setAddress(updatedAddress);
+        updateRequest.setDescription("Description");
+
+        List<String> trainerTags = Arrays.asList("Tag1", "Tag2", "Tag3", "Tag4", "Tag5", "Tag6", "Tag7");
+        updateRequest.setTrainerTags(trainerTags);
+
+        String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
+
+        mockMvc.perform(put("/trainers/{email}", trainerEmail)
+                        .header("Authorization", "Bearer " + trainerJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonUpdateRequest))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
 
     @Test
     public void shouldReturnOkWhenAdminUpdatesTrainerData() throws Exception {
@@ -259,6 +309,7 @@ public class TrainerControllerTest {
         updateRequest.setPesel("12345678912");
         updateRequest.setPhoneNumber("987654321");
         updateRequest.setGender(Gender.MALE);
+        updateRequest.setVisible(true);
 
         PostAddressRequestDto updatedAddress = new PostAddressRequestDto();
         updatedAddress.setCity("UpdatedCity");
@@ -268,6 +319,10 @@ public class TrainerControllerTest {
 
         updateRequest.setAddress(updatedAddress);
         updateRequest.setDescription("Admin updated description");
+
+        // Add trainerTags
+        List<String> trainerTags = Arrays.asList("AdminTag1", "AdminTag2");
+        updateRequest.setTrainerTags(trainerTags);
 
         String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
 
@@ -290,6 +345,9 @@ public class TrainerControllerTest {
         assertEquals("987654321", response.getPhoneNumber());
         assertEquals("UpdatedCity", response.getAddress().getCity());
         assertEquals("Admin updated description", response.getDescription());
+        assertNotNull(response.getTrainerTags());
+        assertEquals(2, response.getTrainerTags().size());
+        assertTrue(response.getTrainerTags().containsAll(trainerTags));
     }
 
     @Test
@@ -301,6 +359,7 @@ public class TrainerControllerTest {
         updateRequest.setPesel("12345678912");
         updateRequest.setPhoneNumber("000000000");
         updateRequest.setGender(Gender.MALE);
+        updateRequest.setVisible(true);
 
         PostAddressRequestDto updatedAddress = new PostAddressRequestDto();
         updatedAddress.setCity("ManagerCity");
@@ -310,6 +369,10 @@ public class TrainerControllerTest {
 
         updateRequest.setAddress(updatedAddress);
         updateRequest.setDescription("Manager updated description");
+
+        // Add trainerTags
+        List<String> trainerTags = Arrays.asList("ManagerTag1", "ManagerTag2", "ManagerTag3", "ManagerTag4");
+        updateRequest.setTrainerTags(trainerTags);
 
         String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
 
@@ -333,7 +396,11 @@ public class TrainerControllerTest {
         assertEquals("ManagerCity", response.getAddress().getCity());
         assertEquals("Manager updated description", response.getDescription());
         assertEquals("Userasd", response.getSurname());
+        assertNotNull(response.getTrainerTags());
+        assertEquals(4, response.getTrainerTags().size());
+        assertTrue(response.getTrainerTags().containsAll(trainerTags));
     }
+
 
     @Test
     public void shouldReturnForbiddenWhenTrainerUpdatesAnotherTrainerData() throws Exception {
@@ -344,6 +411,7 @@ public class TrainerControllerTest {
         updateRequest.setPesel("12345678912");
         updateRequest.setPhoneNumber("000000000");
         updateRequest.setGender(Gender.MALE);
+        updateRequest.setVisible(true);
 
         PostAddressRequestDto updatedAddress = new PostAddressRequestDto();
         updatedAddress.setCity("TrainerCity");
@@ -372,6 +440,7 @@ public class TrainerControllerTest {
         updateRequest.setPesel("12345678912");
         updateRequest.setPhoneNumber("000000000");
         updateRequest.setGender(Gender.MALE);
+        updateRequest.setVisible(true);
 
         PostAddressRequestDto updatedAddress = new PostAddressRequestDto();
         updatedAddress.setCity("TrainerCity");

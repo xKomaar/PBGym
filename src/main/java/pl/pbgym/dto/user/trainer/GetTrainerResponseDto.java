@@ -4,6 +4,7 @@ import pl.pbgym.domain.user.Gender;
 import pl.pbgym.dto.user.GetAddressResponseDto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class GetTrainerResponseDto {
     private Long id;
@@ -17,6 +18,8 @@ public class GetTrainerResponseDto {
     private String description;
     private byte[] photo;
     private Gender gender;
+    private boolean visible;
+    private List<String> trainerTags;
 
 
     public GetTrainerResponseDto() {
@@ -108,5 +111,21 @@ public class GetTrainerResponseDto {
 
     public void setGender(Gender gender) {
         this.gender = gender;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    public List<String> getTrainerTags() {
+        return trainerTags;
+    }
+
+    public void setTrainerTags(List<String> trainerTags) {
+        this.trainerTags = trainerTags;
     }
 }

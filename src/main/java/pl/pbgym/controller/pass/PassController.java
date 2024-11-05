@@ -66,7 +66,7 @@ public class PassController {
 
     @GetMapping("/{email}")
     @Operation(summary = "Get a pass by email", description = "Fetches a pass for a member by email, " +
-            "possible for a member and an ADMIN and PASS_MANAGEMENT workers.")
+            "possible for a member and an ADMIN and PASS_MANAGEMENT workers. Returns null if member doesn't have a pass")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Pass Fetched"),
             @ApiResponse(responseCode = "404", description = "Member not found", content = @Content),

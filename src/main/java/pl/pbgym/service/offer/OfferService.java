@@ -115,7 +115,7 @@ public class OfferService {
     @Transactional
     public void saveStandardOffer(PostStandardOfferRequestDto dto) {
         StandardOffer standardOffer = new StandardOffer();
-        this.mapOfferToPostOfferRequestDto(standardOffer, dto);
+        this.mapPostOfferRequestDtoToOffer(standardOffer, dto);
 
         standardOfferRepository.save(standardOffer);
         saveOfferProperties(dto.getProperties(), standardOffer);
@@ -124,7 +124,7 @@ public class OfferService {
     @Transactional
     public void saveSpecialOffer(PostSpecialOfferRequestDto dto) {
         SpecialOffer specialOffer = new SpecialOffer();
-        this.mapOfferToPostOfferRequestDto(specialOffer, dto);
+        this.mapPostOfferRequestDtoToOffer(specialOffer, dto);
         specialOffer.setSpecialOfferText(dto.getSpecialOfferText());
         specialOffer.setBorderText(dto.getBorderText());
         specialOffer.setPreviousPriceInfo(dto.getPreviousPriceInfo());
@@ -137,8 +137,10 @@ public class OfferService {
     public void updateStandardOffer(String title, PostStandardOfferRequestDto dto) {
         Optional<StandardOffer> standardOffer = standardOfferRepository.findByTitle(title);
         standardOffer.ifPresentOrElse(offer -> {
-                    this.mapOfferToPostOfferRequestDto(offer, dto);
-                    offer.getProperties().clear();
+                    this.mapPostOfferRequestDtoToOffer(offer, dto);
+                    if (offer.getProperties() != null) {
+                        offer.getProperties().clear();
+                    }
                     saveOfferProperties(dto.getProperties(), offer);
                 },
                 () -> {
@@ -150,11 +152,13 @@ public class OfferService {
     public void updateSpecialOffer(String title, PostSpecialOfferRequestDto dto) {
         Optional<SpecialOffer> specialOffer = specialOfferRepository.findByTitle(title);
         specialOffer.ifPresentOrElse(offer -> {
-                    this.mapOfferToPostOfferRequestDto(offer, dto);
+                    this.mapPostOfferRequestDtoToOffer(offer, dto);
                     offer.setSpecialOfferText(dto.getSpecialOfferText());
                     offer.setBorderText(dto.getBorderText());
                     offer.setPreviousPriceInfo(dto.getPreviousPriceInfo());
-                    offer.getProperties().clear();
+                    if (offer.getProperties() != null) {
+                        offer.getProperties().clear();
+                    }
                     saveOfferProperties(dto.getProperties(), offer);
                 },
                 () -> {
@@ -172,7 +176,7 @@ public class OfferService {
     }
 
     @Transactional
-    protected void saveOfferProperties(List<String> properties, Offer offer) {
+    public void saveOfferProperties(List<String> properties, Offer offer) {
         if(properties != null && !properties.isEmpty()) {
             for(String p : properties) {
                 OfferProperty offerProperty = new OfferProperty();
@@ -183,7 +187,7 @@ public class OfferService {
         }
     }
 
-    protected void mapOfferToPostOfferRequestDto(Offer offer, PostOfferRequestDto dto) {
+    protected void mapPostOfferRequestDtoToOffer(Offer offer, PostOfferRequestDto dto) {
         offer.setTitle(dto.getTitle());
         offer.setSubtitle(dto.getSubtitle());
         offer.setMonthlyPrice(dto.getMonthlyPrice());
