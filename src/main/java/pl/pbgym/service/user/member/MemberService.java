@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.pbgym.domain.pass.Pass;
 import pl.pbgym.domain.user.member.Member;
 import pl.pbgym.dto.auth.AuthenticationResponseDto;
+import pl.pbgym.dto.user.member.GetAllMembersResponseDto;
 import pl.pbgym.dto.user.member.GetMemberResponseDto;
 import pl.pbgym.dto.user.member.UpdateMemberRequestDto;
 import pl.pbgym.exception.user.IncorrectPasswordException;
@@ -42,9 +44,20 @@ public class MemberService {
                 .orElseThrow(() -> new MemberNotFoundException("Member not found with email: " + email));
     }
 
-    public List<GetMemberResponseDto> getAllMembers() {
+    public List<GetAllMembersResponseDto> getAllMembers() {
         return memberRepository.findAll().stream()
-                .map(member ->  modelMapper.map(member, GetMemberResponseDto.class))
+                .map(member -> {
+                    GetAllMembersResponseDto responseDto = modelMapper.map(member, GetAllMembersResponseDto.class);
+                    Pass pass = member.getPass();
+                    if(pass != null) {
+                        responseDto.setPassActive(true);
+                        responseDto.setPassDateEnd(pass.getDateEnd());
+                    } else {
+                        responseDto.setPassActive(false);
+                        responseDto.setPassDateEnd(null);
+                    }
+                    return responseDto;
+                })
                 .collect(Collectors.toList());
     }
 

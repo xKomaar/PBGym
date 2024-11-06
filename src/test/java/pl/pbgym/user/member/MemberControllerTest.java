@@ -21,10 +21,7 @@ import pl.pbgym.dto.auth.*;
 import pl.pbgym.dto.offer.standard.PostStandardOfferRequestDto;
 import pl.pbgym.dto.pass.PostPassRequestDto;
 import pl.pbgym.dto.statistics.GetGymEntryResponseDto;
-import pl.pbgym.dto.user.member.GetMemberResponseDto;
-import pl.pbgym.dto.user.member.GetPaymentResponseDto;
-import pl.pbgym.dto.user.member.PostCreditCardInfoRequestDto;
-import pl.pbgym.dto.user.member.UpdateMemberRequestDto;
+import pl.pbgym.dto.user.member.*;
 import pl.pbgym.repository.gym_entry.GymEntryRepository;
 import pl.pbgym.repository.offer.OfferRepository;
 import pl.pbgym.repository.pass.PassRepository;
@@ -41,8 +38,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -660,8 +656,9 @@ public class MemberControllerTest {
                 .andReturn();
 
         String jsonResponse = mvcResult.getResponse().getContentAsString();
-        List<GetMemberResponseDto> members = objectMapper.readValue(jsonResponse, objectMapper.getTypeFactory().constructCollectionType(List.class, GetMemberResponseDto.class));
+        List<GetAllMembersResponseDto> members = objectMapper.readValue(jsonResponse, objectMapper.getTypeFactory().constructCollectionType(List.class, GetAllMembersResponseDto.class));
 
         assertEquals(1, members.size());
+        assertTrue(members.get(0).isPassActive());
     }
 }

@@ -30,7 +30,7 @@ public class Member extends AbstractUser {
         return pass;
     }
 
-    public void setPass(Pass passes) {
+    public void setPass(Pass pass) {
         this.pass = pass;
     }
 

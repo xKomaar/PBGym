@@ -20,8 +20,10 @@ public class Trainer extends AbstractUser {
     private boolean visible;
 
     @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @Nullable
     private List<TrainerTag> trainerTags;
+
+    @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<TrainerOffer> trainerOffers;
 
     @OneToMany(mappedBy = "abstractUser", cascade = CascadeType.DETACH, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<GymEntry> gymEntries;
@@ -60,6 +62,14 @@ public class Trainer extends AbstractUser {
 
     public void setTrainerTags(List<TrainerTag> trainerTags) {
         this.trainerTags = trainerTags;
+    }
+
+    public List<TrainerOffer> getTrainerOffers() {
+        return trainerOffers;
+    }
+
+    public void setTrainerOffers(List<TrainerOffer> trainerOffers) {
+        this.trainerOffers = trainerOffers;
     }
 
     public List<GymEntry> getGymEntries() {

@@ -17,6 +17,7 @@ import pl.pbgym.domain.user.member.Member;
 import pl.pbgym.dto.auth.AuthenticationResponseDto;
 import pl.pbgym.dto.auth.ChangeEmailRequestDto;
 import pl.pbgym.dto.auth.ChangePasswordRequestDto;
+import pl.pbgym.dto.user.member.GetAllMembersResponseDto;
 import pl.pbgym.dto.user.member.GetPaymentResponseDto;
 import pl.pbgym.dto.statistics.GetGymEntryResponseDto;
 import pl.pbgym.dto.user.member.GetMemberResponseDto;
@@ -71,12 +72,12 @@ public class MemberController {
     }
 
     @GetMapping("/all")
-    @Operation(summary = "Get all workers", description = "Fetches all workers, possible for ADMIN and USER_MANAGEMENT workers.")
+    @Operation(summary = "Get all members", description = "Fetches all members, possible for ADMIN and USER_MANAGEMENT workers.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Members returned successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
     })
-    public ResponseEntity<List<GetMemberResponseDto>> getAllMembers() {
+    public ResponseEntity<List<GetAllMembersResponseDto>> getAllMembers() {
         return ResponseEntity.ok(memberService.getAllMembers());
     }
 

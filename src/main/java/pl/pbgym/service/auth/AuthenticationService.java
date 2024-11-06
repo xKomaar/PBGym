@@ -69,6 +69,7 @@ public class AuthenticationService {
         Trainer trainer = modelMapper.map(postTrainerRequestDto, Trainer.class);
         trainer.setPassword(passwordEncoder.encode(trainer.getPassword()));
         trainer.setAddress(address);
+        trainer.setVisible(false);
 
         trainerRepository.save(trainer);
     }
