@@ -1,34 +1,12 @@
-package pl.pbgym.domain.user.trainer;
+package pl.pbgym.dto.user.trainer;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "trainer_offer")
-public class TrainerOffer {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trainer_offer_seq_gen")
-    @SequenceGenerator(name="trainer_offer_seq_gen", sequenceName="TRAINER_OFFER_SEQ", allocationSize = 1)
-    @Column(name = "id", nullable = false)
+public class GetTrainerOfferResponseDto {
     private Long id;
-    @Column(name = "title", nullable = false)
     private String title;
-
-    @Column(name = "price", nullable = false)
     private Integer price;
-
-    @Column(name = "trainingSessionCount", nullable = false)
     private Integer trainingSessionCount;
-
-    @Column(name = "trainingSessionDurationInMinutes", nullable = false)
     private Integer trainingSessionDurationInMinutes;
-
-    @Column(name = "isVisible", nullable = false)
     private boolean isVisible;
-
-    @ManyToOne
-    @JoinColumn(name = "trainer_id")
-    private Trainer trainer;
 
     public Long getId() {
         return id;
@@ -76,13 +54,5 @@ public class TrainerOffer {
 
     public void setVisible(boolean visible) {
         isVisible = visible;
-    }
-
-    public Trainer getTrainer() {
-        return trainer;
-    }
-
-    public void setTrainer(Trainer trainer) {
-        this.trainer = trainer;
     }
 }

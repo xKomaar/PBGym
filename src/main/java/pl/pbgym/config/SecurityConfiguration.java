@@ -37,13 +37,15 @@ public class SecurityConfiguration {
                         .requestMatchers("/auth/registerTrainer").hasAnyAuthority("ADMIN", "USER_MANAGEMENT")
                         .requestMatchers("/auth/registerWorker").hasAuthority("ADMIN")
 
-                        .requestMatchers("/members/getOwnPayments", "members/getOwnGymEntries").hasAuthority("MEMBER")
+                        .requestMatchers("/members/getOwnPayments", "/members/getOwnGymEntries").hasAuthority("MEMBER")
                         .requestMatchers("/members/changePassword/", "/members/changeEmail/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "MEMBER")
                         .requestMatchers("/members/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "MEMBER")
 
-                        .requestMatchers("trainers/getOwnGymEntries").hasAuthority("TRAINER")
+                        .requestMatchers("/trainers/getOwnGymEntries").hasAuthority("TRAINER")
                         .requestMatchers("/trainers/changePassword/", "/trainers/changeEmail/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "TRAINER")
                         .requestMatchers("/trainers/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "TRAINER")
+
+                        .requestMatchers("/trainerOffers/").hasAuthority("TRAINER")
 
                         .requestMatchers("/workers/all").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/workers/{email}", "/workers/changeEmail/{email}").hasAuthority("ADMIN")

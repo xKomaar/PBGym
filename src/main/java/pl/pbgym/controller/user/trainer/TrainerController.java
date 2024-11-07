@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -120,14 +119,14 @@ public class TrainerController {
             try {
                 trainerService.updatePasswordWithoutOldPasswordCheck(changePasswordRequestDto.getNewPassword(), email);
                 return ResponseEntity.status(HttpStatus.OK).body("Trainer password updated successfully");
-            } catch (EntityNotFoundException e) {
+            } catch (TrainerNotFoundException e) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
         }
         try {
             trainerService.updatePassword(changePasswordRequestDto.getOldPassword(), changePasswordRequestDto.getNewPassword(), email);
             return ResponseEntity.status(HttpStatus.OK).body("Trainer password updated successfully");
-        } catch (EntityNotFoundException e) {
+        } catch (TrainerNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (IncorrectPasswordException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -159,7 +158,7 @@ public class TrainerController {
         try {
             AuthenticationResponseDto authenticationResponseDto = trainerService.updateEmail(email, changeEmailRequestDto.getNewEmail());
             return ResponseEntity.status(HttpStatus.OK).body(authenticationResponseDto);
-        } catch (EntityNotFoundException e) {
+        } catch (TrainerNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }

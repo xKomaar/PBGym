@@ -1,19 +1,20 @@
 package pl.pbgym.service.user.trainer;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pbgym.domain.user.trainer.Trainer;
+import pl.pbgym.domain.user.trainer.TrainerOffer;
 import pl.pbgym.domain.user.trainer.TrainerTag;
 import pl.pbgym.dto.auth.AuthenticationResponseDto;
-import pl.pbgym.dto.user.member.GetMemberResponseDto;
-import pl.pbgym.dto.user.trainer.GetTrainerResponseDto;
-import pl.pbgym.dto.user.trainer.UpdateTrainerRequestDto;
+import pl.pbgym.dto.user.trainer.*;
 import pl.pbgym.exception.user.IncorrectPasswordException;
+import pl.pbgym.exception.user.trainer.TrainerDoesntOwnOfferException;
 import pl.pbgym.exception.user.trainer.TrainerNotFoundException;
+import pl.pbgym.exception.user.trainer.TrainerOfferNotFoundException;
+import pl.pbgym.repository.user.trainer.TrainerOfferRepository;
 import pl.pbgym.repository.user.trainer.TrainerRepository;
 import pl.pbgym.repository.user.trainer.TrainerTagRepository;
 import pl.pbgym.service.auth.AuthenticationService;
@@ -33,7 +34,7 @@ public class TrainerService {
     private final AuthenticationService authenticationService;
 
     @Autowired
-    public TrainerService(TrainerRepository trainerRepository, TrainerTagRepository trainerTagRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder, AuthenticationService authenticationService) {
+    public TrainerService(TrainerRepository trainerRepository, TrainerTagRepository trainerTagRepository, TrainerOfferRepository trainerOfferRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder, AuthenticationService authenticationService) {
         this.trainerRepository = trainerRepository;
         this.trainerTagRepository = trainerTagRepository;
         this.modelMapper = modelMapper;
@@ -60,7 +61,6 @@ public class TrainerService {
                 })
                 .collect(Collectors.toList());
     }
-
 
     @Transactional
     public void updateTrainer(String email, UpdateTrainerRequestDto updateTrainerRequestDto) {
@@ -90,7 +90,7 @@ public class TrainerService {
                     }
                 },
                 () -> {
-                    throw new EntityNotFoundException("User not found with email: " + email);
+                    throw new TrainerNotFoundException("Trainer not found with email: " + email);
                 });
     }
 
@@ -111,7 +111,7 @@ public class TrainerService {
         Optional<Trainer> trainer = trainerRepository.findByEmail(email);
         trainer.ifPresentOrElse(t -> t.setPassword(passwordEncoder.encode(newPassword)),
                 () -> {
-                    throw new EntityNotFoundException("User not found with email: " + email);
+                    throw new TrainerNotFoundException("Trainer not found with email: " + email);
                 });
     }
 
@@ -125,7 +125,7 @@ public class TrainerService {
                     authenticationResponseDto.setJwt(jwt);
                 },
                 () -> {
-                    throw new EntityNotFoundException("User not found with email: " + email);
+                    throw new TrainerNotFoundException("Trainer not found with email: " + email);
                 });
         return authenticationResponseDto;
     }

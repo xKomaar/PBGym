@@ -4,6 +4,7 @@ import jakarta.annotation.Nullable;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import pl.pbgym.validator.list.ListSize;
 
@@ -19,8 +20,10 @@ public abstract class PostOfferRequestDto {
     @NotEmpty(message = "Subtitle is required.")
     private String subtitle;
     @NotNull(message = "Monthly is required.")
+    @Positive(message = "Price must be positive.")
     private Double monthlyPrice;
     @NotNull(message = "Entry Fee is required.")
+    @Positive(message = "Price must be positive.")
     private Double entryFee;
     @NotNull(message = "isActive is required.")
     private boolean isActive;

@@ -1,42 +1,28 @@
-package pl.pbgym.domain.user.trainer;
+package pl.pbgym.dto.user.trainer;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
-@Entity
-@Table(name = "trainer_offer")
-public class TrainerOffer {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trainer_offer_seq_gen")
-    @SequenceGenerator(name="trainer_offer_seq_gen", sequenceName="TRAINER_OFFER_SEQ", allocationSize = 1)
-    @Column(name = "id", nullable = false)
-    private Long id;
-    @Column(name = "title", nullable = false)
+public class PostTrainerOfferRequestDto {
+    @Size(min = 3, message = "Title can't be shorter than 3 characters.")
+    @Size(max = 30, message = "Title can't be longer than 30 characters.")
+    @NotEmpty(message = "Title is required.")
     private String title;
-
-    @Column(name = "price", nullable = false)
+    @NotNull(message = "Price is required.")
+    @Positive(message = "Price must be positive.")
     private Integer price;
 
-    @Column(name = "trainingSessionCount", nullable = false)
+    @NotNull(message = "Training session count is required.")
+    @Positive(message = "Training session count must be positive.")
     private Integer trainingSessionCount;
 
-    @Column(name = "trainingSessionDurationInMinutes", nullable = false)
+    @NotNull(message = "Training session duration is required.")
+    @Positive(message = "Training session duration must be positive.")
     private Integer trainingSessionDurationInMinutes;
-
-    @Column(name = "isVisible", nullable = false)
+    @NotNull(message = "Visibility is required.")
     private boolean isVisible;
-
-    @ManyToOne
-    @JoinColumn(name = "trainer_id")
-    private Trainer trainer;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;
@@ -76,13 +62,5 @@ public class TrainerOffer {
 
     public void setVisible(boolean visible) {
         isVisible = visible;
-    }
-
-    public Trainer getTrainer() {
-        return trainer;
-    }
-
-    public void setTrainer(Trainer trainer) {
-        this.trainer = trainer;
     }
 }
