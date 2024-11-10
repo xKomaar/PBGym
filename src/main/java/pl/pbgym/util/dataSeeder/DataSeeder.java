@@ -144,7 +144,7 @@ public class DataSeeder implements CommandLineRunner {
         postTrainerRequestDto.setPassword("12345678");
         postTrainerRequestDto.setName("Mariusz");
         postTrainerRequestDto.setSurname("Byk");
-        postTrainerRequestDto.setBirthdate(LocalDate.of(19983, 12, 24));
+        postTrainerRequestDto.setBirthdate(LocalDate.of(1983, 12, 24));
         postTrainerRequestDto.setPesel("12345678912");
         postTrainerRequestDto.setPhoneNumber("123123123");
         postTrainerRequestDto.setGender(Gender.MALE);

@@ -658,7 +658,7 @@ public class TrainerControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        MvcResult gymEntriesResult =  mockMvc.perform(get("/trainers/getOwnGymEntries")
+        MvcResult gymEntriesResult =  mockMvc.perform(get("/trainers/getGymEntries/{email}", trainerEmail)
                         .header("Authorization", "Bearer " + trainerJwt)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

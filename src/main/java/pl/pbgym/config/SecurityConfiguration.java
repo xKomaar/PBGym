@@ -37,11 +37,9 @@ public class SecurityConfiguration {
                         .requestMatchers("/auth/registerTrainer").hasAnyAuthority("ADMIN", "USER_MANAGEMENT")
                         .requestMatchers("/auth/registerWorker").hasAuthority("ADMIN")
 
-                        .requestMatchers("/members/getOwnPayments", "/members/getOwnGymEntries").hasAuthority("MEMBER")
                         .requestMatchers("/members/changePassword/", "/members/changeEmail/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "MEMBER")
                         .requestMatchers("/members/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "MEMBER")
 
-                        .requestMatchers("/trainers/getOwnGymEntries").hasAuthority("TRAINER")
                         .requestMatchers("/trainers/changePassword/", "/trainers/changeEmail/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "TRAINER")
                         .requestMatchers("/trainers/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "TRAINER")
 

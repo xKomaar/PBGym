@@ -613,7 +613,7 @@ public class MemberControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        MvcResult gymEntriesResult =  mockMvc.perform(get("/members/getOwnGymEntries")
+        MvcResult gymEntriesResult =  mockMvc.perform(get("/members/getGymEntries/{email}", memberEmail)
                         .header("Authorization", "Bearer " + memberJwt)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -631,7 +631,7 @@ public class MemberControllerTest {
 
     @Test
     public void shouldReturnOkWhenFetchingOwnPaymentHistory() throws Exception {
-        MvcResult paymentsResult =  mockMvc.perform(get("/members/getOwnPayments")
+        MvcResult paymentsResult =  mockMvc.perform(get("/members/getPaymentHistory/{email}", memberEmail)
                         .header("Authorization", "Bearer " + memberJwt)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

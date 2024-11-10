@@ -12,7 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.pbgym.domain.user.AbstractUser;
-import pl.pbgym.domain.user.member.Member;
 import pl.pbgym.domain.user.trainer.Trainer;
 import pl.pbgym.dto.auth.AuthenticationResponseDto;
 import pl.pbgym.dto.auth.ChangeEmailRequestDto;
@@ -71,7 +70,7 @@ public class TrainerController {
             @ApiResponse(responseCode = "200", description = "Trainers returned successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
     })
-    public ResponseEntity<List<GetTrainerResponseDto>> getAllMembers() {
+    public ResponseEntity<List<GetTrainerResponseDto>> getAllTrainers() {
         return ResponseEntity.ok(trainerService.getAllTrainers());
     }
 
@@ -147,7 +146,7 @@ public class TrainerController {
                                                                  @Valid @RequestBody ChangeEmailRequestDto changeEmailRequestDto) {
 
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (authenticatedUser instanceof Member && !authenticatedUser.getEmail().equals(email)) {
+        if (authenticatedUser instanceof Trainer && !authenticatedUser.getEmail().equals(email)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         if(!email.equals(changeEmailRequestDto.getNewEmail())) {
@@ -163,19 +162,19 @@ public class TrainerController {
         }
     }
 
-    @GetMapping("/getOwnGymEntries")
-    @Operation(summary = "Get own gym entry history", description = "Fetches a gym entry history of a trainer, " +
-            "possible only for the trainer who owns the data.")
+    @GetMapping("/getGymEntries/{email}")
+    @Operation(summary = "Get gym entry history by email", description = "Fetches a gym entry history of a trainer, " +
+            "possible for ADMIN and USER_MANAGEMENT workers and for the trainer who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Gym Entry history fetched successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
     })
-    public ResponseEntity<List<GetGymEntryResponseDto>> getOwnGymEntries() {
+    public ResponseEntity<List<GetGymEntryResponseDto>> getOwnGymEntries(@PathVariable String email) {
 
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!(authenticatedUser instanceof Trainer)) {
+        if (authenticatedUser instanceof Trainer && !authenticatedUser.getEmail().equals(email)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        return ResponseEntity.status(HttpStatus.OK).body(statisticsService.getAllGymEntriesByUserEmail(authenticatedUser.getEmail()));
+        return ResponseEntity.status(HttpStatus.OK).body(statisticsService.getAllGymEntriesByUserEmail(email));
     }
 }
