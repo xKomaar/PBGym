@@ -56,8 +56,8 @@ public class SecurityConfiguration {
 
                         .requestMatchers("/passes/**").hasAnyAuthority("MEMBER", "ADMIN", "PASS_MANAGEMENT")
 
-                        .requestMatchers(HttpMethod.DELETE, "/creditCardInfo/**").hasAnyAuthority("MEMBER", "ADMIN", "USER_MANAGEMENT")
-                        .requestMatchers("/creditCardInfo/**").hasAuthority("MEMBER")
+                        .requestMatchers("/creditCardInfo/{email}/full").hasAuthority("MEMBER")
+                        .requestMatchers( "/creditCardInfo/").hasAnyAuthority("MEMBER", "ADMIN", "USER_MANAGEMENT")
 
                         .requestMatchers("/gym/count").permitAll()
                         //Workers can let members in and out of the gym

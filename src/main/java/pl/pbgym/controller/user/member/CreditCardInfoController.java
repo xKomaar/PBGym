@@ -36,7 +36,7 @@ public class CreditCardInfoController {
 
     @PostMapping("/{email}")
     @Operation(summary = "Add credit card information", description = "Add credit card information of a member by email, " +
-            "accessible for a member. DATE: MM/YY")
+            "accessible for an ADMIN and USER_MANAGEMENT workers and a member who owns the data. DATE: MM/YY")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Credit Card information successfully added."),
             @ApiResponse(responseCode = "404", description = "Member not found", content = @Content),
@@ -46,8 +46,8 @@ public class CreditCardInfoController {
     public ResponseEntity<String> saveCreditCardInfo(@PathVariable String email, @Valid @RequestBody PostCreditCardInfoRequestDto requestDto) {
 
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!authenticatedUser.getEmail().equals(email)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Authenticated member is not authorized to access this resource");
+        if (authenticatedUser instanceof Member && !authenticatedUser.getEmail().equals(email)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         try {
             creditCardInfoService.saveCreditCardInfo(email, requestDto);
@@ -61,7 +61,7 @@ public class CreditCardInfoController {
 
     @GetMapping("/{email}/hidden")
     @Operation(summary = "Get hidden credit card information by email", description = "Get hidden credit card information of a member by email, " +
-            "accessible for a member.")
+            "accessible for an ADMIN and USER_MANAGEMENT workers and a member who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Credit Card information successfully fetched."),
             @ApiResponse(responseCode = "404", description = "Member not found", content = @Content),
@@ -69,7 +69,7 @@ public class CreditCardInfoController {
     })
     public ResponseEntity<GetCreditCardInfoResponseDto> getHiddenCreditCardInfo(@PathVariable String email) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!authenticatedUser.getEmail().equals(email)) {
+        if (authenticatedUser instanceof Member && !authenticatedUser.getEmail().equals(email)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         try {
@@ -104,7 +104,7 @@ public class CreditCardInfoController {
 
     @DeleteMapping("/{email}")
     @Operation(summary = "Delete credit card information by email", description = "Delete credit card information of a member by email, " +
-            "accessible for a member and for ADMIN and USER_MANAGEMENT workers.")
+            "accessible for an ADMIN and USER_MANAGEMENT workers and a member who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Credit Card information successfully deleted."),
             @ApiResponse(responseCode = "404", description = "Credit Card information not found", content = @Content),

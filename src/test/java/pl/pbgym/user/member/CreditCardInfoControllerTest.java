@@ -158,7 +158,7 @@ public class CreditCardInfoControllerTest {
     }
 
     @Test
-    public void shouldReturnForbiddenWhenManagerTriesToAccessCreditCardEndpoints() throws Exception {
+    public void shouldReturnOkWhenManagerAddCreditCardInfo() throws Exception {
         PostCreditCardInfoRequestDto requestDto = new PostCreditCardInfoRequestDto();
         requestDto.setCardNumber("4111111111111111");
         requestDto.setExpirationMonth("12");
@@ -169,9 +169,28 @@ public class CreditCardInfoControllerTest {
                         .header("Authorization", "Bearer " + managerJwt)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isOk());
 
-        mockMvc.perform(get("/creditCardInfo")
+        mockMvc.perform(get("/creditCardInfo/{email}/hidden", memberEmail)
+                        .header("Authorization", "Bearer " + managerJwt))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldReturnForbiddenWhenManagerGetsFullInfo() throws Exception {
+        PostCreditCardInfoRequestDto requestDto = new PostCreditCardInfoRequestDto();
+        requestDto.setCardNumber("4111111111111111");
+        requestDto.setExpirationMonth("12");
+        requestDto.setExpirationYear("25");
+        requestDto.setCvc("123");
+
+        mockMvc.perform(post("/creditCardInfo/{email}", memberEmail)
+                        .header("Authorization", "Bearer " + managerJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/creditCardInfo/{email}/full", memberEmail)
                         .header("Authorization", "Bearer " + managerJwt))
                 .andExpect(status().isForbidden());
     }
