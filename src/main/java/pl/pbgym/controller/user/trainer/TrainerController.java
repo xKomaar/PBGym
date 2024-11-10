@@ -77,7 +77,9 @@ public class TrainerController {
     @PutMapping("/{email}")
     @Operation(summary = "Update a trainer by email", description = "Fetches the trainer details by their email and updates their data, " +
             "possible only for ADMIN and USER_MANAGEMENT workers and for the trainer who owns the data. Gender types: MALE, FEMALE, OTHER" +
-            "MAX TRAINER TAGS = 6")
+            "MAX TRAINER TAGS = 6, POSSIBLE TRAINER TAGS: BODYBUILDING, FUNCTIONAL_TRAINING, CROSS_TRAINING, WEIGHT_LOSS, "
+            + "MARTIAL_ARTS, BODYWEIGHT, WEIGHTLIFTING, MOTOR_PREPARATION, MEDICAL_TRAINING, PREGNANT_WOMEN, "
+            + "SENIOR_TRAINING, REDUCTION_TRAINING, PHYSIOTHERAPIST.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Trainer found and updated successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),

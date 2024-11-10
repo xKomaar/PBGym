@@ -6,9 +6,11 @@ import jakarta.persistence.Column;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import pl.pbgym.domain.user.Gender;
+import pl.pbgym.domain.user.trainer.TrainerTagType;
 import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.validator.gender.GenderSubset;
 import pl.pbgym.validator.list.ListSize;
+import pl.pbgym.validator.trainer.TrainerTagSubset;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -61,7 +63,22 @@ public class UpdateTrainerRequestDto {
 
     @Nullable
     @ListSize(maxCount = 6)
-    private List<String> trainerTags;
+    @TrainerTagSubset(anyOf = {
+            TrainerTagType.BODYBUILDING,
+            TrainerTagType.FUNCTIONAL_TRAINING,
+            TrainerTagType.CROSS_TRAINING,
+            TrainerTagType.WEIGHT_LOSS,
+            TrainerTagType.MARTIAL_ARTS,
+            TrainerTagType.BODYWEIGHT,
+            TrainerTagType.WEIGHTLIFTING,
+            TrainerTagType.MOTOR_PREPARATION,
+            TrainerTagType.MEDICAL_TRAINING,
+            TrainerTagType.PREGNANT_WOMEN,
+            TrainerTagType.SENIOR_TRAINING,
+            TrainerTagType.REDUCTION_TRAINING,
+            TrainerTagType.PHYSIOTHERAPIST
+    })
+    private List<TrainerTagType> trainerTags;
 
     public String getName() {
         return name;
@@ -144,11 +161,11 @@ public class UpdateTrainerRequestDto {
     }
 
     @Nullable
-    public List<String> getTrainerTags() {
+    public List<TrainerTagType> getTrainerTags() {
         return trainerTags;
     }
 
-    public void setTrainerTags(@Nullable List<String> trainerTags) {
+    public void setTrainerTags(@Nullable List<TrainerTagType> trainerTags) {
         this.trainerTags = trainerTags;
     }
 }

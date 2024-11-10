@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.pbgym.domain.user.trainer.Trainer;
 import pl.pbgym.domain.user.trainer.TrainerOffer;
 import pl.pbgym.domain.user.trainer.TrainerTag;
+import pl.pbgym.domain.user.trainer.TrainerTagType;
 import pl.pbgym.dto.auth.AuthenticationResponseDto;
 import pl.pbgym.dto.user.trainer.*;
 import pl.pbgym.exception.user.IncorrectPasswordException;
@@ -95,9 +96,9 @@ public class TrainerService {
     }
 
     @Transactional
-    public void saveTrainerTags(List<String> trainerTags, Trainer trainer) {
+    public void saveTrainerTags(List<TrainerTagType> trainerTags, Trainer trainer) {
         if(trainerTags != null && !trainerTags.isEmpty()) {
-            for(String tag : trainerTags) {
+            for(TrainerTagType tag : trainerTags) {
                 TrainerTag trainerTag = new TrainerTag();
                 trainerTag.setTag(tag);
                 trainerTag.setTrainer(trainer);
@@ -130,8 +131,8 @@ public class TrainerService {
         return authenticationResponseDto;
     }
 
-    protected List<String> mapTrainerTags(List<TrainerTag> trainerTags) {
-        List<String> mappedTags = new ArrayList<>();
+    protected List<TrainerTagType> mapTrainerTags(List<TrainerTag> trainerTags) {
+        List<TrainerTagType> mappedTags = new ArrayList<>();
         if(trainerTags != null && !trainerTags.isEmpty()) {
             for(TrainerTag t : trainerTags) {
                 mappedTags.add(t.getTag());

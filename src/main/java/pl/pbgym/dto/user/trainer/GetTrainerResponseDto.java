@@ -1,6 +1,7 @@
 package pl.pbgym.dto.user.trainer;
 
 import pl.pbgym.domain.user.Gender;
+import pl.pbgym.domain.user.trainer.TrainerTagType;
 import pl.pbgym.dto.user.GetAddressResponseDto;
 
 import java.time.LocalDate;
@@ -19,7 +20,7 @@ public class GetTrainerResponseDto {
     private byte[] photo;
     private Gender gender;
     private boolean visible;
-    private List<String> trainerTags;
+    private List<TrainerTagType> trainerTags;
 
 
     public GetTrainerResponseDto() {
@@ -121,11 +122,11 @@ public class GetTrainerResponseDto {
         this.visible = visible;
     }
 
-    public List<String> getTrainerTags() {
+    public List<TrainerTagType> getTrainerTags() {
         return trainerTags;
     }
 
-    public void setTrainerTags(List<String> trainerTags) {
+    public void setTrainerTags(List<TrainerTagType> trainerTags) {
         this.trainerTags = trainerTags;
     }
 }

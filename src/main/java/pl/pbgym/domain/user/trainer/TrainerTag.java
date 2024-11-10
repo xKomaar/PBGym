@@ -13,7 +13,8 @@ public class TrainerTag {
     private Long id;
 
     @Column(name="tag", nullable = false)
-    private String tag;
+    @Enumerated(EnumType.STRING)
+    private TrainerTagType tag;
 
     @ManyToOne
     @JoinColumn(name = "trainer_id")
@@ -27,11 +28,11 @@ public class TrainerTag {
         this.id = id;
     }
 
-    public String getTag() {
+    public TrainerTagType getTag() {
         return tag;
     }
 
-    public void setTag(String tag) {
+    public void setTag(TrainerTagType tag) {
         this.tag = tag;
     }
 

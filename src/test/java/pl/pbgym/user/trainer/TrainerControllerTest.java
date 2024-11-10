@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import pl.pbgym.domain.user.Gender;
+import pl.pbgym.domain.user.trainer.TrainerTagType;
 import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.dto.auth.*;
 import pl.pbgym.dto.statistics.GetGymEntryResponseDto;
@@ -237,7 +238,7 @@ public class TrainerControllerTest {
         updateRequest.setAddress(updatedAddress);
         updateRequest.setDescription("Updated description");
 
-        List<String> trainerTags = Arrays.asList("Tag1", "Tag2", "Tag3");
+        List<TrainerTagType> trainerTags = Arrays.asList(TrainerTagType.BODYBUILDING, TrainerTagType.FUNCTIONAL_TRAINING, TrainerTagType.CROSS_TRAINING);
         updateRequest.setTrainerTags(trainerTags);
 
         String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
@@ -286,7 +287,7 @@ public class TrainerControllerTest {
         updateRequest.setAddress(updatedAddress);
         updateRequest.setDescription("Description");
 
-        List<String> trainerTags = Arrays.asList("Tag1", "Tag2", "Tag3", "Tag4", "Tag5", "Tag6", "Tag7");
+        List<TrainerTagType> trainerTags = Arrays.asList(TrainerTagType.BODYBUILDING, TrainerTagType.FUNCTIONAL_TRAINING, TrainerTagType.CROSS_TRAINING, TrainerTagType.SENIOR_TRAINING, TrainerTagType.REDUCTION_TRAINING, TrainerTagType.PHYSIOTHERAPIST, TrainerTagType.WEIGHT_LOSS);
         updateRequest.setTrainerTags(trainerTags);
 
         String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
@@ -298,7 +299,6 @@ public class TrainerControllerTest {
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
-
 
     @Test
     public void shouldReturnOkWhenAdminUpdatesTrainerData() throws Exception {
@@ -321,7 +321,7 @@ public class TrainerControllerTest {
         updateRequest.setDescription("Admin updated description");
 
         // Add trainerTags
-        List<String> trainerTags = Arrays.asList("AdminTag1", "AdminTag2");
+        List<TrainerTagType> trainerTags = Arrays.asList(TrainerTagType.MARTIAL_ARTS, TrainerTagType.MEDICAL_TRAINING);
         updateRequest.setTrainerTags(trainerTags);
 
         String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
@@ -371,7 +371,7 @@ public class TrainerControllerTest {
         updateRequest.setDescription("Manager updated description");
 
         // Add trainerTags
-        List<String> trainerTags = Arrays.asList("ManagerTag1", "ManagerTag2", "ManagerTag3", "ManagerTag4");
+        List<TrainerTagType> trainerTags = Arrays.asList(TrainerTagType.SENIOR_TRAINING, TrainerTagType.REDUCTION_TRAINING, TrainerTagType.PHYSIOTHERAPIST, TrainerTagType.BODYBUILDING);
         updateRequest.setTrainerTags(trainerTags);
 
         String jsonUpdateRequest = objectMapper.writeValueAsString(updateRequest);
@@ -400,7 +400,6 @@ public class TrainerControllerTest {
         assertEquals(4, response.getTrainerTags().size());
         assertTrue(response.getTrainerTags().containsAll(trainerTags));
     }
-
 
     @Test
     public void shouldReturnForbiddenWhenTrainerUpdatesAnotherTrainerData() throws Exception {
