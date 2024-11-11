@@ -131,6 +131,12 @@ public class TrainerService {
         return authenticationResponseDto;
     }
 
+    protected GetPublicTrainerInfoResponseDto mapTrainerToPublicTrainerInfo(Trainer trainer) {
+        GetPublicTrainerInfoResponseDto responseDto = this.modelMapper.map(trainer, GetPublicTrainerInfoResponseDto.class);
+        responseDto.setTrainerTags(this.mapTrainerTags(trainer.getTrainerTags()));
+        return responseDto;
+    }
+
     protected List<TrainerTagType> mapTrainerTags(List<TrainerTag> trainerTags) {
         List<TrainerTagType> mappedTags = new ArrayList<>();
         if(trainerTags != null && !trainerTags.isEmpty()) {
@@ -139,5 +145,9 @@ public class TrainerService {
             }
         }
         return mappedTags;
+    }
+
+    public boolean trainerExists(String email) {
+        return trainerRepository.findByEmail(email).isPresent();
     }
 }

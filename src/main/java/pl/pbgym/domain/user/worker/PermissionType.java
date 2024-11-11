@@ -8,4 +8,5 @@ public enum PermissionType {
     PASS_MANAGEMENT,
     GROUP_CLASSES_MANAGEMENT,
     BLOG,
+    GROUP_CLASS_MANAGEMENT,
 }

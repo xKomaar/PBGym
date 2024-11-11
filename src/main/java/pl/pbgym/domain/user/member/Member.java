@@ -6,6 +6,7 @@ import pl.pbgym.domain.pass.HistoricalPass;
 import pl.pbgym.domain.statistics.GymEntry;
 import pl.pbgym.domain.pass.Pass;
 import pl.pbgym.domain.user.AbstractUser;
+import pl.pbgym.domain.user.trainer.GroupClass;
 
 import java.util.List;
 
@@ -25,6 +26,9 @@ public class Member extends AbstractUser {
     @OneToMany(mappedBy = "member", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JsonIgnore
     private List<HistoricalPass> historicalPasses;
+
+    @ManyToMany(mappedBy = "members")
+    private List<GroupClass> groupClasses;
 
     public Pass getPass() {
         return pass;
@@ -56,5 +60,13 @@ public class Member extends AbstractUser {
 
     public void setHistoricalPasses(List<HistoricalPass> historicalPasses) {
         this.historicalPasses = historicalPasses;
+    }
+
+    public List<GroupClass> getGroupClasses() {
+        return groupClasses;
+    }
+
+    public void setGroupClasses(List<GroupClass> groupClasses) {
+        this.groupClasses = groupClasses;
     }
 }

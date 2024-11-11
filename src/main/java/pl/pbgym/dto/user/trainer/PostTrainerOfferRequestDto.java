@@ -13,11 +13,9 @@ public class PostTrainerOfferRequestDto {
     @NotNull(message = "Price is required.")
     @Positive(message = "Price must be positive.")
     private Integer price;
-
     @NotNull(message = "Training session count is required.")
     @Positive(message = "Training session count must be positive.")
     private Integer trainingSessionCount;
-
     @NotNull(message = "Training session duration is required.")
     @Positive(message = "Training session duration must be positive.")
     private Integer trainingSessionDurationInMinutes;
