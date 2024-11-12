@@ -21,9 +21,7 @@ import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
 import pl.pbgym.dto.auth.PostTrainerRequestDto;
 import pl.pbgym.dto.auth.PostWorkerRequestDto;
-import pl.pbgym.dto.user.trainer.GetTrainerOfferResponseDto;
-import pl.pbgym.dto.user.trainer.PostTrainerOfferRequestDto;
-import pl.pbgym.dto.user.trainer.UpdateTrainerOfferRequestDto;
+import pl.pbgym.dto.user.trainer.*;
 import pl.pbgym.repository.user.AbstractUserRepository;
 import pl.pbgym.repository.user.AddressRepository;
 import pl.pbgym.repository.user.trainer.TrainerOfferRepository;
@@ -561,5 +559,64 @@ public class TrainerOfferControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonOfferRequest))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldGetAllPublicTrainersWithOffersSuccessfully() throws Exception {
+        PostTrainerOfferRequestDto offerRequest1 = new PostTrainerOfferRequestDto();
+        offerRequest1.setTitle("Offer 1");
+        offerRequest1.setPrice(100);
+        offerRequest1.setTrainingSessionCount(10);
+        offerRequest1.setTrainingSessionDurationInMinutes(60);
+        offerRequest1.setVisible(true);
+        mockMvc.perform(post("/trainerOffers/{email}", trainerEmail)
+                        .header("Authorization", "Bearer " + trainerJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(offerRequest1)))
+                .andExpect(status().isCreated());
+
+        PostTrainerOfferRequestDto offerRequest2 = new PostTrainerOfferRequestDto();
+        offerRequest2.setTitle("Offer 2");
+        offerRequest2.setPrice(200);
+        offerRequest2.setTrainingSessionCount(20);
+        offerRequest2.setTrainingSessionDurationInMinutes(90);
+        offerRequest2.setVisible(true);
+        mockMvc.perform(post("/trainerOffers/{email}", trainer2Email)
+                        .header("Authorization", "Bearer " + trainer2Jwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(offerRequest2)))
+                .andExpect(status().isCreated());
+
+        MvcResult mvcResult = mockMvc.perform(get("/trainerOffers/allTrainersWithOffers")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        List<GetPublicTrainerInfoWithOffersResponseDto> trainersWithOffers = objectMapper.readValue(jsonResponse,
+                objectMapper.getTypeFactory().constructCollectionType(List.class, GetPublicTrainerInfoWithOffersResponseDto.class));
+        System.out.println(jsonResponse);
+        assertNotNull(trainersWithOffers);
+        assertEquals(2, trainersWithOffers.size());
+
+        GetPublicTrainerInfoWithOffersResponseDto trainerWithOffers = trainersWithOffers.get(0);
+        assertNotNull(trainerWithOffers.getTrainerInfo());
+        assertNotNull(trainerWithOffers.getTrainerOffers());
+
+        GetPublicTrainerInfoResponseDto trainerInfo = trainerWithOffers.getTrainerInfo();
+        assertEquals(trainerEmail, trainerInfo.getEmail());
+        assertEquals("Trainer", trainerInfo.getName());
+        assertEquals("One", trainerInfo.getSurname());
+        assertEquals(Gender.MALE, trainerInfo.getGender());
+
+        List<GetTrainerOfferResponseDto> offers = trainerWithOffers.getTrainerOffers();
+        assertEquals(1, offers.size());
+
+        GetTrainerOfferResponseDto offer = offers.get(0);
+        assertEquals("Offer 1", offer.getTitle());
+        assertEquals(100, offer.getPrice().intValue());
+        assertEquals(10, offer.getTrainingSessionCount().intValue());
+        assertEquals(60, offer.getTrainingSessionDurationInMinutes().intValue());
+        assertTrue(offer.isVisible());
     }
 }

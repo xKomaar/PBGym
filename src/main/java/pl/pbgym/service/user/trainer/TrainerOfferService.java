@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pbgym.domain.user.trainer.TrainerOffer;
+import pl.pbgym.dto.user.trainer.GetPublicTrainerInfoWithOffersResponseDto;
 import pl.pbgym.dto.user.trainer.GetTrainerOfferResponseDto;
 import pl.pbgym.dto.user.trainer.PostTrainerOfferRequestDto;
 import pl.pbgym.dto.user.trainer.UpdateTrainerOfferRequestDto;
@@ -19,11 +20,13 @@ import java.util.List;
 public class TrainerOfferService {
 
     private final TrainerRepository trainerRepository;
+    private final TrainerService trainerService;
     private final TrainerOfferRepository trainerOfferRepository;
     private final ModelMapper modelMapper;
 
-    public TrainerOfferService(TrainerRepository trainerRepository, TrainerOfferRepository trainerOfferRepository, ModelMapper modelMapper) {
+    public TrainerOfferService(TrainerRepository trainerRepository, TrainerService trainerService, TrainerOfferRepository trainerOfferRepository, ModelMapper modelMapper) {
         this.trainerRepository = trainerRepository;
+        this.trainerService = trainerService;
         this.trainerOfferRepository = trainerOfferRepository;
         this.modelMapper = modelMapper;
     }
@@ -32,6 +35,17 @@ public class TrainerOfferService {
         return trainerOfferRepository.findAllByTrainerEmail(email)
                 .stream()
                 .map(trainerOffer -> modelMapper.map(trainerOffer, GetTrainerOfferResponseDto.class))
+                .toList();
+    }
+
+    public List<GetPublicTrainerInfoWithOffersResponseDto> getAllPublicTrainersWithOffers() {
+        return trainerRepository.findAll().stream()
+                .map(trainer -> {
+                    GetPublicTrainerInfoWithOffersResponseDto getTrainerResponseDto = new GetPublicTrainerInfoWithOffersResponseDto();
+                    getTrainerResponseDto.setTrainerInfo(trainerService.mapTrainerToPublicTrainerInfo(trainer));
+                    getTrainerResponseDto.setTrainerOffers(this.getTrainerOffersByEmail(trainer.getEmail()));
+                    return getTrainerResponseDto;
+                })
                 .toList();
     }
 

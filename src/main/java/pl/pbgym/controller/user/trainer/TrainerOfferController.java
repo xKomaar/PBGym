@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.pbgym.domain.user.AbstractUser;
 import pl.pbgym.domain.user.trainer.Trainer;
+import pl.pbgym.dto.user.trainer.GetPublicTrainerInfoWithOffersResponseDto;
 import pl.pbgym.dto.user.trainer.GetTrainerOfferResponseDto;
 import pl.pbgym.dto.user.trainer.PostTrainerOfferRequestDto;
 import pl.pbgym.dto.user.trainer.UpdateTrainerOfferRequestDto;
@@ -54,6 +55,15 @@ public class TrainerOfferController {
         } catch (TrainerNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+    @GetMapping("/allTrainersWithOffers")
+    @Operation(summary = "Get all trainers with offers (PUBLIC)", description = "Fetches all trainers, POSSIBLE FOR THE PUBLIC.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Trainers returned successfully"),
+    })
+    public ResponseEntity<List<GetPublicTrainerInfoWithOffersResponseDto>> getAllPublicTrainersWithOffers() {
+        return ResponseEntity.ok(trainerOfferService.getAllPublicTrainersWithOffers());
     }
 
     @PostMapping("/{email}")
