@@ -43,7 +43,8 @@ public class AuthenticationController {
         }
     }
 
-    @Operation(summary = "Register a new trainer", description = "Gender types: MALE, FEMALE, OTHER")
+    @Operation(summary = "Register a new trainer", description = "Possible for ADMIN and TRAINER_MANAGEMENT workers. " +
+            "Gender types: MALE, FEMALE, OTHER")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Trainer registered successfully"),
             @ApiResponse(responseCode = "409", description = "Email already in use", content = @Content)
@@ -59,8 +60,8 @@ public class AuthenticationController {
         }
     }
 
-    @Operation(summary = "Register a new worker", description = "Gender types: MALE, FEMALE, OTHER." +
-            "Permission Types: ADMIN, STATISTICS, USER_MANAGEMENT, NEWSLETTER, PASS_MANAGEMENT, GROUP_CLASSES_MANAGEMENT, BLOG,SHOP_MANAGEMENT")
+    @Operation(summary = "Register a new worker", description = "Possible only for ADMIN worker. Gender types: MALE, FEMALE, OTHER." +
+            "Permission Types: ADMIN, STATISTICS, MEMBER_MANAGEMENT, TRAINER_MANAGEMENT, NEWSLETTER, PASS_MANAGEMENT, GROUP_CLASSES_MANAGEMENT, BLOG,SHOP_MANAGEMENT")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Worker registered successfully"),
             @ApiResponse(responseCode = "409", description = "Email already in use", content = @Content)

@@ -19,7 +19,8 @@ public class UpdateWorkerAuthorityRequestDto {
     @PermissionSubset(anyOf = {
             PermissionType.ADMIN,
             PermissionType.STATISTICS,
-            PermissionType.USER_MANAGEMENT,
+            PermissionType.MEMBER_MANAGEMENT,
+            PermissionType.TRAINER_MANAGEMENT,
             PermissionType.NEWSLETTER,
             PermissionType.PASS_MANAGEMENT,
             PermissionType.GROUP_CLASSES_MANAGEMENT,

@@ -45,7 +45,7 @@ public class TrainerController {
 
     @GetMapping("/{email}")
     @Operation(summary = "Get a trainer by email", description = "Fetches the trainer details by their email, " +
-            "possible only for ADMIN and USER_MANAGEMENT workers and for the trainer who owns the data.")
+            "possible only for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Trainer found and returned successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
@@ -65,7 +65,7 @@ public class TrainerController {
     }
 
     @GetMapping("/all")
-    @Operation(summary = "Get all trainers", description = "Fetches all trainers, possible for ADMIN and USER_MANAGEMENT workers.")
+    @Operation(summary = "Get all trainers", description = "Fetches all trainers, possible for ADMIN and TRAINER_MANAGEMENT workers.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Trainers returned successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
@@ -76,7 +76,7 @@ public class TrainerController {
 
     @PutMapping("/{email}")
     @Operation(summary = "Update a trainer by email", description = "Fetches the trainer details by their email and updates their data, " +
-            "possible only for ADMIN and USER_MANAGEMENT workers and for the trainer who owns the data. Gender types: MALE, FEMALE, OTHER" +
+            "possible only for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data. Gender types: MALE, FEMALE, OTHER" +
             "MAX TRAINER TAGS = 6, POSSIBLE TRAINER TAGS: BODYBUILDING, FUNCTIONAL_TRAINING, CROSS_TRAINING, WEIGHT_LOSS, "
             + "MARTIAL_ARTS, BODYWEIGHT, WEIGHTLIFTING, MOTOR_PREPARATION, MEDICAL_TRAINING, PREGNANT_WOMEN, "
             + "SENIOR_TRAINING, REDUCTION_TRAINING, PHYSIOTHERAPIST.")
@@ -102,7 +102,7 @@ public class TrainerController {
 
     @PutMapping("/changePassword/{email}")
     @Operation(summary = "Change a trainer password by email", description = "Fetches the trainer details by their email and changes their password, " +
-            "possible only for ADMIN and USER_MANAGEMENT workers and for the trainer who owns the data. Worker doesn't need to provide the old password (it can be left null or empty).")
+            "possible only for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data. Worker doesn't need to provide the old password (it can be left null or empty).")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Trainer found and updated successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
@@ -136,7 +136,7 @@ public class TrainerController {
 
     @PutMapping("/changeEmail/{email}")
     @Operation(summary = "Change a trainer email by email", description = "Fetches the trainer details by their email and changes their email, " +
-            "possible only for ADMIN and USER_MANAGEMENT workers and for the trainer who owns the data. " +
+            "possible only for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data. " +
             "Returns a new JWT, because after changing the email, re-authentication is needed.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Trainer found and updated successfully"),
@@ -166,7 +166,7 @@ public class TrainerController {
 
     @GetMapping("/getGymEntries/{email}")
     @Operation(summary = "Get gym entry history by email", description = "Fetches a gym entry history of a trainer, " +
-            "possible for ADMIN and USER_MANAGEMENT workers and for the trainer who owns the data.")
+            "possible for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Gym Entry history fetched successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),

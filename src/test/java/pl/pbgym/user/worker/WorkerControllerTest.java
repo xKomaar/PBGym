@@ -238,7 +238,7 @@ public class WorkerControllerTest {
     public void shouldReturnOkWhenAdminUpdatesWorkerAuthority() throws Exception {
         UpdateWorkerAuthorityRequestDto updateRequest = new UpdateWorkerAuthorityRequestDto();
 
-        List<PermissionType> permissionTypeList = List.of(PermissionType.PASS_MANAGEMENT, PermissionType.USER_MANAGEMENT);
+        List<PermissionType> permissionTypeList = List.of(PermissionType.PASS_MANAGEMENT, PermissionType.MEMBER_MANAGEMENT);
         updateRequest.setPermissions(permissionTypeList);
         updateRequest.setPosition("Manager");
 
@@ -250,7 +250,7 @@ public class WorkerControllerTest {
                         .content(jsonUpdateRequest))
                 .andExpect(status().isOk());
 
-        permissionTypeList = List.of(PermissionType.PASS_MANAGEMENT, PermissionType.USER_MANAGEMENT, PermissionType.BLOG);
+        permissionTypeList = List.of(PermissionType.PASS_MANAGEMENT, PermissionType.MEMBER_MANAGEMENT, PermissionType.BLOG);
         updateRequest.setPermissions(permissionTypeList);
         updateRequest.setPosition("Executive Manager");
 

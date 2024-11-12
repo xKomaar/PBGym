@@ -36,7 +36,7 @@ public class CreditCardInfoController {
 
     @PostMapping("/{email}")
     @Operation(summary = "Add credit card information", description = "Add credit card information of a member by email, " +
-            "accessible for an ADMIN and USER_MANAGEMENT workers and a member who owns the data. DATE: MM/YY")
+            "accessible for an ADMIN and MEMBER_MANAGEMENT workers and a member who owns the data. DATE: MM/YY")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Credit Card information successfully added."),
             @ApiResponse(responseCode = "404", description = "Member not found", content = @Content),
@@ -61,7 +61,7 @@ public class CreditCardInfoController {
 
     @GetMapping("/{email}/hidden")
     @Operation(summary = "Get hidden credit card information by email", description = "Get hidden credit card information of a member by email, " +
-            "accessible for an ADMIN and USER_MANAGEMENT workers and a member who owns the data.")
+            "accessible for an ADMIN and MEMBER_MANAGEMENT workers and a member who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Credit Card information successfully fetched."),
             @ApiResponse(responseCode = "404", description = "Member not found", content = @Content),
@@ -104,7 +104,7 @@ public class CreditCardInfoController {
 
     @DeleteMapping("/{email}")
     @Operation(summary = "Delete credit card information by email", description = "Delete credit card information of a member by email, " +
-            "accessible for an ADMIN and USER_MANAGEMENT workers and a member who owns the data.")
+            "accessible for an ADMIN and MEMBER_MANAGEMENT workers and a member who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Credit Card information successfully deleted."),
             @ApiResponse(responseCode = "404", description = "Credit Card information not found", content = @Content),

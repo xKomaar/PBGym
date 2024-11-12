@@ -99,7 +99,7 @@ public class WorkerController {
 
     @PutMapping("/authority/{email}")
     @Operation(summary = "Update a workers position and permissions by email", description = "Fetches the worker details by their email and updates their position and permissions, " +
-            "possible only for ADMIN workers. Permission types: ADMIN, STATISTICS, USER_MANAGEMENT, NEWSLETTER, PASS_MANAGEMENT, GROUP_CLASSES_MANAGEMENT, BLOG, SHOP_MANAGEMENT")
+            "possible only for ADMIN workers. Permission types: ADMIN, STATISTICS, MEMBER_MANAGEMENT, TRAINER_MANAGEMENT, NEWSLETTER, PASS_MANAGEMENT, GROUP_CLASSES_MANAGEMENT, BLOG, SHOP_MANAGEMENT")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Worker found and updated successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),

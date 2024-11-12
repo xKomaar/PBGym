@@ -86,7 +86,7 @@ public class PassController {
 
     @GetMapping("/passHistory/{email}")
     @Operation(summary = "Get pass history by email", description = "Fetches a pass history of a member, " +
-            "possible only for ADMIN and USER_MANAGEMENT workers and for the member who owns the data. ")
+            "possible only for ADMIN and PASS_MANAGEMENT workers and for the member who owns the data. ")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Payment history fetched successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),

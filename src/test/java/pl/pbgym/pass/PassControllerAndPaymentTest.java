@@ -151,7 +151,7 @@ public class PassControllerAndPaymentTest {
         adminWorkerRequest.setAddress(postAddressRequestDto2);
 
         List<PermissionType> permissionTypeList = new ArrayList<>();
-        permissionTypeList.add(PermissionType.ADMIN);
+        permissionTypeList.add(PermissionType.PASS_MANAGEMENT);
         adminWorkerRequest.setPermissions(permissionTypeList);
 
         authenticationService.registerWorker(adminWorkerRequest);

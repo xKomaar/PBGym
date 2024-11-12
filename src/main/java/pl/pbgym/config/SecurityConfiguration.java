@@ -34,16 +34,16 @@ public class SecurityConfiguration {
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/registerMember", "/auth/authenticate").permitAll()
-                        .requestMatchers("/auth/registerTrainer").hasAnyAuthority("ADMIN", "USER_MANAGEMENT")
+                        .requestMatchers("/auth/registerTrainer").hasAnyAuthority("ADMIN", "TRAINER_MANAGEMENT")
                         .requestMatchers("/auth/registerWorker").hasAuthority("ADMIN")
 
-                        .requestMatchers("/members/changePassword/", "/members/changeEmail/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "MEMBER")
-                        .requestMatchers("/members/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "MEMBER")
+                        .requestMatchers("/members/changePassword/", "/members/changeEmail/").hasAnyAuthority("ADMIN", "MEMBER_MANAGEMENT", "MEMBER")
+                        .requestMatchers("/members/").hasAnyAuthority("ADMIN", "MEMBER_MANAGEMENT", "MEMBER")
 
-                        .requestMatchers("/trainers/changePassword/", "/trainers/changeEmail/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "TRAINER")
-                        .requestMatchers("/trainers/").hasAnyAuthority("ADMIN", "USER_MANAGEMENT", "TRAINER")
+                        .requestMatchers("/trainers/changePassword/", "/trainers/changeEmail/").hasAnyAuthority("ADMIN", "TRAINER_MANAGEMENT", "TRAINER")
+                        .requestMatchers("/trainers/").hasAnyAuthority("ADMIN", "TRAINER_MANAGEMENT", "TRAINER")
 
-                        .requestMatchers("/trainerOffers/").hasAuthority("TRAINER")
+                        .requestMatchers("/trainerOffers/").hasAnyAuthority("TRAINER", "TRAINER_MANAGEMENT", "ADMIN")
 
                         .requestMatchers("/workers/all").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/workers/{email}", "/workers/changeEmail/{email}").hasAuthority("ADMIN")
@@ -55,7 +55,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/passes/**").hasAnyAuthority("MEMBER", "ADMIN", "PASS_MANAGEMENT")
 
                         .requestMatchers("/creditCardInfo/{email}/full").hasAuthority("MEMBER")
-                        .requestMatchers( "/creditCardInfo/").hasAnyAuthority("MEMBER", "ADMIN", "USER_MANAGEMENT")
+                        .requestMatchers( "/creditCardInfo/").hasAnyAuthority("MEMBER", "ADMIN", "MEMBER_MANAGER")
 
                         .requestMatchers("/gym/count").permitAll()
                         //Workers can let members in and out of the gym

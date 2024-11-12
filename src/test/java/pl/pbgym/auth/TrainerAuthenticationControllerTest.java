@@ -96,7 +96,7 @@ public class TrainerAuthenticationControllerTest {
         adminWorkerRequest.setAddress(postAddressRequestDto);
 
         List<PermissionType> permissions = new ArrayList<>();
-        permissions.add(PermissionType.USER_MANAGEMENT);
+        permissions.add(PermissionType.TRAINER_MANAGEMENT);
         adminWorkerRequest.setPermissions(permissions);
 
         authenticationService.registerWorker(adminWorkerRequest);

@@ -51,7 +51,7 @@ public class MemberController {
 
     @GetMapping("/{email}")
     @Operation(summary = "Get a member by email", description = "Fetches the member details by their email, " +
-            "possible only for ADMIN and USER_MANAGEMENT workers and for the member who owns the data.")
+            "possible only for ADMIN and MEMBER_MANAGEMENT workers and for the member who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Member found and returned successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
@@ -70,7 +70,7 @@ public class MemberController {
     }
 
     @GetMapping("/all")
-    @Operation(summary = "Get all members", description = "Fetches all members, possible for ADMIN and USER_MANAGEMENT workers.")
+    @Operation(summary = "Get all members", description = "Fetches all members, possible for ADMIN and MEMBER_MANAGEMENT workers.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Members returned successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
@@ -81,7 +81,7 @@ public class MemberController {
 
     @PutMapping("/{email}")
     @Operation(summary = "Update a member by email", description = "Fetches the member details by their email and updates their data, " +
-            "possible only for ADMIN and USER_MANAGEMENT workers and for the member who owns the data. Gender types: MALE, FEMALE, OTHER")
+            "possible only for ADMIN and MEMBER_MANAGEMENT workers and for the member who owns the data. Gender types: MALE, FEMALE, OTHER")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Member found and updated successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
@@ -104,7 +104,7 @@ public class MemberController {
 
     @PutMapping("/changePassword/{email}")
     @Operation(summary = "Change a member password by email", description = "Fetches the member details by their email and changes their password, " +
-            "possible only for ADMIN and USER_MANAGEMENT workers and for the member who owns the data. Worker doesn't need to provide the old password (it can be left null or empty).")
+            "possible only for ADMIN and MEMBER_MANAGEMENT workers and for the member who owns the data. Worker doesn't need to provide the old password (it can be left null or empty).")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Member found and updated successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
@@ -140,7 +140,7 @@ public class MemberController {
 
     @PutMapping("/changeEmail/{email}")
     @Operation(summary = "Change a member email by email", description = "Fetches the member details by their email and changes their email, " +
-            "possible only for ADMIN and USER_MANAGEMENT workers and for the member who owns the data. " +
+            "possible only for ADMIN and MEMBER_MANAGEMENT workers and for the member who owns the data. " +
             "Returns a new JWT, because after changing the email, re-authentication is needed.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Member found and updated successfully"),
@@ -169,7 +169,7 @@ public class MemberController {
 
     @GetMapping("/getGymEntries/{email}")
     @Operation(summary = "Get gym entry history by email", description = "Fetches a gym entry history of a member, " +
-            "possible for ADMIN and USER_MANAGEMENT workers and only for the member who owns the data.")
+            "possible for ADMIN and MEMBER_MANAGEMENT workers and only for the member who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Gym Entry history fetched successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
@@ -186,7 +186,7 @@ public class MemberController {
 
     @GetMapping("/getPaymentHistory/{email}")
     @Operation(summary = "Get payment history by email", description = "Fetches a payment history of a member, " +
-            "possible for ADMIN and USER_MANAGEMENT workers and only for the member who owns the data.")
+            "possible for ADMIN and MEMBER_MANAGEMENT workers and only for the member who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Payment history fetched successfully"),
             @ApiResponse(responseCode = "404", description = "Member not found", content = @Content),

@@ -137,7 +137,7 @@ public class TrainerControllerTest {
         managerWorkerRequest.setAddress(postAddressRequestDto3);
 
         List<PermissionType> permissionTypeList2 = new ArrayList<>();
-        permissionTypeList2.add(PermissionType.USER_MANAGEMENT);
+        permissionTypeList2.add(PermissionType.TRAINER_MANAGEMENT);
         managerWorkerRequest.setPermissions(permissionTypeList2);
 
         authenticationService.registerWorker(managerWorkerRequest);
