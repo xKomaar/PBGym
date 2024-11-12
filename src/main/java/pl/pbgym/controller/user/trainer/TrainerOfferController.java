@@ -12,8 +12,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.pbgym.domain.user.AbstractUser;
+import pl.pbgym.domain.user.trainer.Trainer;
 import pl.pbgym.dto.user.trainer.GetTrainerOfferResponseDto;
 import pl.pbgym.dto.user.trainer.PostTrainerOfferRequestDto;
+import pl.pbgym.dto.user.trainer.UpdateTrainerOfferRequestDto;
 import pl.pbgym.exception.user.trainer.TrainerDoesntOwnOfferException;
 import pl.pbgym.exception.user.trainer.TrainerNotFoundException;
 import pl.pbgym.exception.user.trainer.TrainerOfferNotFoundException;
@@ -33,52 +35,63 @@ public class TrainerOfferController {
         this.trainerOfferService = trainerOfferService;
     }
 
-    @GetMapping("/")
-    @Operation(summary = "Get trainer's own offers", description = "Fetches all offers created by the authenticated trainer.")
+    @GetMapping("/{email}")
+    @Operation(summary = "Get trainer's offers by email", description = "Fetches all offers of a trainer by email. " +
+            "possible only for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Offers returned successfully"),
-            @ApiResponse(responseCode = "404", description = "Trainer not found", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Trainer not found", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content)
     })
-    public ResponseEntity<List<GetTrainerOfferResponseDto>> getTrainerOffers() {
+    public ResponseEntity<List<GetTrainerOfferResponseDto>> getTrainerOffers(@PathVariable String email) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+        if (authenticatedUser instanceof Trainer && !authenticatedUser.getEmail().equals(email)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         try {
-            List<GetTrainerOfferResponseDto> offers = trainerOfferService.getTrainerOffersByEmail(authenticatedUser.getEmail());
+            List<GetTrainerOfferResponseDto> offers = trainerOfferService.getTrainerOffersByEmail(email);
             return ResponseEntity.ok(offers);
         } catch (TrainerNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-    @PostMapping("/")
-    @Operation(summary = "Create a new trainer offer", description = "Creates a new offer for the authenticated trainer.")
+    @PostMapping("/{email}")
+    @Operation(summary = "Create a new trainer offer", description = "Creates a new offer for a trainer by email. " +
+            "possible only for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Offer created successfully"),
-            @ApiResponse(responseCode = "404", description = "Trainer not found", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Trainer not found", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content)
     })
-    public ResponseEntity<String> createTrainerOffer(@Valid @RequestBody PostTrainerOfferRequestDto dto) {
+    public ResponseEntity<String> createTrainerOffer(@PathVariable String email, @Valid @RequestBody PostTrainerOfferRequestDto dto) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+        if (authenticatedUser instanceof Trainer && !authenticatedUser.getEmail().equals(email)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         try {
-            trainerOfferService.saveTrainerOffer(authenticatedUser.getEmail(), dto);
+            trainerOfferService.saveTrainerOffer(email, dto);
             return ResponseEntity.status(HttpStatus.CREATED).body("Offer created successfully");
         } catch (TrainerNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-    @PutMapping("/{id}")
-    @Operation(summary = "Update an existing trainer offer", description = "Updates an offer owned by the authenticated trainer.")
+    @PutMapping("/{email}")
+    @Operation(summary = "Update an existing trainer offer", description = "Updates an offer by offer id and trainer email. " +
+            "possible only for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Offer updated successfully"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - trainer does not own the offer", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden - trainer does not own the offer or authenticated user is not authorized to access this resource", content = @Content),
             @ApiResponse(responseCode = "404", description = "Trainer or offer not found", content = @Content)
     })
-    public ResponseEntity<String> updateTrainerOffer(@PathVariable Long id, @Valid @RequestBody PostTrainerOfferRequestDto dto) {
+    public ResponseEntity<String> updateTrainerOffer(@PathVariable String email, @Valid @RequestBody UpdateTrainerOfferRequestDto dto) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+        if (authenticatedUser instanceof Trainer && !authenticatedUser.getEmail().equals(email)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         try {
-            trainerOfferService.updateTrainerOffer(authenticatedUser.getEmail(), id, dto);
+            trainerOfferService.updateTrainerOffer(email, dto);
             return ResponseEntity.status(HttpStatus.OK).body("Offer updated successfully");
         } catch (TrainerNotFoundException | TrainerOfferNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -87,18 +100,21 @@ public class TrainerOfferController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Delete a trainer offer", description = "Deletes an offer owned by the authenticated trainer.")
+    @DeleteMapping("/{email}")
+    @Operation(summary = "Delete a trainer offer", description = "Deletes an offer by offer id and trainer email." +
+            "possible only for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Offer deleted successfully"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - trainer does not own the offer", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden - trainer does not own the offer or authenticated user is not authorized to access this resource", content = @Content),
             @ApiResponse(responseCode = "404", description = "Trainer or offer not found", content = @Content)
     })
-    public ResponseEntity<String> deleteTrainerOffer(@PathVariable Long id) {
+    public ResponseEntity<String> deleteTrainerOffer(@PathVariable String email, @RequestBody Long offerId) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+        if (authenticatedUser instanceof Trainer && !authenticatedUser.getEmail().equals(email)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         try {
-            trainerOfferService.deleteTrainerOffer(authenticatedUser.getEmail(), id);
+            trainerOfferService.deleteTrainerOffer(email, offerId);
             return ResponseEntity.status(HttpStatus.OK).body("Offer deleted successfully");
         } catch (TrainerNotFoundException | TrainerOfferNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.pbgym.domain.user.trainer.TrainerOffer;
 import pl.pbgym.dto.user.trainer.GetTrainerOfferResponseDto;
 import pl.pbgym.dto.user.trainer.PostTrainerOfferRequestDto;
+import pl.pbgym.dto.user.trainer.UpdateTrainerOfferRequestDto;
 import pl.pbgym.exception.user.trainer.TrainerDoesntOwnOfferException;
 import pl.pbgym.exception.user.trainer.TrainerNotFoundException;
 import pl.pbgym.exception.user.trainer.TrainerOfferNotFoundException;
@@ -47,8 +48,8 @@ public class TrainerOfferService {
     }
 
     @Transactional
-    public void updateTrainerOffer(String email, Long id, PostTrainerOfferRequestDto dto) {
-        trainerRepository.findByEmail(email).ifPresentOrElse(trainer -> trainerOfferRepository.findById(id).ifPresentOrElse(offer -> {
+    public void updateTrainerOffer(String email, UpdateTrainerOfferRequestDto dto) {
+        trainerRepository.findByEmail(email).ifPresentOrElse(trainer -> trainerOfferRepository.findById(dto.getId()).ifPresentOrElse(offer -> {
                     if(offer.getTrainer().equals(trainer)) {
                         offer.setTitle(dto.getTitle());
                         offer.setPrice(dto.getPrice());
@@ -61,7 +62,7 @@ public class TrainerOfferService {
                     }
                 },
                 () -> {
-                    throw new TrainerOfferNotFoundException("Offer not found with id: " + id);
+                    throw new TrainerOfferNotFoundException("Offer not found with id: " + dto.getId());
                 }),
                 () -> {
                     throw new TrainerNotFoundException("Trainer not found with email: " + email);
