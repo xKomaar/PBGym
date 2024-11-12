@@ -106,9 +106,9 @@ public class CreditCardInfoControllerTest {
         managerWorkerRequest.setGender(Gender.MALE);
         managerWorkerRequest.setAddress(postAddressRequestDto2);
 
-        List<PermissionType> permissionTypeList2 = new ArrayList<>();
-        permissionTypeList2.add(PermissionType.MEMBER_MANAGEMENT);
-        managerWorkerRequest.setPermissions(permissionTypeList2);
+        List<PermissionType> permissionTypeList = new ArrayList<>();
+        permissionTypeList.add(PermissionType.MEMBER_MANAGEMENT);
+        managerWorkerRequest.setPermissions(permissionTypeList);
 
         authenticationService.registerWorker(managerWorkerRequest);
 

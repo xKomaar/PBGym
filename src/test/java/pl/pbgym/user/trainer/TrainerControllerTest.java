@@ -649,11 +649,11 @@ public class TrainerControllerTest {
     @Test
     public void shouldReturnOkWhenFetchingOwnGymHistory() throws Exception {
         mockMvc.perform(post("/gym/registerQRscan/{email}", trainerEmail)
-                        .header("Authorization", "Bearer " + trainerJwt)
+                        .header("Authorization", "Bearer " + adminJwt)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         mockMvc.perform(post("/gym/registerQRscan/{email}", trainerEmail)
-                        .header("Authorization", "Bearer " + trainerJwt)
+                        .header("Authorization", "Bearer " + adminJwt)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 

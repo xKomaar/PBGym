@@ -114,7 +114,7 @@ public class StatisticsControllerTest {
 
         List<PermissionType> permissionTypeList = new ArrayList<>();
         permissionTypeList.add(PermissionType.STATISTICS);
-        postWorkerRequestDto.setPermissions(new ArrayList<>());
+        postWorkerRequestDto.setPermissions(permissionTypeList);
 
         PostAddressRequestDto postAddressRequestDto = new PostAddressRequestDto();
         postAddressRequestDto.setCity("City");

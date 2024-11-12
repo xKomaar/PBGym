@@ -33,38 +33,36 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/registerMember", "/auth/authenticate").permitAll()
-                        .requestMatchers("/auth/registerTrainer").hasAnyAuthority("ADMIN", "TRAINER_MANAGEMENT")
-                        .requestMatchers("/auth/registerWorker").hasAuthority("ADMIN")
+                        .requestMatchers("/auth/registerMember/**", "/auth/authenticate/**").permitAll()
+                        .requestMatchers("/auth/registerTrainer/**").hasAnyAuthority("ADMIN", "TRAINER_MANAGEMENT")
+                        .requestMatchers("/auth/registerWorker/**").hasAuthority("ADMIN")
 
-                        .requestMatchers("/members/changePassword/", "/members/changeEmail/").hasAnyAuthority("ADMIN", "MEMBER_MANAGEMENT", "MEMBER")
-                        .requestMatchers("/members/").hasAnyAuthority("ADMIN", "MEMBER_MANAGEMENT", "MEMBER")
+                        .requestMatchers("/members/**").hasAnyAuthority("ADMIN", "MEMBER_MANAGEMENT", "MEMBER")
 
-                        .requestMatchers("/trainers/changePassword/", "/trainers/changeEmail/").hasAnyAuthority("ADMIN", "TRAINER_MANAGEMENT", "TRAINER")
-                        .requestMatchers("/trainers/").hasAnyAuthority("ADMIN", "TRAINER_MANAGEMENT", "TRAINER")
+                        .requestMatchers("/trainers/**").hasAnyAuthority("ADMIN", "TRAINER_MANAGEMENT", "TRAINER")
 
-                        .requestMatchers("/trainerOffers/").hasAnyAuthority("TRAINER", "TRAINER_MANAGEMENT", "ADMIN")
+                        .requestMatchers("/trainerOffers/**").hasAnyAuthority("TRAINER", "TRAINER_MANAGEMENT", "ADMIN")
 
-                        .requestMatchers("/workers/all").hasAuthority("ADMIN")
+                        .requestMatchers("/workers/all/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/workers/{email}", "/workers/changeEmail/{email}").hasAuthority("ADMIN")
-                        .requestMatchers("/workers/", "/workers/changePassword/").hasAnyAuthority("ADMIN", "WORKER")
+                        .requestMatchers("/workers/**", "/workers/changePassword/**").hasAnyAuthority("ADMIN", "WORKER")
 
-                        .requestMatchers("/offers/public/active").permitAll()
+                        .requestMatchers("/offers/public/active/**").permitAll()
                         .requestMatchers("/offers/**").hasAnyAuthority("ADMIN", "PASS_MANAGEMENT")
 
                         .requestMatchers("/passes/**").hasAnyAuthority("MEMBER", "ADMIN", "PASS_MANAGEMENT")
 
-                        .requestMatchers("/creditCardInfo/{email}/full").hasAuthority("MEMBER")
-                        .requestMatchers( "/creditCardInfo/").hasAnyAuthority("MEMBER", "ADMIN", "MEMBER_MANAGER")
+                        .requestMatchers("/creditCardInfo/{email}/full/**").hasAuthority("MEMBER")
+                        .requestMatchers( "/creditCardInfo/**").hasAnyAuthority("MEMBER", "ADMIN", "MEMBER_MANAGEMENT")
 
-                        .requestMatchers("/gym/count").permitAll()
+                        .requestMatchers("/gym/count/**").permitAll()
                         //Workers can let members in and out of the gym
-                        .requestMatchers("/gym/").hasAuthority("WORKER")
+                        .requestMatchers("/gym/**").hasAuthority("WORKER")
 
-                        .requestMatchers("/statistics/").hasAnyAuthority("STATISTICS", "ADMIN")
+                        .requestMatchers("/statistics/**").hasAnyAuthority("STATISTICS", "ADMIN")
 
                         .requestMatchers("/swagger/**", "/swagger-ui/**", "v3/api-docs/**").permitAll()
-                        .requestMatchers("/ping").permitAll()
+                        .requestMatchers("/ping/**").permitAll()
                         .anyRequest().authenticated()
                 ).sessionManagement(config -> config
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
