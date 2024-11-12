@@ -10,17 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import pl.pbgym.domain.user.worker.Worker;
 import pl.pbgym.domain.user.AbstractUser;
 import pl.pbgym.domain.user.worker.PermissionType;
+import pl.pbgym.domain.user.worker.Worker;
 import pl.pbgym.dto.auth.AuthenticationResponseDto;
 import pl.pbgym.dto.auth.ChangeEmailRequestDto;
 import pl.pbgym.dto.auth.ChangePasswordRequestDto;
-import pl.pbgym.dto.user.worker.UpdateWorkerAuthorityRequestDto;
-import pl.pbgym.dto.user.worker.UpdateWorkerAdminRequestDto;
 import pl.pbgym.dto.user.worker.GetWorkerResponseDto;
+import pl.pbgym.dto.user.worker.UpdateWorkerAdminRequestDto;
+import pl.pbgym.dto.user.worker.UpdateWorkerAuthorityRequestDto;
 import pl.pbgym.exception.user.IncorrectPasswordException;
 import pl.pbgym.exception.user.worker.WorkerNotFoundException;
 import pl.pbgym.service.user.AbstractUserService;
@@ -28,7 +27,7 @@ import pl.pbgym.service.user.worker.WorkerService;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/workers")
 @CrossOrigin
 public class WorkerController {

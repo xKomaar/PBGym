@@ -7,13 +7,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.pbgym.exception.user_counter.NoActivePassException;
 import pl.pbgym.exception.user_counter.WorkerNotAllowedToBeScannedException;
 import pl.pbgym.service.statistics.UserCounterService;
 
-@Controller
+@RestController
 @RequestMapping("/gym")
 @CrossOrigin
 public class GymEntryController {

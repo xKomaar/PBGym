@@ -595,7 +595,6 @@ public class TrainerOfferControllerTest {
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         List<GetPublicTrainerInfoWithOffersResponseDto> trainersWithOffers = objectMapper.readValue(jsonResponse,
                 objectMapper.getTypeFactory().constructCollectionType(List.class, GetPublicTrainerInfoWithOffersResponseDto.class));
-        System.out.println(jsonResponse);
         assertNotNull(trainersWithOffers);
         assertEquals(2, trainersWithOffers.size());
 

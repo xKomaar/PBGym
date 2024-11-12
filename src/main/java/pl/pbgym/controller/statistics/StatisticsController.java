@@ -5,18 +5,18 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.pbgym.dto.user.member.GetPaymentResponseDto;
+import org.springframework.web.bind.annotation.RestController;
 import pl.pbgym.dto.statistics.GetGymEntryResponseDto;
+import pl.pbgym.dto.user.member.GetPaymentResponseDto;
 import pl.pbgym.service.statistics.StatisticsService;
 
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
 @RequestMapping("/statistics")
 @CrossOrigin
 public class StatisticsController {
