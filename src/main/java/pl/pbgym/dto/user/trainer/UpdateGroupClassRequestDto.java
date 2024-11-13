@@ -4,7 +4,9 @@ import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 
-public class PostGroupClassRequestDto {
+public class UpdateGroupClassRequestDto {
+    @NotNull(message = "Id is required")
+    private Long id;
     @Size(min = 3, message = "Title can't be shorter than 3 characters.")
     @Size(max = 50, message = "Title can't be longer than 50 characters.")
     @NotEmpty(message = "Title is required.")
@@ -20,6 +22,14 @@ public class PostGroupClassRequestDto {
     @Email(message = "Trainer email must be valid")
     @NotBlank(message = "Trainer email can't be blank.")
     private String trainerEmail;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
