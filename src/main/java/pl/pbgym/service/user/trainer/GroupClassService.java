@@ -41,7 +41,7 @@ public class GroupClassService {
     }
 
     public List<GetGroupClassResponseDto> getAllHistoricalGroupClasses() {
-        return groupClassRepository.findAllUpcomingGroupClasses().stream().map(this::mapGroupClassToDto).toList();
+        return groupClassRepository.findAllHistoricalGroupClasses().stream().map(this::mapGroupClassToDto).toList();
     }
 
     public List<GetGroupClassResponseDto> getAllUpcomingGroupClassesByTrainerEmail(String email) {

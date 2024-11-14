@@ -21,11 +21,11 @@ public class UpdateWorkerAuthorityRequestDto {
             PermissionType.STATISTICS,
             PermissionType.MEMBER_MANAGEMENT,
             PermissionType.TRAINER_MANAGEMENT,
-            PermissionType.NEWSLETTER,
             PermissionType.PASS_MANAGEMENT,
-            PermissionType.GROUP_CLASSES_MANAGEMENT,
+            PermissionType.GROUP_CLASS_MANAGEMENT,
             PermissionType.BLOG,
-    })
+    }, message = "Permission need to be of ADMIN, STATISTICS, MEMBER_MANAGEMENT, TRAINER_MANAGEMENT," +
+            " PASS_MANAGEMENT, GROUP_CLASS_MANAGEMENT, BLOG, SHOP_MANAGEMENT")
     @NotNull
     private List<PermissionType> permissions;
 

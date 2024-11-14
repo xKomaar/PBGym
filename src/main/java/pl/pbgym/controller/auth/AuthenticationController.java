@@ -61,7 +61,7 @@ public class AuthenticationController {
     }
 
     @Operation(summary = "Register a new worker", description = "Possible only for ADMIN worker. Gender types: MALE, FEMALE, OTHER." +
-            "Permission Types: ADMIN, STATISTICS, MEMBER_MANAGEMENT, TRAINER_MANAGEMENT, NEWSLETTER, PASS_MANAGEMENT, GROUP_CLASSES_MANAGEMENT, BLOG,SHOP_MANAGEMENT")
+            "Permission Types: ADMIN, STATISTICS, MEMBER_MANAGEMENT, TRAINER_MANAGEMENT, PASS_MANAGEMENT, GROUP_CLASS_MANAGEMENT, BLOG,SHOP_MANAGEMENT")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Worker registered successfully"),
             @ApiResponse(responseCode = "409", description = "Email already in use", content = @Content)

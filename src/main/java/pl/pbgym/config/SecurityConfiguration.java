@@ -53,6 +53,11 @@ public class SecurityConfiguration {
 
                         .requestMatchers("/passes/**").hasAnyAuthority("MEMBER", "ADMIN", "PASS_MANAGEMENT")
 
+                        .requestMatchers("/groupClasses/upcoming/**").hasAnyAuthority("GROUP_CLASS_MANAGEMENT", "ADMIN", "MEMBER", "TRAINER")
+                        .requestMatchers("/groupClasses/trainer/**").hasAnyAuthority("GROUP_CLASS_MANAGEMENT", "ADMIN", "TRAINER")
+                        .requestMatchers("/groupClasses/member/**").hasAnyAuthority("GROUP_CLASS_MANAGEMENT", "ADMIN", "MEMBER")
+                        .requestMatchers("/groupClasses/**").hasAnyAuthority("GROUP_CLASS_MANAGEMENT", "ADMIN")
+
                         .requestMatchers("/creditCardInfo/{email}/full/**").hasAuthority("MEMBER")
                         .requestMatchers( "/creditCardInfo/**").hasAnyAuthority("MEMBER", "ADMIN", "MEMBER_MANAGEMENT")
 
