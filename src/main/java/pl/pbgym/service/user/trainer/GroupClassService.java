@@ -186,7 +186,7 @@ public class GroupClassService {
         });
     }
 
-    protected boolean isGroupClassHistorical(GroupClass groupClass) {
+    public boolean isGroupClassHistorical(GroupClass groupClass) {
         LocalDateTime now = LocalDateTime.now();
         return groupClass.getDate().isBefore(now) || groupClass.getDate().isEqual(now);
     }

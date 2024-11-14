@@ -27,7 +27,7 @@ public class Member extends AbstractUser {
     @JsonIgnore
     private List<HistoricalPass> historicalPasses;
 
-    @ManyToMany(mappedBy = "members")
+    @ManyToMany(mappedBy = "members", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private List<GroupClass> groupClasses;
 
     public Pass getPass() {

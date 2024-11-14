@@ -8,6 +8,7 @@ import pl.pbgym.domain.offer.Offer;
 import pl.pbgym.domain.pass.HistoricalPass;
 import pl.pbgym.domain.pass.Pass;
 import pl.pbgym.domain.user.member.Member;
+import pl.pbgym.domain.user.trainer.GroupClass;
 import pl.pbgym.dto.pass.GetHistoricalPassResponseDto;
 import pl.pbgym.dto.pass.GetPassResponseDto;
 import pl.pbgym.dto.pass.PostPassRequestDto;
@@ -24,6 +25,7 @@ import pl.pbgym.repository.pass.PassRepository;
 import pl.pbgym.repository.user.member.MemberRepository;
 import pl.pbgym.service.user.member.PaymentService;
 import pl.pbgym.service.user.member.MemberService;
+import pl.pbgym.service.user.trainer.GroupClassService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,9 +42,10 @@ public class PassService {
     private final ModelMapper modelMapper;
     private final MemberService memberService;
     private final PaymentService paymentService;
+    private final GroupClassService groupClassService;
 
     @Autowired
-    public PassService(OfferRepository offerRepository, PassRepository passRepository, HistoricalPassRepository historicalPassRepository, MemberRepository memberRepository, ModelMapper modelMapper, MemberService memberService, PaymentService paymentService) {
+    public PassService(OfferRepository offerRepository, PassRepository passRepository, HistoricalPassRepository historicalPassRepository, MemberRepository memberRepository, ModelMapper modelMapper, MemberService memberService, PaymentService paymentService, GroupClassService groupClassService) {
         this.offerRepository = offerRepository;
         this.passRepository = passRepository;
         this.historicalPassRepository = historicalPassRepository;
@@ -50,6 +53,7 @@ public class PassService {
         this.modelMapper = modelMapper;
         this.memberService = memberService;
         this.paymentService = paymentService;
+        this.groupClassService = groupClassService;
     }
 
     @Transactional
@@ -138,8 +142,12 @@ public class PassService {
         HistoricalPass historicalPass = modelMapper.map(pass, HistoricalPass.class);
         historicalPass.setDateEnd(LocalDateTime.now());
 
-        historicalPassRepository.save(historicalPass);
+        //sign out of all upcoming classes if a pass is deactivated
+        Member member = pass.getMember();
+        groupClassService.getAllUpcomingGroupClassesByMemberEmail(member.getEmail())
+                        .forEach(getGroupClassResponseDto -> groupClassService.signOutOfGroupClass(getGroupClassResponseDto.getId(), member.getEmail()));
 
+        historicalPassRepository.save(historicalPass);
         passRepository.delete(pass);
     }
 

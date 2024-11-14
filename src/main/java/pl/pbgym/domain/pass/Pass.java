@@ -31,7 +31,7 @@ public class Pass {
     @Column(name = "monthylPrice", nullable = false)
     private Double monthlyPrice;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="member_id", referencedColumnName = "member_id", nullable = false)
     private Member member;
 
