@@ -28,7 +28,7 @@ public class Trainer extends AbstractUser {
     @OneToMany(mappedBy = "abstractUser", cascade = CascadeType.DETACH, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<GymEntry> gymEntries;
 
-    @OneToMany(mappedBy = "trainer", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<GroupClass> groupClasses;
 
     public Trainer() {

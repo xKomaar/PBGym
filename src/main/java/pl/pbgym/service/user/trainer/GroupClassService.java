@@ -138,7 +138,7 @@ public class GroupClassService {
 
             memberRepository.findByEmail(memberEmail).ifPresentOrElse(member -> {
                 if (groupClass.getMembers().contains(member)) {
-                    throw new AlreadyAssignedToThisGroupClassException("Member with email " + memberEmail + "is already enrolled to group class with id " + groupClassId);
+                    throw new AlreadyAssignedToThisGroupClassException("Member with email " + memberEmail + " is already enrolled to group class with id " + groupClassId);
                 }
 
                 if (member.getPass() == null) {
