@@ -9,7 +9,7 @@ public class UpdateTrainerOfferRequestDto {
     @NotNull
     private Long id;
     @Size(min = 3, message = "Title can't be shorter than 3 characters.")
-    @Size(max = 30, message = "Title can't be longer than 30 characters.")
+    @Size(max = 60, message = "Title can't be longer than 30 characters.")
     @NotEmpty(message = "Title is required.")
     private String title;
     @NotNull(message = "Price is required.")
