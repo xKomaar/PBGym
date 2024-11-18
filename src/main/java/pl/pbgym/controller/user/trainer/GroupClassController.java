@@ -206,7 +206,8 @@ public class GroupClassController {
 
     @PostMapping("/member/{email}/enroll")
     @Operation(summary = "Enroll to a group class", description = "Enrolls a member to a group class. " +
-            "Possible for GROUP_CLASS_MANAGEMENT and ADMIN workers and for and members who wants to enroll.")
+            "Possible for GROUP_CLASS_MANAGEMENT and ADMIN workers and for and members who wants to enroll. " +
+            "The body is groupClassId")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Member enrolled successfully"),
             @ApiResponse(responseCode = "404", description = "Group class or member not found", content = @Content),
@@ -214,7 +215,7 @@ public class GroupClassController {
             @ApiResponse(responseCode = "400", description = "No active pass for the member", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource OR group class is historical", content = @Content),
     })
-    public ResponseEntity<String> enrollToGroupClass(@PathVariable String email, @RequestParam Long groupClassId) {
+    public ResponseEntity<String> enrollToGroupClass(@PathVariable String email, @RequestBody Long groupClassId) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (authenticatedUser instanceof Member && !authenticatedUser.getEmail().equals(email)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -235,13 +236,14 @@ public class GroupClassController {
 
     @PutMapping("/member/{email}/signOut")
     @Operation(summary = "Sign out of a group class", description = "Removes a member from a group class. " +
-            "Possible for GROUP_CLASS_MANAGEMENT and ADMIN workers and for and members who wants to sign out.")
+            "Possible for GROUP_CLASS_MANAGEMENT and ADMIN workers and for and members who wants to sign out. " +
+            "The body is groupClassId")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Member signed out successfully"),
             @ApiResponse(responseCode = "404", description = "Group class or member not found", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource OR group class is historical", content = @Content),
     })
-    public ResponseEntity<String> signOutOfGroupClass(@PathVariable String email, @RequestParam Long groupClassId) {
+    public ResponseEntity<String> signOutOfGroupClass(@PathVariable String email, @RequestBody Long groupClassId) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (authenticatedUser instanceof Member && !authenticatedUser.getEmail().equals(email)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

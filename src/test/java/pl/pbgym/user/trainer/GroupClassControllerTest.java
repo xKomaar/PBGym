@@ -723,10 +723,10 @@ public class GroupClassControllerTest {
 
     @Test
     public void shouldEnrollToGroupClassSuccessfully() throws Exception {
-        Long groupClassId = groupClassRepository.findAll().get(1).getId(); // Upcoming class
+        Long groupClassId = groupClassRepository.findAll().get(1).getId();
         mockMvc.perform(post("/groupClasses/member/{email}/enroll", memberEmail)
                         .header("Authorization", "Bearer " + memberJwt)
-                        .param("groupClassId", groupClassId.toString())
+                        .content(String.valueOf(groupClassId))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -749,7 +749,7 @@ public class GroupClassControllerTest {
     public void shouldReturnNotFoundWhenGroupClassDoesNotExistWhileEnrolling() throws Exception {
         mockMvc.perform(post("/groupClasses/member/{email}/enroll", memberEmail)
                         .header("Authorization", "Bearer " + memberJwt)
-                        .param("groupClassId", "99999")
+                        .content(String.valueOf(9999))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -759,7 +759,7 @@ public class GroupClassControllerTest {
         Long groupClassId = groupClassRepository.findAll().get(1).getId();
         mockMvc.perform(post("/groupClasses/member/{email}/enroll", "nonexistent@member.com")
                         .header("Authorization", "Bearer " + adminJwt)
-                        .param("groupClassId", groupClassId.toString())
+                        .content(String.valueOf(groupClassId))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -773,7 +773,7 @@ public class GroupClassControllerTest {
 
         mockMvc.perform(post("/groupClasses/member/{email}/enroll", memberEmail)
                         .header("Authorization", "Bearer " + memberJwt)
-                        .param("groupClassId", groupClassId.toString())
+                        .content(String.valueOf(groupClassId))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isConflict());
     }
@@ -784,13 +784,13 @@ public class GroupClassControllerTest {
 
         mockMvc.perform(post("/groupClasses/member/{email}/enroll", memberEmail)
                         .header("Authorization", "Bearer " + memberJwt)
-                        .param("groupClassId", groupClassId.toString())
+                        .content(String.valueOf(groupClassId))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         MvcResult mvcResult = mockMvc.perform(post("/groupClasses/member/{email}/enroll", memberEmail)
                         .header("Authorization", "Bearer " + memberJwt)
-                        .param("groupClassId", groupClassId.toString())
+                        .content(String.valueOf(groupClassId))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isConflict())
                 .andReturn();
@@ -816,7 +816,7 @@ public class GroupClassControllerTest {
         Long groupClassId = groupClassRepository.findAll().get(0).getId(); // Historical class
         mockMvc.perform(post("/groupClasses/member/{email}/enroll", memberEmail)
                         .header("Authorization", "Bearer " + memberJwt)
-                        .param("groupClassId", groupClassId.toString())
+                        .content(String.valueOf(groupClassId))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
     }
@@ -826,13 +826,13 @@ public class GroupClassControllerTest {
         Long groupClassId = groupClassRepository.findAll().get(1).getId();
         mockMvc.perform(post("/groupClasses/member/{email}/enroll", memberEmail)
                         .header("Authorization", "Bearer " + memberJwt)
-                        .param("groupClassId", groupClassId.toString())
+                        .content(String.valueOf(groupClassId))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         mockMvc.perform(put("/groupClasses/member/{email}/signOut", memberEmail)
                         .header("Authorization", "Bearer " + memberJwt)
-                        .param("groupClassId", groupClassId.toString())
+                        .content(String.valueOf(groupClassId))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
@@ -853,7 +853,7 @@ public class GroupClassControllerTest {
     public void shouldReturnNotFoundWhenGroupClassDoesNotExistWhileSigningOut() throws Exception {
         mockMvc.perform(put("/groupClasses/member/{email}/signOut", memberEmail)
                         .header("Authorization", "Bearer " + memberJwt)
-                        .param("groupClassId", "99999")
+                        .content(String.valueOf(999))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -863,17 +863,17 @@ public class GroupClassControllerTest {
         Long groupClassId = groupClassRepository.findAll().get(1).getId();
         mockMvc.perform(put("/groupClasses/member/{email}/signOut", "nonexistent@member.com")
                         .header("Authorization", "Bearer " + adminJwt)
-                        .param("groupClassId", groupClassId.toString())
+                        .content(String.valueOf(groupClassId))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     public void shouldReturnForbiddenWhenTryingToSignOutFromHistoricalClass() throws Exception {
-        Long groupClassId = groupClassRepository.findAll().get(0).getId(); // Historical class
+        Long groupClassId = groupClassRepository.findAll().get(0).getId();
         mockMvc.perform(put("/groupClasses/member/{email}/signOut", memberEmail)
                         .header("Authorization", "Bearer " + memberJwt)
-                        .param("groupClassId", groupClassId.toString())
+                        .content(String.valueOf(groupClassId))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
     }
@@ -884,7 +884,7 @@ public class GroupClassControllerTest {
 
         mockMvc.perform(post("/groupClasses/member/{email}/enroll", memberEmail)
                         .header("Authorization", "Bearer " + memberJwt)
-                        .param("groupClassId", groupClassId.toString())
+                        .content(String.valueOf(groupClassId))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
