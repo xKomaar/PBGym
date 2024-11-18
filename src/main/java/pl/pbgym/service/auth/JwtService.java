@@ -5,9 +5,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import pl.pbgym.util.encryption.EncryptionUtil;
 
 import java.security.Key;
 import java.util.Date;
@@ -19,6 +21,12 @@ import java.util.function.Function;
 public class JwtService {
     @Value("${env.JWT_SECRET_KEY}")
     private String SECRET_KEY;
+    private final EncryptionUtil encryptionUtil;
+
+    public JwtService(@Qualifier("jwtEncryptionUtil") EncryptionUtil encryptionUtil) {
+        this.encryptionUtil = encryptionUtil;
+    }
+
     public String extractEmail(String jwt) {
         return extractClaim(jwt, Claims::getSubject);
     }
@@ -33,14 +41,20 @@ public class JwtService {
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return Jwts
+        String jwt = Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) //a week
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) //a day
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
+
+        try {
+            return encryptionUtil.encrypt(jwt);
+        } catch (Exception e) {
+            throw new RuntimeException("Encryption failed: " + e.getMessage(), e);
+        }
     }
 
     public boolean isTokenValid(String jwt, UserDetails userDetails) {
@@ -57,12 +71,17 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String jwt) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(jwt)
-                .getBody();
+        try {
+            String decryptedJwt = encryptionUtil.decrypt(jwt);
+            return Jwts
+                    .parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(decryptedJwt)
+                    .getBody();
+        } catch (Exception e) {
+            throw new RuntimeException("Decryption failed: " + e.getMessage(), e);
+        }
     }
 
     private Key getSigningKey() {

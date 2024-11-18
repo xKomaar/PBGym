@@ -6,13 +6,13 @@ import org.springframework.context.annotation.Configuration;
 import pl.pbgym.util.encryption.EncryptionUtil;
 
 @Configuration
-public class EncryptionConfig {
+public class CreditCardEncryptionConfig {
 
     @Value("${env.ENCRYPTION_SECRET_KEY}")
     private String base64SecretKey;
 
-    @Bean
-    public EncryptionUtil encryptionUtil() {
+    @Bean(name = "creditCardEncryptionUtil")
+    public EncryptionUtil creditCardEncryptionUtil() {
         return new EncryptionUtil(base64SecretKey);
     }
 }

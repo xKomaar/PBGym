@@ -1,6 +1,7 @@
 package pl.pbgym.service.user.member;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +30,7 @@ public class CreditCardInfoService {
     private final MemberRepository memberRepository;
     private final EncryptionUtil encryptionUtil;
 
-    public CreditCardInfoService(MemberService memberService, ModelMapper modelMapper, CreditCardInfoRepository creditCardInfoRepository, PasswordEncoder passwordEncoder, MemberRepository memberRepository, EncryptionUtil encryptionUtil) {
+    public CreditCardInfoService(MemberService memberService, ModelMapper modelMapper, CreditCardInfoRepository creditCardInfoRepository, PasswordEncoder passwordEncoder, MemberRepository memberRepository, @Qualifier("creditCardEncryptionUtil") EncryptionUtil encryptionUtil) {
         this.memberService = memberService;
         this.modelMapper = modelMapper;
         this.creditCardInfoRepository = creditCardInfoRepository;
