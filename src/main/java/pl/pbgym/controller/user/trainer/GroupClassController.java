@@ -64,7 +64,7 @@ public class GroupClassController {
             @ApiResponse(responseCode = "201", description = "Group class created successfully"),
             @ApiResponse(responseCode = "404", description = "Trainer not found", content = @Content),
             @ApiResponse(responseCode = "409", description = "Group class overlapping with another", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Invalid date - start date is in the past", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid date - start date is in the past OR invalid input data", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
     })
     public ResponseEntity<String> saveGroupClass(@Valid @RequestBody PostGroupClassRequestDto dto) {
@@ -86,7 +86,7 @@ public class GroupClassController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Group class updated successfully"),
             @ApiResponse(responseCode = "404", description = "Group class or trainer not found", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Invalid update - date in the past or member limit conflict", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid update - date in the past or member limit conflict OR invalid input data", content = @Content),
             @ApiResponse(responseCode = "409", description = "Group class overlapping with another", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource OR group class is historical", content = @Content),
     })
@@ -111,6 +111,7 @@ public class GroupClassController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Group class deleted successfully"),
             @ApiResponse(responseCode = "404", description = "Group class not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource OR group class is historical", content = @Content),
     })
     public ResponseEntity<String> deleteGroupClass(@PathVariable Long groupClassId) {
@@ -212,7 +213,7 @@ public class GroupClassController {
             @ApiResponse(responseCode = "200", description = "Member enrolled successfully"),
             @ApiResponse(responseCode = "404", description = "Group class or member not found", content = @Content),
             @ApiResponse(responseCode = "409", description = "Group class full or member already enrolled", content = @Content),
-            @ApiResponse(responseCode = "400", description = "No active pass for the member", content = @Content),
+            @ApiResponse(responseCode = "400", description = "No active pass for the member OR invalid input data", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource OR group class is historical", content = @Content),
     })
     public ResponseEntity<String> enrollToGroupClass(@PathVariable String email, @RequestBody Long groupClassId) {
@@ -240,6 +241,7 @@ public class GroupClassController {
             "The body is groupClassId")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Member signed out successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "404", description = "Group class or member not found", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource OR group class is historical", content = @Content),
     })

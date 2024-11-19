@@ -70,6 +70,7 @@ public class TrainerOfferController {
             "possible only for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Offer created successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "404", description = "Trainer not found", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content)
     })
@@ -91,6 +92,7 @@ public class TrainerOfferController {
             "possible only for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Offer updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - trainer does not own the offer or authenticated user is not authorized to access this resource", content = @Content),
             @ApiResponse(responseCode = "404", description = "Trainer or offer not found", content = @Content)
     })
@@ -114,6 +116,7 @@ public class TrainerOfferController {
             "possible only for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Offer deleted successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - trainer does not own the offer or authenticated user is not authorized to access this resource", content = @Content),
             @ApiResponse(responseCode = "404", description = "Trainer or offer not found", content = @Content)
     })

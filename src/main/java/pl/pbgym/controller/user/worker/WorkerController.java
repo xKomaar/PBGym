@@ -83,6 +83,7 @@ public class WorkerController {
             "possible only for ADMIN workers. Gender types: MALE, FEMALE, OTHER")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Worker found and updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
             @ApiResponse(responseCode = "404", description = "Worker not found", content = @Content)
     })
@@ -101,6 +102,7 @@ public class WorkerController {
             "possible only for ADMIN workers. Permission types: ADMIN, STATISTICS, MEMBER_MANAGEMENT, TRAINER_MANAGEMENT, PASS_MANAGEMENT, GROUP_CLASS_MANAGEMENT, BLOG")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Worker found and updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
             @ApiResponse(responseCode = "404", description = "Worker not found", content = @Content)
     })
@@ -120,6 +122,7 @@ public class WorkerController {
             "If admin wants to change another admins password, they must provide the old password.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Worker found and updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
             @ApiResponse(responseCode = "404", description = "Worker not found", content = @Content)
     })
@@ -165,6 +168,7 @@ public class WorkerController {
             "possible only for ADMIN workers.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Worker found and updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
             @ApiResponse(responseCode = "404", description = "Worker not found", content = @Content),
             @ApiResponse(responseCode = "409", description = "Email already in use", content = @Content)

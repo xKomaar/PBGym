@@ -43,6 +43,7 @@ public class PassController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Pass Activated"),
             @ApiResponse(responseCode = "404", description = "Member OR Offer not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "409", description = "Member already has an active pass", content = @Content),
             @ApiResponse(responseCode = "403", description = "Offer not active OR no payment method OR payment method expired OR authenticated user is not authorized to access this resource", content = @Content),
     })

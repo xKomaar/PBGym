@@ -30,6 +30,7 @@ public class GymEntryController {
             @ApiResponse(responseCode = "200", description = "QR scan registered successfully"),
             @ApiResponse(responseCode = "403", description = "Member doesn't have an active pass OR userId is an id of a Worker OR " +
                     "authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
     })
     public ResponseEntity<String> userEnters(@PathVariable String email) {

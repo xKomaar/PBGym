@@ -39,6 +39,7 @@ public class CreditCardInfoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Credit Card information successfully added."),
             @ApiResponse(responseCode = "404", description = "Member not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "409", description = "Member already has added credit card information", content = @Content),
             @ApiResponse(responseCode = "403", description = "Authenticated user is not authorized to access this resource", content = @Content),
     })
@@ -106,6 +107,7 @@ public class CreditCardInfoController {
             "accessible for an ADMIN and MEMBER_MANAGEMENT workers and a member who owns the data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Credit Card information successfully deleted."),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "404", description = "Credit Card information not found", content = @Content),
             @ApiResponse(responseCode = "403", description = "Authenticated user is not authorized to access this resource", content = @Content),
     })

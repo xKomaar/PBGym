@@ -113,6 +113,7 @@ public class OfferController {
             "possible only for ADMIN and PASS_MANAGEMENT workers. MAX PROPERTIES = 6")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Standard offer added"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
     })
     public ResponseEntity<String> addStandardOffer(@Valid @RequestBody PostStandardOfferRequestDto postStandardOfferRequestDto) {
@@ -129,6 +130,7 @@ public class OfferController {
             "possible only for ADMIN and PASS_MANAGEMENT workers. MAX PROPERTIES = 6")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Special offer added"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
     })
     public ResponseEntity<String> addSpecialOffer(@Valid @RequestBody PostSpecialOfferRequestDto postSpecialOfferRequestDto) {
@@ -145,6 +147,7 @@ public class OfferController {
             "possible only for ADMIN and PASS_MANAGEMENT workers. MAX PROPERTIES = 6")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Standard offer updated"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
             @ApiResponse(responseCode = "404", description = "Standard Offer not found", content = @Content),
             @ApiResponse(responseCode = "409", description = "New title is already taken", content = @Content),
@@ -172,6 +175,7 @@ public class OfferController {
             "possible only for ADMIN and PASS_MANAGEMENT workers. MAX PROPERTIES = 6")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Special offer updated"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
             @ApiResponse(responseCode = "404", description = "Special Offer not found", content = @Content),
             @ApiResponse(responseCode = "409", description = "New title is already taken", content = @Content),
@@ -200,6 +204,7 @@ public class OfferController {
             "possible only for ADMIN and PASS_MANAGEMENT workers.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Offer Deleted"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
             @ApiResponse(responseCode = "404", description = "Offer not found", content = @Content),
     })

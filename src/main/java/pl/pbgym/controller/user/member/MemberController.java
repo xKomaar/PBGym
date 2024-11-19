@@ -83,6 +83,7 @@ public class MemberController {
             "possible only for ADMIN and MEMBER_MANAGEMENT workers and for the member who owns the data. Gender types: MALE, FEMALE, OTHER")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Member found and updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
             @ApiResponse(responseCode = "404", description = "Member not found", content = @Content)
     })
@@ -106,6 +107,7 @@ public class MemberController {
             "possible only for ADMIN and MEMBER_MANAGEMENT workers and for the member who owns the data. Worker doesn't need to provide the old password (it can be left null or empty).")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Member found and updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
             @ApiResponse(responseCode = "404", description = "Member not found", content = @Content),
 
@@ -143,6 +145,7 @@ public class MemberController {
             "Returns a new JWT, because after changing the email, re-authentication is needed.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Member found and updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
             @ApiResponse(responseCode = "404", description = "Member not found", content = @Content)
     })

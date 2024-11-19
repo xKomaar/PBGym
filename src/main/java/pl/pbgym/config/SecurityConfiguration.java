@@ -65,6 +65,9 @@ public class SecurityConfiguration {
                         //Workers can let members in and out of the gym
                         .requestMatchers("/gym/**").hasAuthority("WORKER")
 
+                        .requestMatchers("/blog/all/**").permitAll()
+                        .requestMatchers("/blog/**").hasAnyAuthority("BLOG", "ADMIN")
+
                         .requestMatchers("/statistics/**").hasAnyAuthority("STATISTICS", "ADMIN")
 
                         .requestMatchers("/swagger/**", "/swagger-ui/**", "v3/api-docs/**").permitAll()

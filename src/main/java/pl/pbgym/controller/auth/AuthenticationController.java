@@ -30,6 +30,7 @@ public class AuthenticationController {
     @Operation(summary = "Register a new member", description = "Gender types: MALE, FEMALE, OTHER")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Member registered successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "409", description = "Email already in use", content = @Content)
     })
     @PostMapping("/registerMember")
@@ -47,6 +48,7 @@ public class AuthenticationController {
             "Gender types: MALE, FEMALE, OTHER")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Trainer registered successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "409", description = "Email already in use", content = @Content)
     })
     @PostMapping("/registerTrainer")
@@ -64,6 +66,7 @@ public class AuthenticationController {
             "Permission Types: ADMIN, STATISTICS, MEMBER_MANAGEMENT, TRAINER_MANAGEMENT, PASS_MANAGEMENT, GROUP_CLASS_MANAGEMENT, BLOG,SHOP_MANAGEMENT")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Worker registered successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "409", description = "Email already in use", content = @Content)
     })
     @PostMapping("/registerWorker")
@@ -80,6 +83,7 @@ public class AuthenticationController {
     @Operation(summary = "Authenticate a user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Authentication successful"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
             @ApiResponse(responseCode = "403", description = "Authentication not successful", content = @Content)
     })
     @PostMapping("/authenticate")
