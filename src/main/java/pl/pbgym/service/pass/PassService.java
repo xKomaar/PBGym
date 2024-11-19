@@ -1,6 +1,8 @@
 package pl.pbgym.service.pass;
 
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,7 +10,6 @@ import pl.pbgym.domain.offer.Offer;
 import pl.pbgym.domain.pass.HistoricalPass;
 import pl.pbgym.domain.pass.Pass;
 import pl.pbgym.domain.user.member.Member;
-import pl.pbgym.domain.user.trainer.GroupClass;
 import pl.pbgym.dto.pass.GetHistoricalPassResponseDto;
 import pl.pbgym.dto.pass.GetPassResponseDto;
 import pl.pbgym.dto.pass.PostPassRequestDto;
@@ -35,6 +36,8 @@ import java.util.Optional;
 @Service
 public class PassService {
 
+    private static final Logger logger = LoggerFactory.getLogger(PassService.class);
+
     private final OfferRepository offerRepository;
     private final PassRepository passRepository;
     private final HistoricalPassRepository historicalPassRepository;
@@ -58,39 +61,132 @@ public class PassService {
 
     @Transactional
     public void createPass(String email, PostPassRequestDto passRequestDto) {
+        logger.info("Tworzenie karnetu dla użytkownika o emailu {} z ofertą o ID {}.", email, passRequestDto.getOfferId());
         memberRepository.findByEmail(email).ifPresentOrElse(
                 (member -> offerRepository.findById(passRequestDto.getOfferId()).ifPresentOrElse(
                         offer -> {
                             if (!offer.isActive()) {
+                                logger.error("Oferta o ID {} nie jest aktywna.", passRequestDto.getOfferId());
                                 throw new OfferNotActiveException("Offer is not active with id " + passRequestDto.getOfferId());
                             }
                             Optional<Pass> currentPass = passRepository.findByMemberEmail(email);
                             currentPass.ifPresent(pass -> {
+                                logger.error("Członek o emailu {} już posiada aktywny karnet.", email);
                                 throw new MemberAlreadyHasActivePassException("Member already has an active pass!");
                             });
 
                             try {
                                 paymentService.registerPayment(offer.getMonthlyPrice() + offer.getEntryFee(), member);
+                                logger.info("Płatność za karnet użytkownika o emailu {} została zarejestrowana.", email);
                             } catch (NoPaymentMethodException | PaymentMethodExpiredException e) {
+                                logger.error("Błąd podczas płatności za karnet: {}.", e.getMessage());
                                 throw new PassNotCreatedDueToPaymentFailure(e.getMessage());
                             }
 
-                            //if there is an inactive pass, it can be deleted and replaced with new one
                             currentPass.ifPresent(p -> {
+                                logger.info("Usunięcie nieaktywnego karnetu dla użytkownika o emailu {}.", email);
                                 passRepository.delete(p);
                                 passRepository.flush();
                             });
                             Pass pass = createPassClass(member, offer);
                             passRepository.save(pass);
+                            logger.info("Dodano karnet dla użytkownika o emailu {} z ID karnetu {}.", email, pass.getId());
                         },
                         () -> {
+                            logger.error("Nie znaleziono oferty o ID {}.", passRequestDto.getOfferId());
                             throw new OfferNotFoundException("Offer not found with id " + passRequestDto.getOfferId());
                         }
                 )),
                 () -> {
+                    logger.error("Nie znaleziono członka o emailu {}.", email);
                     throw new MemberNotFoundException("Member not found with email " + email);
                 }
         );
+    }
+
+    public GetPassResponseDto getPassByEmail(String email) {
+        logger.info("Pobieranie karnetu dla użytkownika o emailu {}.", email);
+        if (memberService.memberExists(email)) {
+            return passRepository.findByMemberEmail(email)
+                    .map(pass -> {
+                        logger.info("Znaleziono karnet o ID {} dla użytkownika o emailu {}.", pass.getId(), email);
+                        return modelMapper.map(pass, GetPassResponseDto.class);
+                    })
+                    .orElseGet(() -> {
+                        logger.info("Brak aktywnego karnetu dla użytkownika o emailu {}.", email);
+                        return null;
+                    });
+        } else {
+            logger.error("Nie znaleziono członka o emailu {}.", email);
+            throw new MemberNotFoundException("Member not found with email " + email);
+        }
+    }
+
+    public List<GetHistoricalPassResponseDto> getHistoricalPassesByEmail(String email) {
+        logger.info("Pobieranie historycznych karnetów dla użytkownika o emailu {}.", email);
+        if (memberService.memberExists(email)) {
+            List<GetHistoricalPassResponseDto> historicalPasses = historicalPassRepository.findAllByMemberEmail(email)
+                    .stream()
+                    .map(historicalPass -> modelMapper.map(historicalPass, GetHistoricalPassResponseDto.class))
+                    .toList();
+            logger.info("Znaleziono {} historycznych karnetów dla użytkownika o emailu {}.", historicalPasses.size(), email);
+            return historicalPasses;
+        } else {
+            logger.error("Nie znaleziono członka o emailu {}.", email);
+            throw new MemberNotFoundException("Member not found with email " + email);
+        }
+    }
+
+    @Transactional
+    public void deactivateExpiredPasses() {
+        logger.info("Dezaktywacja wygasłych karnetów.");
+        List<Pass> passes = passRepository.getExpiredPassesForDeactivation();
+        passes.forEach(this::deactivatePass);
+        logger.info("Zdezaktywowano {} wygasłych karnetów.", passes.size());
+    }
+
+    @Transactional
+    public void deactivatePass(Pass pass) {
+        logger.info("Dezaktywacja karnetu o ID {} dla użytkownika o emailu {}.", pass.getId(), pass.getMember().getEmail());
+        HistoricalPass historicalPass = modelMapper.map(pass, HistoricalPass.class);
+        historicalPass.setDateEnd(LocalDateTime.now());
+
+        Member member = pass.getMember();
+        groupClassService.getAllUpcomingGroupClassesByMemberEmail(member.getEmail())
+                .forEach(getGroupClassResponseDto -> {
+                    groupClassService.signOutOfGroupClass(getGroupClassResponseDto.getId(), member.getEmail());
+                    logger.info("Użytkownik o emailu {} został wypisany z zajęć grupowych o ID {}.", member.getEmail(), getGroupClassResponseDto.getId());
+                });
+
+        historicalPassRepository.save(historicalPass);
+        passRepository.delete(pass);
+        logger.info("Karnet o ID {} został zdezaktywowany.", pass.getId());
+    }
+
+    @Transactional(noRollbackFor = {NoPaymentMethodException.class, PaymentMethodExpiredException.class})
+    public void chargeForActivePasses() {
+        logger.info("Pobieranie opłat za aktywne karnety.");
+        List<Pass> passes = passRepository.findAll();
+        LocalDate today = LocalDate.now();
+        passes.forEach(pass -> {
+            if (pass.getDateOfNextPayment().equals(today)) {
+                try {
+                    paymentService.registerPayment(pass.getMonthlyPrice(), pass.getMember());
+                    logger.info("Zarejestrowano opłatę za karnet o ID {} dla użytkownika o emailu {}.", pass.getId(), pass.getMember().getEmail());
+
+                    if (pass.getDateOfNextPayment().plusMonths(1).getMonthValue() ==
+                            pass.getDateEnd().getMonthValue()) {
+                        pass.setDateOfNextPayment(null);
+                        logger.info("Ostatnia opłata za karnet o ID {} została pobrana.", pass.getId());
+                    } else {
+                        pass.setDateOfNextPayment(pass.getDateOfNextPayment().plusMonths(1));
+                    }
+                } catch (NoPaymentMethodException | PaymentMethodExpiredException e) {
+                    logger.error("Błąd przy pobieraniu opłaty za karnet o ID {}: {}. Karnet zostanie zdezaktywowany.", pass.getId(), e.getMessage());
+                    this.deactivatePass(pass);
+                }
+            }
+        });
     }
 
     private static Pass createPassClass(Member member, Offer offer) {
@@ -106,72 +202,5 @@ public class PassService {
         pass.setMonthlyPrice(offer.getMonthlyPrice());
         pass.setMember(member);
         return pass;
-    }
-
-    public GetPassResponseDto getPassByEmail(String email) {
-        if(memberService.memberExists(email)) {
-            return passRepository.findByMemberEmail(email)
-                    .map(pass -> modelMapper.map(pass, GetPassResponseDto.class))
-                    .orElse(null);
-        }
-         else {
-            throw new MemberNotFoundException("Member not found with email " + email);
-        }
-    }
-
-    public List<GetHistoricalPassResponseDto> getHistoricalPassesByEmail(String email) {
-        if(memberService.memberExists(email)) {
-            return historicalPassRepository.findAllByMemberEmail(email)
-                    .stream()
-                    .map(historicalPass -> modelMapper.map(historicalPass, GetHistoricalPassResponseDto.class))
-                    .toList();
-        }
-        else {
-            throw new MemberNotFoundException("Member not found with email " + email);
-        }
-    }
-
-    @Transactional
-    public void deactivateExpiredPasses() {
-        List<Pass> passes = passRepository.getExpiredPassesForDeactivation();
-        passes.forEach(this::deactivatePass);
-    }
-
-    @Transactional
-    public void deactivatePass(Pass pass) {
-        HistoricalPass historicalPass = modelMapper.map(pass, HistoricalPass.class);
-        historicalPass.setDateEnd(LocalDateTime.now());
-
-        //sign out of all upcoming classes if a pass is deactivated
-        Member member = pass.getMember();
-        groupClassService.getAllUpcomingGroupClassesByMemberEmail(member.getEmail())
-                        .forEach(getGroupClassResponseDto -> groupClassService.signOutOfGroupClass(getGroupClassResponseDto.getId(), member.getEmail()));
-
-        historicalPassRepository.save(historicalPass);
-        passRepository.delete(pass);
-    }
-
-    @Transactional(noRollbackFor = {NoPaymentMethodException.class, PaymentMethodExpiredException.class})
-    public void chargeForActivePasses() {
-        List<Pass> passes = passRepository.findAll();
-        LocalDate today = LocalDate.now();
-        passes.forEach(pass -> {
-            if (pass.getDateOfNextPayment().equals(today)) {
-                try {
-                    paymentService.registerPayment(pass.getMonthlyPrice(), pass.getMember());
-
-                    if(pass.getDateOfNextPayment().plusMonths(1).getMonthValue() ==
-                            pass.getDateEnd().getMonthValue()) {
-                        //this was the last payment (upfront)
-                        pass.setDateOfNextPayment(null);
-                    } else {
-                        pass.setDateOfNextPayment(pass.getDateOfNextPayment().plusMonths(1));
-                    }
-                } catch (NoPaymentMethodException | PaymentMethodExpiredException e) {
-                    //deactivate a pass if the payment doesn't come through
-                    this.deactivatePass(pass);
-                }
-            }
-        });
     }
 }

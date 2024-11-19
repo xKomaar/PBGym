@@ -70,6 +70,8 @@ public class SecurityConfiguration {
 
                         .requestMatchers("/statistics/**").hasAnyAuthority("STATISTICS", "ADMIN")
 
+                        .requestMatchers("/logs/**").hasAuthority("ADMIN")
+
                         .requestMatchers("/swagger/**", "/swagger-ui/**", "v3/api-docs/**").permitAll()
                         .requestMatchers("/ping/**").permitAll()
                         .anyRequest().authenticated()
