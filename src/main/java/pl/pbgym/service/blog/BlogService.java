@@ -41,7 +41,7 @@ public class BlogService {
     public void updateBlogPost(UpdateBlogPostRequestDto updateBlogPostRequestDto) {
         blogPostRepository.findById(updateBlogPostRequestDto.getId()).ifPresentOrElse(
                 blogPost -> {
-                    blogPost = modelMapper.map(updateBlogPostRequestDto, BlogPost.class);
+                    modelMapper.map(updateBlogPostRequestDto, blogPost);
                     blogPost.setLastUpdateDate(LocalDateTime.now());
 
                     blogPostRepository.save(blogPost);
