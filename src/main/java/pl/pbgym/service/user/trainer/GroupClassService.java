@@ -3,9 +3,11 @@ package pl.pbgym.service.user.trainer;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pbgym.domain.user.trainer.GroupClass;
+import pl.pbgym.dto.user.member.GetGroupClassMemberResponseDto;
 import pl.pbgym.dto.user.trainer.GetGroupClassResponseDto;
 import pl.pbgym.dto.user.trainer.PostGroupClassRequestDto;
 import pl.pbgym.dto.user.trainer.UpdateGroupClassRequestDto;
@@ -90,6 +92,34 @@ public class GroupClassService {
             logger.error("Nie znaleziono członka o emailu: {}", email);
             throw new MemberNotFoundException("Member not found with email " + email);
         }
+    }
+
+    public List<GetGroupClassMemberResponseDto> getAllSignedUpMembersByGroupClass(Long groupClassId) {
+        return groupClassRepository.findById(groupClassId)
+                .map(groupClass -> groupClass.getMembers().stream()
+                        .map(member -> modelMapper.map(member, GetGroupClassMemberResponseDto.class))
+                        .toList()
+                )
+                .orElseThrow(() -> {
+                    logger.error("Nie znaleziono zajęć grupowych o ID: {}", groupClassId);
+                    return new GroupClassNotFoundException("Group class not found with id " + groupClassId);
+                });
+    }
+
+    public boolean isTrainerAssignedToGroupClass(Long trainerId, Long groupClassId) {
+        return groupClassRepository.findById(groupClassId)
+                .map(groupClass -> {
+                    if (groupClass.getTrainer().getId().equals(trainerId)) {
+                        return true;
+                    } else {
+                        logger.error("Trener o ID: {} nie jest przypisany do zajęć grupowych o ID: {}", trainerId, groupClassId);
+                        return false;
+                    }
+                })
+                .orElseThrow(() -> {
+                    logger.error("Nie znaleziono zajęć grupowych o ID: {}", groupClassId);
+                    return new GroupClassNotFoundException("Group class not found with id " + groupClassId);
+                });
     }
 
     @Transactional
@@ -235,8 +265,8 @@ public class GroupClassService {
             LocalDateTime existingClassEnd = existingClassStart.plusMinutes(existingClass.getDurationInMinutes());
 
             //don't compare class to itself when updating
-            if(optUpdateId.isPresent()) {
-                if(optUpdateId.get().equals(existingClass.getId())) {
+            if (optUpdateId.isPresent()) {
+                if (optUpdateId.get().equals(existingClass.getId())) {
                     continue;
                 }
             }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.pbgym.domain.user.AbstractUser;
 import pl.pbgym.domain.user.member.Member;
 import pl.pbgym.domain.user.trainer.Trainer;
+import pl.pbgym.dto.user.member.GetGroupClassMemberResponseDto;
 import pl.pbgym.dto.user.trainer.GetGroupClassResponseDto;
 import pl.pbgym.dto.user.trainer.PostGroupClassRequestDto;
 import pl.pbgym.dto.user.trainer.UpdateGroupClassRequestDto;
@@ -50,11 +51,40 @@ public class GroupClassController {
     @Operation(summary = "Get all historical group classes", description = "Fetches all historical group classes. " +
             "Possible for GROUP_CLASS_MANAGEMENT and ADMIN workers.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Historical group classes retrieved successfully")  ,
+            @ApiResponse(responseCode = "200", description = "Historical group classes retrieved successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
     })
     public ResponseEntity<List<GetGroupClassResponseDto>> getAllHistoricalGroupClasses() {
         return ResponseEntity.ok(groupClassService.getAllHistoricalGroupClasses());
+    }
+
+    @GetMapping("/{groupClassId}/members")
+    @Operation(summary = "Get all members signed up to a group class", description = "Fetches all members signed up to a group class. " +
+            "Possible for GROUP_CLASS_MANAGEMENT and ADMIN workers and for the trainers assigned to this group class.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Member list retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Group class not found", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource OR trainer isn't assigned to this class", content = @Content),
+    })
+    public ResponseEntity<List<GetGroupClassMemberResponseDto>> getAllSignedUpMembers(@PathVariable Long groupClassId) {
+        AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (authenticatedUser instanceof Trainer) {
+            boolean isAssigned;
+            try {
+                isAssigned = groupClassService.isTrainerAssignedToGroupClass(authenticatedUser.getId(), groupClassId);
+            } catch (GroupClassNotFoundException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            if (!isAssigned) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        }
+
+        try {
+            return ResponseEntity.ok(groupClassService.getAllSignedUpMembersByGroupClass(groupClassId));
+        } catch (GroupClassNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @PostMapping()

@@ -21,6 +21,7 @@ import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.dto.auth.*;
 import pl.pbgym.dto.offer.standard.PostStandardOfferRequestDto;
 import pl.pbgym.dto.pass.PostPassRequestDto;
+import pl.pbgym.dto.user.member.GetGroupClassMemberResponseDto;
 import pl.pbgym.dto.user.member.PostCreditCardInfoRequestDto;
 import pl.pbgym.dto.user.trainer.GetGroupClassResponseDto;
 import pl.pbgym.dto.user.trainer.PostGroupClassRequestDto;
@@ -941,5 +942,87 @@ public class GroupClassControllerTest {
         );
 
         assertEquals(0, afterDeactivationClasses.size());
+    }
+
+    @Test
+    public void shouldReturnMemberListForAdmin() throws Exception {
+        Long groupClassId = groupClassRepository.findAll().get(1).getId();
+        groupClassService.enrollToGroupClass(groupClassId, memberEmail);
+
+        MvcResult mvcResult = mockMvc.perform(get("/groupClasses/{groupClassId}/members", groupClassId)
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        List<GetGroupClassMemberResponseDto> members = objectMapper.readValue(jsonResponse,
+                objectMapper.getTypeFactory().constructCollectionType(List.class, GetGroupClassMemberResponseDto.class));
+
+        assertNotNull(members);
+        assertEquals(1, members.size());
+        assertEquals(memberEmail, members.get(0).getEmail());
+    }
+
+    @Test
+    public void shouldReturnMemberListForAssignedTrainer() throws Exception {
+        Long groupClassId = groupClassRepository.findAll().get(1).getId();
+        groupClassService.enrollToGroupClass(groupClassId, memberEmail);
+
+        MvcResult mvcResult = mockMvc.perform(get("/groupClasses/{groupClassId}/members", groupClassId)
+                        .header("Authorization", "Bearer " + trainerJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        List<GetGroupClassMemberResponseDto> members = objectMapper.readValue(jsonResponse,
+                objectMapper.getTypeFactory().constructCollectionType(List.class, GetGroupClassMemberResponseDto.class));
+
+        assertNotNull(members);
+        assertEquals(1, members.size());
+        assertEquals(memberEmail, members.get(0).getEmail());
+    }
+
+    @Test
+    public void shouldReturnForbiddenForUnassignedTrainerWhenFetchingMembers() throws Exception {
+        Long groupClassId = groupClassRepository.findAll().get(1).getId();
+        groupClassService.enrollToGroupClass(groupClassId, memberEmail);
+
+        PostTrainerRequestDto newTrainerRequest = new PostTrainerRequestDto();
+        newTrainerRequest.setEmail("newtrainer@example.com");
+        newTrainerRequest.setPassword("password2");
+        newTrainerRequest.setName("Trainer");
+        newTrainerRequest.setSurname("Two");
+        newTrainerRequest.setBirthdate(LocalDate.of(1985, 5, 5));
+        newTrainerRequest.setPesel("12345678999");
+        newTrainerRequest.setPhoneNumber("222222222");
+        newTrainerRequest.setGender(Gender.MALE);
+
+        PostAddressRequestDto trainerAddress = new PostAddressRequestDto();
+        trainerAddress.setCity("City2");
+        trainerAddress.setStreetName("Street2");
+        trainerAddress.setBuildingNumber("2");
+        trainerAddress.setPostalCode("01-001");
+        newTrainerRequest.setAddress(trainerAddress);
+
+        authenticationService.registerTrainer(newTrainerRequest);
+        String newTrainerJwt = authenticationService.authenticate(
+                new PostAuthenticationRequestDto("newtrainer@example.com", "password2")).getJwt();
+
+        mockMvc.perform(get("/groupClasses/{groupClassId}/members", groupClassId)
+                        .header("Authorization", "Bearer " + newTrainerJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void shouldReturnNotFoundWhenGettingMembersListAndGroupClassDoesNotExist() throws Exception {
+        Long nonExistentGroupClassId = 9999L;
+
+        mockMvc.perform(get("/groupClasses/{groupClassId}/members", nonExistentGroupClassId)
+                        .header("Authorization", "Bearer " + adminJwt)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }
