@@ -443,6 +443,29 @@ public class GroupClassControllerTest {
     }
 
     @Test
+    public void shouldUpdateGroupClassWhenDateIsNotChanged() throws Exception {
+        UpdateGroupClassRequestDto dto = new UpdateGroupClassRequestDto();
+        dto.setId(groupClassRepository.findAll().get(1).getId());
+        dto.setTitle("Updated Group Class");
+        dto.setDate(groupClassRepository.findAll().get(1).getDate());
+        dto.setDurationInMinutes(90);
+        dto.setMemberLimit(20);
+        dto.setTrainerEmail(trainerEmail);
+
+        String jsonRequest = objectMapper.writeValueAsString(dto);
+
+        MvcResult mvcResult = mockMvc.perform(put("/groupClasses")
+                        .header("Authorization", "Bearer " + managerJwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequest))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String responseMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals("Group class updated successfully", responseMessage);
+    }
+
+    @Test
     public void shouldReturnNotFoundWhenUpdateTrainerDoesNotExist() throws Exception {
         UpdateGroupClassRequestDto dto = new UpdateGroupClassRequestDto();
         dto.setId(groupClassRepository.findAll().get(1).getId());

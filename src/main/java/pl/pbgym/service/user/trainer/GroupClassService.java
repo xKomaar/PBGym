@@ -19,6 +19,7 @@ import pl.pbgym.service.user.member.MemberService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GroupClassService {
@@ -99,7 +100,7 @@ public class GroupClassService {
                 throw new DateStartInThePastException("The date " + requestDto.getDate() + " is in the past");
             }
 
-            if (this.isDateOverlappingWithAnotherGroupClasses(requestDto.getDate(), requestDto.getDurationInMinutes())) {
+            if (this.isDateOverlappingWithAnotherGroupClasses(requestDto.getDate(), requestDto.getDurationInMinutes(), Optional.empty())) {
                 throw new GroupClassOverlappingWithAnotherException("The date " + requestDto.getDate() + " and duration " + requestDto.getDurationInMinutes() + " is overlapping with another group class");
             }
 
@@ -126,7 +127,7 @@ public class GroupClassService {
                     throw new DateStartInThePastException("The date " + requestDto.getDate() + " is in the past");
                 }
 
-                if (this.isDateOverlappingWithAnotherGroupClasses(requestDto.getDate(), requestDto.getDurationInMinutes())) {
+                if (isDateOverlappingWithAnotherGroupClasses(requestDto.getDate(), requestDto.getDurationInMinutes(), Optional.of(requestDto.getId()))) {
                     throw new GroupClassOverlappingWithAnotherException("The date " + requestDto.getDate() + " and duration " + requestDto.getDurationInMinutes() + " is overlapping with another group class");
                 }
 
@@ -224,14 +225,21 @@ public class GroupClassService {
         return groupClass.getDate().isBefore(now) || groupClass.getDate().isEqual(now);
     }
 
-    protected boolean isDateOverlappingWithAnotherGroupClasses(LocalDateTime dateStart, Integer durationInMinutes) {
+    protected boolean isDateOverlappingWithAnotherGroupClasses(LocalDateTime dateStart, Integer durationInMinutes, Optional<Long> optUpdateId) {
         LocalDateTime dateEnd = dateStart.plusMinutes(durationInMinutes);
 
-        List<GroupClass> existingClasses = groupClassRepository.findAll();
+        List<GroupClass> existingClasses = groupClassRepository.findAllUpcomingGroupClasses();
 
         for (GroupClass existingClass : existingClasses) {
             LocalDateTime existingClassStart = existingClass.getDate();
             LocalDateTime existingClassEnd = existingClassStart.plusMinutes(existingClass.getDurationInMinutes());
+
+            //don't compare class to itself when updating
+            if(optUpdateId.isPresent()) {
+                if(optUpdateId.get().equals(existingClass.getId())) {
+                    continue;
+                }
+            }
 
             boolean isOverlapping = !(dateEnd.isBefore(existingClassStart) || dateStart.isAfter(existingClassEnd));
 
