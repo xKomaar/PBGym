@@ -38,7 +38,7 @@ public class GroupClassController {
 
     @GetMapping("/upcoming")
     @Operation(summary = "Get all upcoming group classes", description = "Fetches all upcoming group classes. " +
-            "Possible for GROUP_CLASS_MANAGEMENT and ADMIN workers and for members and trainers.")
+            "POSSIBLE FOR THE PUBLIC.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Upcoming group classes retrieved successfully")  ,
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),

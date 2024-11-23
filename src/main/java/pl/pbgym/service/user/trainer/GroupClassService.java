@@ -46,18 +46,18 @@ public class GroupClassService {
 
     public List<GetGroupClassResponseDto> getAllUpcomingGroupClasses() {
         logger.info("Pobieranie wszystkich nadchodzących zajęć grupowych.");
-        return groupClassRepository.findAllUpcomingGroupClasses().stream().map(this::mapGroupClassToDto).toList();
+        return groupClassRepository.findAllUpcomingGroupClasses(LocalDateTime.now()).stream().map(this::mapGroupClassToDto).toList();
     }
 
     public List<GetGroupClassResponseDto> getAllHistoricalGroupClasses() {
         logger.info("Pobieranie wszystkich historycznych zajęć grupowych.");
-        return groupClassRepository.findAllHistoricalGroupClasses().stream().map(this::mapGroupClassToDto).toList();
+        return groupClassRepository.findAllHistoricalGroupClasses(LocalDateTime.now()).stream().map(this::mapGroupClassToDto).toList();
     }
 
     public List<GetGroupClassResponseDto> getAllUpcomingGroupClassesByTrainerEmail(String email) {
         logger.info("Pobieranie wszystkich nadchodzących zajęć grupowych dla trenera z emailem: {}", email);
         if (trainerService.trainerExists(email)) {
-            return groupClassRepository.findUpcomingGroupClassesByTrainerEmail(email).stream().map(this::mapGroupClassToDto).toList();
+            return groupClassRepository.findUpcomingGroupClassesByTrainerEmail(email, LocalDateTime.now()).stream().map(this::mapGroupClassToDto).toList();
         } else {
             logger.error("Nie znaleziono trenera o emailu: {}", email);
             throw new TrainerNotFoundException("Trainer not found with email " + email);
@@ -67,7 +67,7 @@ public class GroupClassService {
     public List<GetGroupClassResponseDto> getAllHistoricalGroupClassesByTrainerEmail(String email) {
         logger.info("Pobieranie wszystkich historycznych zajęć grupowych dla trenera z emailem: {}", email);
         if (trainerService.trainerExists(email)) {
-            return groupClassRepository.findHistoricalGroupClassesByTrainerEmail(email).stream().map(this::mapGroupClassToDto).toList();
+            return groupClassRepository.findHistoricalGroupClassesByTrainerEmail(email, LocalDateTime.now()).stream().map(this::mapGroupClassToDto).toList();
         } else {
             logger.error("Nie znaleziono trenera o emailu: {}", email);
             throw new TrainerNotFoundException("Trainer not found with email " + email);
@@ -77,7 +77,7 @@ public class GroupClassService {
     public List<GetGroupClassResponseDto> getAllUpcomingGroupClassesByMemberEmail(String email) {
         logger.info("Pobieranie wszystkich nadchodzących zajęć grupowych dla członka z emailem: {}", email);
         if (memberService.memberExists(email)) {
-            return groupClassRepository.findUpcomingGroupClassesByMemberEmail(email).stream().map(this::mapGroupClassToDto).toList();
+            return groupClassRepository.findUpcomingGroupClassesByMemberEmail(email, LocalDateTime.now()).stream().map(this::mapGroupClassToDto).toList();
         } else {
             logger.error("Nie znaleziono członka o emailu: {}", email);
             throw new MemberNotFoundException("Member not found with email " + email);
@@ -87,7 +87,7 @@ public class GroupClassService {
     public List<GetGroupClassResponseDto> getAllHistoricalGroupClassesByMemberEmail(String email) {
         logger.info("Pobieranie wszystkich historycznych zajęć grupowych dla członka z emailem: {}", email);
         if (memberService.memberExists(email)) {
-            return groupClassRepository.findHistoricalGroupClassesByMemberEmail(email).stream().map(this::mapGroupClassToDto).toList();
+            return groupClassRepository.findHistoricalGroupClassesByMemberEmail(email, LocalDateTime.now()).stream().map(this::mapGroupClassToDto).toList();
         } else {
             logger.error("Nie znaleziono członka o emailu: {}", email);
             throw new MemberNotFoundException("Member not found with email " + email);
@@ -258,7 +258,7 @@ public class GroupClassService {
     protected boolean isDateOverlappingWithAnotherGroupClasses(LocalDateTime dateStart, Integer durationInMinutes, Optional<Long> optUpdateId) {
         LocalDateTime dateEnd = dateStart.plusMinutes(durationInMinutes);
 
-        List<GroupClass> existingClasses = groupClassRepository.findAllUpcomingGroupClasses();
+        List<GroupClass> existingClasses = groupClassRepository.findAllUpcomingGroupClasses(LocalDateTime.now());
 
         for (GroupClass existingClass : existingClasses) {
             LocalDateTime existingClassStart = existingClass.getDate();

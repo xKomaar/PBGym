@@ -140,7 +140,7 @@ public class PassService {
     @Transactional
     public void deactivateExpiredPasses() {
         logger.info("Dezaktywacja wygasłych karnetów.");
-        List<Pass> passes = passRepository.getExpiredPassesForDeactivation();
+        List<Pass> passes = passRepository.getExpiredPassesForDeactivation(LocalDateTime.now());
         passes.forEach(this::deactivatePass);
         logger.info("Zdezaktywowano {} wygasłych karnetów.", passes.size());
     }
