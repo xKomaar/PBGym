@@ -10,6 +10,8 @@ public class PostBlogPostRequestDto {
     @NotEmpty(message = "Title is required.")
     private String title;
     @NotEmpty(message = "Content is required.")
+    @Size(min = 3, message = "Content can't be shorter than 3 characters.")
+    @Size(max = 2000, message = "Content can't be longer than 2000 characters.")
     private String content;
 
     public String getTitle() {

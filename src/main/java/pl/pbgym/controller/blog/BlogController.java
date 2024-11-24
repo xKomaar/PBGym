@@ -37,7 +37,7 @@ public class BlogController {
     }
 
     @PostMapping()
-    @Operation(summary = "Create a new blog post", description = "Creates a new blog post. Possible for BLOG and ADMIN workers.")
+    @Operation(summary = "Create a new blog post", description = "Creates a new blog post. Possible for BLOG and ADMIN workers. Content character limit: 2000")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Blog post created successfully"),
             @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
