@@ -68,6 +68,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/blog/all/**").permitAll()
                         .requestMatchers("/blog/**").hasAnyAuthority("BLOG", "ADMIN")
 
+                        .requestMatchers("/trainerStatistics/**").hasAnyAuthority("STATISTICS", "ADMIN", "TRAINER_MANAGEMENT", "TRAINER")
+                        .requestMatchers("/memberStatistics/**").hasAnyAuthority("STATISTICS", "ADMIN", "MEMBER_MANAGEMENT", "MEMBER")
                         .requestMatchers("/statistics/**").hasAnyAuthority("STATISTICS", "ADMIN")
 
                         .requestMatchers("/logs/**").hasAuthority("ADMIN")

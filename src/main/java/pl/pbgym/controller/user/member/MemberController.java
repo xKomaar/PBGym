@@ -37,15 +37,11 @@ public class MemberController {
 
     private final MemberService memberService;
     private final AbstractUserService abstractUserService;
-    private final StatisticsService statisticsService;
-    private final PaymentService paymentService;
 
     @Autowired
-    public MemberController(MemberService memberService, AbstractUserService abstractUserService, StatisticsService statisticsService, PaymentService paymentService) {
+    public MemberController(MemberService memberService, AbstractUserService abstractUserService) {
         this.memberService = memberService;
         this.abstractUserService = abstractUserService;
-        this.statisticsService = statisticsService;
-        this.paymentService = paymentService;
     }
 
     @GetMapping("/{email}")
@@ -167,44 +163,5 @@ public class MemberController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-    }
-
-    @GetMapping("/getGymEntries/{email}")
-    @Operation(summary = "Get gym entry history by email", description = "Fetches a gym entry history of a member, " +
-            "possible for ADMIN and MEMBER_MANAGEMENT workers and only for the member who owns the data.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Gym Entry history fetched successfully"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
-    })
-    public ResponseEntity<List<GetGymEntryResponseDto>> getGymEntries(@PathVariable String email) {
-
-        AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (authenticatedUser instanceof Member && !authenticatedUser.getEmail().equals(email)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(statisticsService.getAllGymEntriesByUserEmail(email));
-    }
-
-    @GetMapping("/getPaymentHistory/{email}")
-    @Operation(summary = "Get payment history by email", description = "Fetches a payment history of a member, " +
-            "possible for ADMIN and MEMBER_MANAGEMENT workers and only for the member who owns the data.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Payment history fetched successfully"),
-            @ApiResponse(responseCode = "404", description = "Member not found", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
-    })
-    public ResponseEntity<List<GetPaymentResponseDto>> getPayments(@PathVariable String email) {
-
-        AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (authenticatedUser instanceof Member && !authenticatedUser.getEmail().equals(email)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(paymentService.getAllPaymentsByEmail(email));
-        } catch (MemberNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
     }
 }
