@@ -17,7 +17,7 @@ public class GroupClass {
     @Column(name = "title", nullable = false)
     private String title;
     @Column(name = "dateStart", nullable = false)
-    private LocalDateTime date;
+    private LocalDateTime dateStart;
     @Column(name = "duration", nullable = false)
     private Integer durationInMinutes;
     @Column(name = "member_limit", nullable = false)
@@ -47,12 +47,12 @@ public class GroupClass {
         this.title = title;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public LocalDateTime getDateStart() {
+        return dateStart;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setDateStart(LocalDateTime date) {
+        this.dateStart = date;
     }
 
     public Integer getDurationInMinutes() {

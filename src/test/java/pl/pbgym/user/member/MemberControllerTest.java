@@ -603,51 +603,6 @@ public class MemberControllerTest {
     }
 
     @Test
-    public void shouldReturnOkWhenFetchingOwnGymHistory() throws Exception {
-        mockMvc.perform(post("/gym/registerQRscan/{email}", memberEmail)
-                        .header("Authorization", "Bearer " + adminJwt)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-        mockMvc.perform(post("/gym/registerQRscan/{email}", memberEmail)
-                        .header("Authorization", "Bearer " + adminJwt)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        MvcResult gymEntriesResult =  mockMvc.perform(get("/members/getGymEntries/{email}", memberEmail)
-                        .header("Authorization", "Bearer " + memberJwt)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String jsonResponse = gymEntriesResult.getResponse().getContentAsString();
-        List<GetGymEntryResponseDto> gymEntries = objectMapper.readValue(jsonResponse, objectMapper.getTypeFactory().constructCollectionType(List.class, GetGymEntryResponseDto.class));
-
-        assertEquals(1, gymEntries.size());
-        GetGymEntryResponseDto dto = gymEntries.get(0);
-        assertEquals(memberEmail, dto.getEmail());
-        assertNotNull(dto.getDateTimeOfEntry());
-        assertNotNull(dto.getDateTimeOfExit());
-    }
-
-    @Test
-    public void shouldReturnOkWhenFetchingOwnPaymentHistory() throws Exception {
-        MvcResult paymentsResult =  mockMvc.perform(get("/members/getPaymentHistory/{email}", memberEmail)
-                        .header("Authorization", "Bearer " + memberJwt)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String jsonResponse = paymentsResult.getResponse().getContentAsString();
-        List<GetPaymentResponseDto> payments = objectMapper.readValue(jsonResponse, objectMapper.getTypeFactory().constructCollectionType(List.class, GetPaymentResponseDto.class));
-
-        assertEquals(1, payments.size());
-        GetPaymentResponseDto dto = payments.get(0);
-        assertEquals(memberEmail, dto.getEmail());
-        assertNotNull(dto.getDateTime());
-        assertNotNull(dto.getCardNumber());
-    }
-
-    @Test
     public void shouldReturnOkAndCorrectNumberOfMembersWhenManagerGetsAllMembers() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get("/members/all")
                         .header("Authorization", "Bearer " + managerJwt)

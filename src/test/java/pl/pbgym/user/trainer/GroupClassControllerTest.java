@@ -244,7 +244,7 @@ public class GroupClassControllerTest {
     private GroupClass createGroupClass(String title, LocalDateTime date, String trainerEmail, int duration, int memberLimit) {
         GroupClass groupClass = new GroupClass();
         groupClass.setTitle(title);
-        groupClass.setDate(date);
+        groupClass.setDateStart(date);
         groupClass.setDurationInMinutes(duration);
         groupClass.setMemberLimit(memberLimit);
         groupClass.setTrainer(trainerRepository.findByEmail(trainerEmail).orElseThrow());
@@ -274,11 +274,10 @@ public class GroupClassControllerTest {
     }
 
     @Test
-    public void shouldReturnForbiddenWhenMemberTriesToAccessHistoricalGroupClasses() throws Exception {
+    public void shouldReturnOkWhenTryingToAccessHistoricalGroupClassesWithoutJwt() throws Exception {
         mockMvc.perform(get("/groupClasses/historical")
-                        .header("Authorization", "Bearer " + memberJwt)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -301,18 +300,10 @@ public class GroupClassControllerTest {
     }
 
     @Test
-    public void shouldReturnForbiddenWhenTrainerTriesToAccessHistoricalGroupClasses() throws Exception {
-        mockMvc.perform(get("/groupClasses/historical")
-                        .header("Authorization", "Bearer " + trainerJwt)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
     public void shouldCreateNewGroupClassWhenPostDataIsValid() throws Exception {
         PostGroupClassRequestDto dto = new PostGroupClassRequestDto();
         dto.setTitle("New Group Class");
-        dto.setDate(now.plusDays(3));
+        dto.setDateStart(now.plusDays(3));
         dto.setDurationInMinutes(60);
         dto.setMemberLimit(15);
         dto.setTrainerEmail(trainerEmail);
@@ -334,7 +325,7 @@ public class GroupClassControllerTest {
     public void shouldReturnNotFoundWhenPostTrainerDoesNotExist() throws Exception {
         PostGroupClassRequestDto dto = new PostGroupClassRequestDto();
         dto.setTitle("Group Class Without Trainer");
-        dto.setDate(now.plusDays(3));
+        dto.setDateStart(now.plusDays(3));
         dto.setDurationInMinutes(60);
         dto.setMemberLimit(15);
         dto.setTrainerEmail("nonexistent@trainer.com");
@@ -356,7 +347,7 @@ public class GroupClassControllerTest {
     public void shouldReturnConflictWhenPostDatesOverlapWithExistingGroupClass() throws Exception {
         PostGroupClassRequestDto dto = new PostGroupClassRequestDto();
         dto.setTitle("Overlapping Group Class");
-        dto.setDate(now.plusDays(1));
+        dto.setDateStart(now.plusDays(1));
         dto.setDurationInMinutes(60);
         dto.setMemberLimit(15);
         dto.setTrainerEmail(trainerEmail);
@@ -371,14 +362,14 @@ public class GroupClassControllerTest {
                 .andReturn();
 
         String responseMessage = mvcResult.getResponse().getContentAsString();
-        assertEquals("The date " + dto.getDate() + " and duration " + dto.getDurationInMinutes() + " is overlapping with another group class", responseMessage);
+        assertEquals("The date " + dto.getDateStart() + " and duration " + dto.getDurationInMinutes() + " is overlapping with another group class", responseMessage);
     }
 
     @Test
     public void shouldReturnBadRequestWhenPostStartDateIsInThePast() throws Exception {
         PostGroupClassRequestDto dto = new PostGroupClassRequestDto();
         dto.setTitle("Past Group Class");
-        dto.setDate(now.minusDays(1));
+        dto.setDateStart(now.minusDays(1));
         dto.setDurationInMinutes(60);
         dto.setMemberLimit(15);
         dto.setTrainerEmail(trainerEmail);
@@ -393,14 +384,14 @@ public class GroupClassControllerTest {
                 .andReturn();
 
         String responseMessage = mvcResult.getResponse().getContentAsString();
-        assertEquals("The date " + dto.getDate() + " is in the past", responseMessage);
+        assertEquals("The date " + dto.getDateStart() + " is in the past", responseMessage);
     }
 
     @Test
     public void shouldReturnForbiddenWhenMemberOrTrainerTriesToCreateGroupClass() throws Exception {
         PostGroupClassRequestDto dto = new PostGroupClassRequestDto();
         dto.setTitle("Member Unauthorized Class");
-        dto.setDate(now.plusDays(3));
+        dto.setDateStart(now.plusDays(3));
         dto.setDurationInMinutes(60);
         dto.setMemberLimit(15);
         dto.setTrainerEmail(trainerEmail);
@@ -425,7 +416,7 @@ public class GroupClassControllerTest {
         UpdateGroupClassRequestDto dto = new UpdateGroupClassRequestDto();
         dto.setId(groupClassRepository.findAll().get(1).getId());
         dto.setTitle("Updated Group Class");
-        dto.setDate(now.plusDays(3));
+        dto.setDateStart(now.plusDays(3));
         dto.setDurationInMinutes(90);
         dto.setMemberLimit(20);
         dto.setTrainerEmail(trainerEmail);
@@ -448,7 +439,7 @@ public class GroupClassControllerTest {
         UpdateGroupClassRequestDto dto = new UpdateGroupClassRequestDto();
         dto.setId(groupClassRepository.findAll().get(1).getId());
         dto.setTitle("Updated Group Class");
-        dto.setDate(groupClassRepository.findAll().get(1).getDate());
+        dto.setDateStart(groupClassRepository.findAll().get(1).getDateStart());
         dto.setDurationInMinutes(90);
         dto.setMemberLimit(20);
         dto.setTrainerEmail(trainerEmail);
@@ -471,7 +462,7 @@ public class GroupClassControllerTest {
         UpdateGroupClassRequestDto dto = new UpdateGroupClassRequestDto();
         dto.setId(groupClassRepository.findAll().get(1).getId());
         dto.setTitle("Group Class With Nonexistent Trainer");
-        dto.setDate(now.plusDays(3));
+        dto.setDateStart(now.plusDays(3));
         dto.setDurationInMinutes(90);
         dto.setMemberLimit(20);
         dto.setTrainerEmail("nonexistent@trainer.com");
@@ -494,7 +485,7 @@ public class GroupClassControllerTest {
         UpdateGroupClassRequestDto dto = new UpdateGroupClassRequestDto();
         dto.setId(groupClassRepository.findAll().get(1).getId());
         dto.setTitle("Overlapping Group Class");
-        dto.setDate(now.plusDays(2));
+        dto.setDateStart(now.plusDays(2));
         dto.setDurationInMinutes(90);
         dto.setMemberLimit(20);
         dto.setTrainerEmail(trainerEmail);
@@ -509,7 +500,7 @@ public class GroupClassControllerTest {
                 .andReturn();
 
         String responseMessage = mvcResult.getResponse().getContentAsString();
-        assertEquals("The date " + dto.getDate() + " and duration " + dto.getDurationInMinutes() + " is overlapping with another group class", responseMessage);
+        assertEquals("The date " + dto.getDateStart() + " and duration " + dto.getDurationInMinutes() + " is overlapping with another group class", responseMessage);
     }
 
     @Test
@@ -517,7 +508,7 @@ public class GroupClassControllerTest {
         UpdateGroupClassRequestDto dto = new UpdateGroupClassRequestDto();
         dto.setId(groupClassRepository.findAll().get(1).getId());
         dto.setTitle("Past Group Class Update");
-        dto.setDate(now.minusDays(1));
+        dto.setDateStart(now.minusDays(1));
         dto.setDurationInMinutes(90);
         dto.setMemberLimit(20);
         dto.setTrainerEmail(trainerEmail);
@@ -532,7 +523,7 @@ public class GroupClassControllerTest {
                 .andReturn();
 
         String responseMessage = mvcResult.getResponse().getContentAsString();
-        assertEquals("The date " + dto.getDate() + " is in the past", responseMessage);
+        assertEquals("The date " + dto.getDateStart() + " is in the past", responseMessage);
     }
 
     @Test
@@ -540,7 +531,7 @@ public class GroupClassControllerTest {
         UpdateGroupClassRequestDto dto = new UpdateGroupClassRequestDto();
         dto.setId(groupClassRepository.findAll().get(1).getId());
         dto.setTitle("Unauthorized Update");
-        dto.setDate(now.plusDays(3));
+        dto.setDateStart(now.plusDays(3));
         dto.setDurationInMinutes(90);
         dto.setMemberLimit(20);
         dto.setTrainerEmail(trainerEmail);
@@ -565,7 +556,7 @@ public class GroupClassControllerTest {
         UpdateGroupClassRequestDto dto = new UpdateGroupClassRequestDto();
         dto.setId(groupClassRepository.findAll().get(0).getId());
         dto.setTitle("Historical Class Update");
-        dto.setDate(now.plusDays(3));
+        dto.setDateStart(now.plusDays(3));
         dto.setDurationInMinutes(90);
         dto.setMemberLimit(20);
         dto.setTrainerEmail(trainerEmail);

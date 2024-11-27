@@ -49,7 +49,7 @@ public class GroupClassController {
 
     @GetMapping("/historical")
     @Operation(summary = "Get all historical group classes", description = "Fetches all historical group classes. " +
-            "Possible for GROUP_CLASS_MANAGEMENT and ADMIN workers.")
+            "POSSIBLE FOR THE PUBLIC.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Historical group classes retrieved successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),

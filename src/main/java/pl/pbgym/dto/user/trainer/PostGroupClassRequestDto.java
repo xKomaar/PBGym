@@ -9,8 +9,8 @@ public class PostGroupClassRequestDto {
     @Size(max = 50, message = "Title can't be longer than 50 characters.")
     @NotEmpty(message = "Title is required.")
     private String title;
-    @NotNull(message = "Date is required.")
-    private LocalDateTime date;
+    @NotNull(message = "Start Date is required.")
+    private LocalDateTime dateStart;
     @NotNull(message = "Duration in minutes is required.")
     @Positive(message = "Duration in minutes must be positive.")
     private Integer durationInMinutes;
@@ -29,12 +29,12 @@ public class PostGroupClassRequestDto {
         this.title = title;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public LocalDateTime getDateStart() {
+        return dateStart;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setDateStart(LocalDateTime dateStart) {
+        this.dateStart = dateStart;
     }
 
     public Integer getDurationInMinutes() {

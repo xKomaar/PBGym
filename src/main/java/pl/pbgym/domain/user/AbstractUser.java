@@ -10,6 +10,7 @@ import pl.pbgym.domain.user.trainer.Trainer;
 import pl.pbgym.domain.user.worker.Worker;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -35,6 +36,8 @@ public abstract class AbstractUser implements UserDetails {
     private String surname;
     @Column(name = "birthdate", nullable = false)
     private LocalDate birthdate;
+    @Column(name = "registration_date", nullable = false)
+    private LocalDateTime registrationDate;
     @Column(name = "gender", nullable = false)
     @Enumerated(EnumType.STRING)
     private Gender gender;
@@ -119,6 +122,14 @@ public abstract class AbstractUser implements UserDetails {
 
     public void setBirthdate(LocalDate birthdate) {
         this.birthdate = birthdate;
+    }
+
+    public LocalDateTime getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(LocalDateTime registrationDate) {
+        this.registrationDate = registrationDate;
     }
 
     public String getPesel() {

@@ -3,7 +3,6 @@ package pl.pbgym.service.user.trainer;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pbgym.domain.user.trainer.GroupClass;
@@ -126,12 +125,12 @@ public class GroupClassService {
     public void saveGroupClass(PostGroupClassRequestDto requestDto) {
         logger.info("Zapisywanie nowych zajęć grupowych o tytule: {}", requestDto.getTitle());
         trainerRepository.findByEmail(requestDto.getTrainerEmail()).ifPresentOrElse(trainer -> {
-            if (requestDto.getDate().isBefore(LocalDateTime.now())) {
-                throw new DateStartInThePastException("The date " + requestDto.getDate() + " is in the past");
+            if (requestDto.getDateStart().isBefore(LocalDateTime.now())) {
+                throw new DateStartInThePastException("The date " + requestDto.getDateStart() + " is in the past");
             }
 
-            if (this.isDateOverlappingWithAnotherGroupClasses(requestDto.getDate(), requestDto.getDurationInMinutes(), Optional.empty())) {
-                throw new GroupClassOverlappingWithAnotherException("The date " + requestDto.getDate() + " and duration " + requestDto.getDurationInMinutes() + " is overlapping with another group class");
+            if (this.isDateOverlappingWithAnotherGroupClasses(requestDto.getDateStart(), requestDto.getDurationInMinutes(), Optional.empty())) {
+                throw new GroupClassOverlappingWithAnotherException("The date " + requestDto.getDateStart() + " and duration " + requestDto.getDurationInMinutes() + " is overlapping with another group class");
             }
 
             GroupClass groupClass = modelMapper.map(requestDto, GroupClass.class);
@@ -153,12 +152,12 @@ public class GroupClassService {
             }
 
             trainerRepository.findByEmail(requestDto.getTrainerEmail()).ifPresentOrElse(trainer -> {
-                if (requestDto.getDate().isBefore(LocalDateTime.now())) {
-                    throw new DateStartInThePastException("The date " + requestDto.getDate() + " is in the past");
+                if (requestDto.getDateStart().isBefore(LocalDateTime.now())) {
+                    throw new DateStartInThePastException("The date " + requestDto.getDateStart() + " is in the past");
                 }
 
-                if (isDateOverlappingWithAnotherGroupClasses(requestDto.getDate(), requestDto.getDurationInMinutes(), Optional.of(requestDto.getId()))) {
-                    throw new GroupClassOverlappingWithAnotherException("The date " + requestDto.getDate() + " and duration " + requestDto.getDurationInMinutes() + " is overlapping with another group class");
+                if (isDateOverlappingWithAnotherGroupClasses(requestDto.getDateStart(), requestDto.getDurationInMinutes(), Optional.of(requestDto.getId()))) {
+                    throw new GroupClassOverlappingWithAnotherException("The date " + requestDto.getDateStart() + " and duration " + requestDto.getDurationInMinutes() + " is overlapping with another group class");
                 }
 
                 if (requestDto.getMemberLimit() < groupClass.getMemberLimit()) {
@@ -166,7 +165,7 @@ public class GroupClassService {
                 }
 
                 groupClass.setTitle(requestDto.getTitle());
-                groupClass.setDate(requestDto.getDate());
+                groupClass.setDateStart(requestDto.getDateStart());
                 groupClass.setDurationInMinutes(requestDto.getDurationInMinutes());
                 groupClass.setMemberLimit(requestDto.getMemberLimit());
                 groupClass.setTrainer(trainer);
@@ -252,7 +251,7 @@ public class GroupClassService {
 
     protected boolean isGroupClassHistorical(GroupClass groupClass) {
         LocalDateTime now = LocalDateTime.now();
-        return groupClass.getDate().isBefore(now) || groupClass.getDate().isEqual(now);
+        return groupClass.getDateStart().isBefore(now) || groupClass.getDateStart().isEqual(now);
     }
 
     protected boolean isDateOverlappingWithAnotherGroupClasses(LocalDateTime dateStart, Integer durationInMinutes, Optional<Long> optUpdateId) {
@@ -261,7 +260,7 @@ public class GroupClassService {
         List<GroupClass> existingClasses = groupClassRepository.findAllUpcomingGroupClasses(LocalDateTime.now());
 
         for (GroupClass existingClass : existingClasses) {
-            LocalDateTime existingClassStart = existingClass.getDate();
+            LocalDateTime existingClassStart = existingClass.getDateStart();
             LocalDateTime existingClassEnd = existingClassStart.plusMinutes(existingClass.getDurationInMinutes());
 
             //don't compare class to itself when updating

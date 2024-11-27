@@ -23,6 +23,8 @@ import pl.pbgym.repository.user.trainer.TrainerRepository;
 import pl.pbgym.repository.user.worker.PermissionRepository;
 import pl.pbgym.repository.user.worker.WorkerRepository;
 
+import java.time.LocalDateTime;
+
 @Service
 public class AuthenticationService {
 
@@ -63,6 +65,7 @@ public class AuthenticationService {
             Member member = modelMapper.map(postMemberRequestDto, Member.class);
             member.setPassword(passwordEncoder.encode(member.getPassword()));
             member.setAddress(address);
+            member.setRegistrationDate(LocalDateTime.now());
 
             memberRepository.save(member);
             logger.info("Zarejestrowano nowego członka: {}, email: {}", member.getName(), member.getEmail());
@@ -80,6 +83,7 @@ public class AuthenticationService {
             Trainer trainer = modelMapper.map(postTrainerRequestDto, Trainer.class);
             trainer.setPassword(passwordEncoder.encode(trainer.getPassword()));
             trainer.setAddress(address);
+            trainer.setRegistrationDate(LocalDateTime.now());
             trainer.setVisible(false);
 
             trainerRepository.save(trainer);
@@ -98,6 +102,7 @@ public class AuthenticationService {
             Worker worker = modelMapper.map(postWorkerRequestDto, Worker.class);
             worker.setPassword(passwordEncoder.encode(worker.getPassword()));
             worker.setAddress(address);
+            worker.setRegistrationDate(LocalDateTime.now());
 
             workerRepository.save(worker);
 

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class GetGroupClassResponseDto {
     private Long id;
     private String title;
-    private LocalDateTime date;
+    private LocalDateTime dateStart;
     private Integer durationInMinutes;
     private Integer memberLimit;
     private GetPublicTrainerInfoResponseDto trainer;
@@ -27,12 +27,12 @@ public class GetGroupClassResponseDto {
         this.title = title;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public LocalDateTime getDateStart() {
+        return dateStart;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setDateStart(LocalDateTime dateStart) {
+        this.dateStart = dateStart;
     }
 
     public Integer getDurationInMinutes() {

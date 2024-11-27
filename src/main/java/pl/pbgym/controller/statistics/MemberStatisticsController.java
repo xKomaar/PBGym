@@ -10,7 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.pbgym.domain.user.AbstractUser;
 import pl.pbgym.domain.user.member.Member;
-import pl.pbgym.dto.statistics.GetGymEntryResponseDto;
 import pl.pbgym.dto.user.member.GetPaymentResponseDto;
 import pl.pbgym.exception.user.member.MemberNotFoundException;
 import pl.pbgym.service.statistics.StatisticsService;

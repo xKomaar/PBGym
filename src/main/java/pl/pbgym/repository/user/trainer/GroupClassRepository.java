@@ -10,21 +10,21 @@ import java.util.List;
 
 public interface GroupClassRepository extends JpaRepository<GroupClass, Long> {
 
-    @Query("SELECT gc FROM GroupClass gc WHERE gc.date > :currentDate")
+    @Query("SELECT gc FROM GroupClass gc WHERE gc.dateStart > :currentDate")
     List<GroupClass> findAllUpcomingGroupClasses(@Param("currentDate") LocalDateTime currentDate);
 
-    @Query("SELECT gc FROM GroupClass gc WHERE gc.date <= :currentDate")
+    @Query("SELECT gc FROM GroupClass gc WHERE gc.dateStart <= :currentDate")
     List<GroupClass> findAllHistoricalGroupClasses(@Param("currentDate") LocalDateTime currentDate);
 
-    @Query("SELECT gc FROM GroupClass gc JOIN gc.members m WHERE m.email = :email AND gc.date > :currentDate")
+    @Query("SELECT gc FROM GroupClass gc JOIN gc.members m WHERE m.email = :email AND gc.dateStart > :currentDate")
     List<GroupClass> findUpcomingGroupClassesByMemberEmail(@Param("email") String email, @Param("currentDate") LocalDateTime currentDate);
 
-    @Query("SELECT gc FROM GroupClass gc JOIN gc.members m WHERE m.email = :email AND gc.date <= :currentDate")
+    @Query("SELECT gc FROM GroupClass gc JOIN gc.members m WHERE m.email = :email AND gc.dateStart <= :currentDate")
     List<GroupClass> findHistoricalGroupClassesByMemberEmail(@Param("email") String email, @Param("currentDate") LocalDateTime currentDate);
 
-    @Query("SELECT gc FROM GroupClass gc WHERE gc.trainer.email = :email AND gc.date > :currentDate")
+    @Query("SELECT gc FROM GroupClass gc WHERE gc.trainer.email = :email AND gc.dateStart > :currentDate")
     List<GroupClass> findUpcomingGroupClassesByTrainerEmail(@Param("email") String email, @Param("currentDate") LocalDateTime currentDate);
 
-    @Query("SELECT gc FROM GroupClass gc WHERE gc.trainer.email = :email AND gc.date <= :currentDate")
+    @Query("SELECT gc FROM GroupClass gc WHERE gc.trainer.email = :email AND gc.dateStart <= :currentDate")
     List<GroupClass> findHistoricalGroupClassesByTrainerEmail(@Param("email") String email, @Param("currentDate") LocalDateTime currentDate);
 }
