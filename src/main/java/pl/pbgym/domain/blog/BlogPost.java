@@ -18,7 +18,7 @@ public class BlogPost {
     private LocalDateTime postDate;
     @Column(name = "last_update_date", nullable = false)
     private LocalDateTime lastUpdateDate;
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, length = 2000)
     private String content;
 
     public Long getId() {
