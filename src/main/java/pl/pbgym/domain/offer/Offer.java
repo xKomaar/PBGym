@@ -19,13 +19,13 @@ public abstract class Offer {
     private String title;
     @Column(name = "subtitle", nullable = false)
     private String subtitle;
-    @Column(name = "monthylPrice", nullable = false)
+    @Column(name = "monthly_price", nullable = false)
     private Double monthlyPrice;
-    @Column(name = "durationInMonth", nullable = false)
+    @Column(name = "duration_in_months", nullable = false)
     private Integer durationInMonths;
-    @Column(name = "entryFee", nullable = false)
+    @Column(name = "entry_fee", nullable = false)
     private Double entryFee;
-    @Column(name = "isActive", nullable = false)
+    @Column(name = "is_active", nullable = false)
     private boolean isActive;
     @Enumerated(EnumType.STRING)
     private OfferType type;

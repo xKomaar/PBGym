@@ -16,13 +16,13 @@ public class HistoricalPass {
     @Column(name = "title", nullable = false, unique = true)
     private String title;
 
-    @Column(name = "dateStart", nullable = false)
+    @Column(name = "date_start", nullable = false)
     private LocalDateTime dateStart;
 
-    @Column(name = "dateEnd", nullable = false)
+    @Column(name = "date_end", nullable = false)
     private LocalDateTime dateEnd;
 
-    @Column(name = "monthylPrice", nullable = false)
+    @Column(name = "monthly_price", nullable = false)
     private Double monthlyPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)

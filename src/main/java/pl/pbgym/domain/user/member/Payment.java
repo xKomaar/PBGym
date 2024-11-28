@@ -14,13 +14,13 @@ public class Payment {
     private Long id;
     @Column(name = "amount", nullable = false)
     private Double amount;
-    @Column(name = "dateTime", nullable = false)
+    @Column(name = "date_time", nullable = false)
     private LocalDateTime dateTime;
-    @Column(name = "cardNumber", nullable = false)
+    @Column(name = "card_number", nullable = false)
     private String cardNumber;
-    @Column(name = "expirationMonth", nullable = false)
+    @Column(name = "expiration_month", nullable = false)
     private String expirationMonth;
-    @Column(name = "expirationYear", nullable = false)
+    @Column(name = "expiration_year", nullable = false)
     private String expirationYear;
     @Column(name = "name", nullable = false)
     private String name;

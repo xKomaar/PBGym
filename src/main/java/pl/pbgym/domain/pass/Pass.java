@@ -19,16 +19,16 @@ public class Pass {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "dateStart", nullable = false)
+    @Column(name = "date_start", nullable = false)
     private LocalDateTime dateStart;
 
-    @Column(name = "dateEnd", nullable = false)
+    @Column(name = "date_end", nullable = false)
     private LocalDateTime dateEnd;
 
-    @Column(name = "dateOfNextPayment", nullable = true)
+    @Column(name = "date_of_next_payment", nullable = true)
     private LocalDate dateOfNextPayment;
 
-    @Column(name = "monthylPrice", nullable = false)
+    @Column(name = "monthly_price", nullable = false)
     private Double monthlyPrice;
 
     @OneToOne(fetch = FetchType.EAGER)

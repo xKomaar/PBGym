@@ -13,15 +13,15 @@ public class CreditCardInfo {
     private Long id;
 
     @JsonIgnore
-    @Column(name = "cardNumber", nullable = false)
+    @Column(name = "card_number", nullable = false)
     private String cardNumber;
 
     @JsonIgnore
-    @Column(name = "expirationMonth", nullable = false)
+    @Column(name = "expiration_month", nullable = false)
     private String expirationMonth; //MM
 
     @JsonIgnore
-    @Column(name = "expirationYear", nullable = false)
+    @Column(name = "expiration_year", nullable = false)
     private String expirationYear; //YY
 
     @JsonIgnore

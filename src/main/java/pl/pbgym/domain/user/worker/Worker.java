@@ -10,7 +10,7 @@ import java.util.List;
 @Table(name="worker")
 @PrimaryKeyJoinColumn(name = "worker_id")
 public class Worker extends AbstractUser {
-    @Column(name="ID_card_nr")
+    @Column(name="id_card_nr")
     private String idCardNumber;
     @Column(name="position")
     private String position;

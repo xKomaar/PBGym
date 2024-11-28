@@ -17,13 +17,13 @@ public class TrainerOffer {
     @Column(name = "price", nullable = false)
     private Integer price;
 
-    @Column(name = "trainingSessionCount", nullable = false)
+    @Column(name = "training_session_count", nullable = false)
     private Integer trainingSessionCount;
 
-    @Column(name = "trainingSessionDurationInMinutes", nullable = false)
+    @Column(name = "training_session_duration_in_minutes", nullable = false)
     private Integer trainingSessionDurationInMinutes;
 
-    @Column(name = "isVisible", nullable = false)
+    @Column(name = "is_visible", nullable = false)
     private boolean isVisible;
 
     @ManyToOne

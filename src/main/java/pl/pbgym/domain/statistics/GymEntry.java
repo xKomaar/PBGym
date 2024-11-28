@@ -14,10 +14,10 @@ public class GymEntry {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "dateTimeOfEntry", nullable = false)
+    @Column(name = "date_time_of_entry", nullable = false)
     private LocalDateTime dateTimeOfEntry;
 
-    @Column(name = "dateTimeOfExit", nullable = false)
+    @Column(name = "date_time_of_exit", nullable = false)
     private LocalDateTime dateTimeOfExit;
 
     @ManyToOne

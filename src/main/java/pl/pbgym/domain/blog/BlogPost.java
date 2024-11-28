@@ -14,9 +14,9 @@ public class BlogPost {
     private Long id;
     @Column(name = "title", nullable = false)
     private String title;
-    @Column(name = "postDate", nullable = false)
+    @Column(name = "post_date", nullable = false)
     private LocalDateTime postDate;
-    @Column(name = "lastUpdateDate", nullable = false)
+    @Column(name = "last_update_date", nullable = false)
     private LocalDateTime lastUpdateDate;
     @Column(name = "content", nullable = false)
     private String content;

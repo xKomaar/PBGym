@@ -6,11 +6,11 @@ import jakarta.persistence.*;
 @Table(name="special_offer")
 @PrimaryKeyJoinColumn(name = "special_offer_id")
 public class SpecialOffer extends Offer {
-    @Column(name = "specialOfferText", nullable = true)
+    @Column(name = "special_offer_text", nullable = true)
     private String specialOfferText;
-    @Column(name = "borderText", nullable = true)
+    @Column(name = "border_text", nullable = true)
     private String borderText;
-    @Column(name = "previousPriceInfo", nullable = true)
+    @Column(name = "previous_price_info", nullable = true)
     private String previousPriceInfo;
 
     public SpecialOffer() {

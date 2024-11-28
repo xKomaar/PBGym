@@ -16,7 +16,7 @@ public class GroupClass {
     private Long id;
     @Column(name = "title", nullable = false)
     private String title;
-    @Column(name = "dateStart", nullable = false)
+    @Column(name = "date_start", nullable = false)
     private LocalDateTime dateStart;
     @Column(name = "duration", nullable = false)
     private Integer durationInMinutes;
