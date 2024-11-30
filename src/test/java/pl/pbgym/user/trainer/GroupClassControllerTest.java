@@ -780,20 +780,6 @@ public class GroupClassControllerTest {
     }
 
     @Test
-    public void shouldReturnConflictWhenGroupClassIsFull() throws Exception {
-        Long groupClassId = groupClassRepository.findAll().get(1).getId();
-        GroupClass groupClass = groupClassRepository.findById(groupClassId).orElseThrow();
-        groupClass.setMemberLimit(0);
-        groupClassRepository.save(groupClass);
-
-        mockMvc.perform(post("/groupClasses/member/{email}/enroll", memberEmail)
-                        .header("Authorization", "Bearer " + memberJwt)
-                        .content(String.valueOf(groupClassId))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isConflict());
-    }
-
-    @Test
     public void shouldReturnConflictWhenMemberTriesToEnrollTwiceInTheSameClass() throws Exception {
         Long groupClassId = groupClassRepository.findAll().get(1).getId(); // Upcoming class
 

@@ -1,16 +1,30 @@
 package pl.pbgym.domain.offer;
 
-import jakarta.persistence.*;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name="special_offer")
 @PrimaryKeyJoinColumn(name = "special_offer_id")
 public class SpecialOffer extends Offer {
-    @Column(name = "special_offer_text", nullable = true)
+    @Column(name = "special_offer_text")
+    @Nullable
+    @Size(min = 3, message = "Special Offer Text can't be shorter than 3 characters.")
+    @Size(max = 30, message = "Special Offer Text can't be longer than 30 characters.")
     private String specialOfferText;
-    @Column(name = "border_text", nullable = true)
+    @Column(name = "border_text")
+    @Nullable
+    @Size(min = 3, message = "Border Text can't be shorter than 3 characters.")
+    @Size(max = 20, message = "Border Text can't be longer than 30 characters.")
     private String borderText;
-    @Column(name = "previous_price_info", nullable = true)
+    @Column(name = "previous_price_info")
+    @Nullable
+    @Size(min = 3, message = "Previous Price Info can't be shorter than 3 characters.")
+    @Size(max = 100, message = "Previous Price Info can't be longer than 30 characters.")
     private String previousPriceInfo;
 
     public SpecialOffer() {

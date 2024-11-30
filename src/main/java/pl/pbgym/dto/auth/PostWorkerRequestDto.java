@@ -4,8 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import pl.pbgym.validator.permission.PermissionSubset;
 import pl.pbgym.domain.user.worker.PermissionType;
+import pl.pbgym.validator.permission.PermissionSubset;
 
 import java.util.List;
 
@@ -18,7 +18,6 @@ public class PostWorkerRequestDto extends PostAbstractUserRequestDto {
     @Pattern(regexp = "^[A-ZŻŹĆĄŚĘŁÓŃ][a-zżźćńółęąś]*(\\s[A-ZŻŹĆĄŚĘŁÓŃ][a-zżźćńółęąś]*)*$", message = "Every word in position must begin with a capital letter.")
     @NotBlank(message = "Position is required.")
     private String position;
-
     @PermissionSubset(anyOf = {
             PermissionType.ADMIN,
             PermissionType.STATISTICS,

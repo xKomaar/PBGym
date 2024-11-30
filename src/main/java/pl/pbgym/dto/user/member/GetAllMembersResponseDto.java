@@ -19,10 +19,6 @@ public class GetAllMembersResponseDto {
     private boolean passActive;
     private LocalDateTime passDateEnd;
 
-    public GetAllMembersResponseDto() {
-
-    }
-
     public Long getId() {
         return id;
     }

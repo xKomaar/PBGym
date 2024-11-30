@@ -1,7 +1,6 @@
 package pl.pbgym.dto.offer;
 
 import jakarta.annotation.Nullable;
-
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -12,7 +11,7 @@ import java.util.List;
 
 public abstract class PostOfferRequestDto {
     @Size(min = 3, message = "Title can't be shorter than 3 characters.")
-    @Size(max = 30, message = "Title can't be longer than 30 characters.")
+    @Size(max = 60, message = "Title can't be longer than 60 characters.")
     @NotEmpty(message = "Title is required.")
     private String title;
     @Size(min = 5, message = "Subtitle can't be shorter than 5 characters.")
@@ -32,9 +31,6 @@ public abstract class PostOfferRequestDto {
     @Nullable
     @ListSize(maxCount = 6)
     private List<String> properties;
-
-    public PostOfferRequestDto() {
-    }
 
     public String getTitle() {
         return title;

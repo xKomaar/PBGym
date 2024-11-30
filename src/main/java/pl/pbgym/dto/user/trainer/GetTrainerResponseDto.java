@@ -22,10 +22,6 @@ public class GetTrainerResponseDto {
     private boolean visible;
     private List<TrainerTagType> trainerTags;
 
-
-    public GetTrainerResponseDto() {
-    }
-
     public Long getId() {
         return id;
     }

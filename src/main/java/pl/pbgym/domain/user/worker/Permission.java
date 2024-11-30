@@ -17,10 +17,6 @@ public class Permission {
     @JoinColumn(name = "worker_id")
     private Worker worker;
 
-    public Permission() {
-
-    }
-
     public Long getId() {
         return id;
     }

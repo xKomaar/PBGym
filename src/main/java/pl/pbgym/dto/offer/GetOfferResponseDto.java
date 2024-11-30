@@ -30,11 +30,6 @@ public class GetOfferResponseDto {
     private Integer durationInMonths;
     private List<String> properties;
 
-
-    public GetOfferResponseDto() {
-    }
-
-
     public Long getId() {
         return id;
     }

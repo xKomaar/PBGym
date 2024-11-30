@@ -16,10 +16,6 @@ public class GetMemberResponseDto {
     private Gender gender;
     private GetAddressResponseDto address;
 
-    public GetMemberResponseDto() {
-
-    }
-
     public Long getId() {
         return id;
     }

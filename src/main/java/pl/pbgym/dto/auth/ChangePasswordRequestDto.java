@@ -11,10 +11,6 @@ public class ChangePasswordRequestDto {
     @Size(max = 50, message = "Password can't be longer than 50 characters long.")
     @NotBlank(message = "Password is required.")
     private String newPassword;
-
-    public ChangePasswordRequestDto() {
-    }
-
     @Nullable
     public String getOldPassword() {
         return oldPassword;

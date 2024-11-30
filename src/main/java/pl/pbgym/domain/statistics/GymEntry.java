@@ -13,13 +13,10 @@ public class GymEntry {
     @SequenceGenerator(name = "gym_entry_seq_gen", sequenceName = "GYM_ENTRY_SEQ", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;
-
     @Column(name = "date_time_of_entry", nullable = false)
     private LocalDateTime dateTimeOfEntry;
-
     @Column(name = "date_time_of_exit", nullable = false)
     private LocalDateTime dateTimeOfExit;
-
     @ManyToOne
     @JoinColumn(name = "abstract_user_id")
     private AbstractUser abstractUser;

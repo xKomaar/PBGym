@@ -3,8 +3,8 @@ package pl.pbgym.domain.user.member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import pl.pbgym.domain.pass.HistoricalPass;
-import pl.pbgym.domain.statistics.GymEntry;
 import pl.pbgym.domain.pass.Pass;
+import pl.pbgym.domain.statistics.GymEntry;
 import pl.pbgym.domain.user.AbstractUser;
 import pl.pbgym.domain.user.trainer.GroupClass;
 
@@ -22,11 +22,9 @@ public class Member extends AbstractUser {
     private CreditCardInfo creditCardInfo;
     @OneToMany(mappedBy = "abstractUser", cascade = CascadeType.DETACH, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<GymEntry> gymEntries;
-
     @OneToMany(mappedBy = "member", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JsonIgnore
     private List<HistoricalPass> historicalPasses;
-
     @ManyToMany(mappedBy = "members", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private List<GroupClass> groupClasses;
 

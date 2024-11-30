@@ -15,7 +15,6 @@ public class UpdateWorkerAuthorityRequestDto {
     @Pattern(regexp = "^[A-ZŻŹĆĄŚĘŁÓŃ][a-zżźćńółęąś]*(\\s[A-ZŻŹĆĄŚĘŁÓŃ][a-zżźćńółęąś]*)*$", message = "Every word in position must begin with a capital letter.")
     @NotBlank(message = "Position is required.")
     private String position;
-
     @PermissionSubset(anyOf = {
             PermissionType.ADMIN,
             PermissionType.STATISTICS,
@@ -28,9 +27,6 @@ public class UpdateWorkerAuthorityRequestDto {
             " PASS_MANAGEMENT, GROUP_CLASS_MANAGEMENT, BLOG, SHOP_MANAGEMENT")
     @NotNull
     private List<PermissionType> permissions;
-
-    public UpdateWorkerAuthorityRequestDto() {
-    }
 
     public String getPosition() {
         return position;

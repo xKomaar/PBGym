@@ -21,9 +21,6 @@ public class GetWorkerResponseDto {
     private Gender gender;
     private List<PermissionType> permissions;
 
-    public GetWorkerResponseDto() {
-    }
-
     public Long getId() {
         return id;
     }

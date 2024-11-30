@@ -18,9 +18,6 @@ public class PostSpecialOfferRequestDto extends PostOfferRequestDto {
     @Size(max = 100, message = "Previous Price Info can't be longer than 30 characters.")
     private String previousPriceInfo;
 
-    public PostSpecialOfferRequestDto() {
-    }
-
     @Nullable
     public String getSpecialOfferText() {
         return specialOfferText;

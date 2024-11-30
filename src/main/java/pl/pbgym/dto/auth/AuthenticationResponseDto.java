@@ -1,9 +1,7 @@
 package pl.pbgym.dto.auth;
 
 public class AuthenticationResponseDto {
-
     private String jwt;
-
     private String userType;
 
     public AuthenticationResponseDto() {

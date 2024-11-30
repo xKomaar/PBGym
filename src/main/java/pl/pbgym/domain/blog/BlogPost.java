@@ -1,6 +1,7 @@
 package pl.pbgym.domain.blog;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 
@@ -13,12 +14,16 @@ public class BlogPost {
     @Column(name = "id", nullable = false)
     private Long id;
     @Column(name = "title", nullable = false)
+    @Size(min = 3, message = "Title can't be shorter than 3 characters.")
+    @Size(max = 150, message = "Title can't be longer than 150 characters.")
     private String title;
     @Column(name = "post_date", nullable = false)
     private LocalDateTime postDate;
     @Column(name = "last_update_date", nullable = false)
     private LocalDateTime lastUpdateDate;
-    @Column(name = "content", nullable = false, length = 2000)
+    @Column(name = "content", nullable = false)
+    @Size(min = 3, message = "Content can't be shorter than 3 characters.")
+    @Size(max = 2000, message = "Content can't be longer than 2000 characters.")
     private String content;
 
     public Long getId() {

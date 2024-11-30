@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 public class PostBlogPostRequestDto {
-
     @Size(min = 3, message = "Title can't be shorter than 3 characters.")
     @Size(max = 150, message = "Title can't be longer than 150 characters.")
     @NotEmpty(message = "Title is required.")

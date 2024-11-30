@@ -1,6 +1,8 @@
 package pl.pbgym.domain.pass;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import pl.pbgym.domain.user.member.Member;
 
 import java.time.LocalDate;
@@ -9,34 +11,27 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name="pass")
 public class Pass {
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pass_seq_gen")
     @SequenceGenerator(name="pass_seq_gen", sequenceName="PASS_SEQ", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;
-
     @Column(name = "title", nullable = false)
+    @Size(min = 3, message = "Title can't be shorter than 3 characters.")
+    @Size(max = 60, message = "Title can't be longer than 60 characters.")
     private String title;
-
     @Column(name = "date_start", nullable = false)
     private LocalDateTime dateStart;
-
     @Column(name = "date_end", nullable = false)
     private LocalDateTime dateEnd;
-
-    @Column(name = "date_of_next_payment", nullable = true)
+    @Column(name = "date_of_next_payment")
     private LocalDate dateOfNextPayment;
-
     @Column(name = "monthly_price", nullable = false)
+    @Positive(message = "Price must be positive.")
     private Double monthlyPrice;
-
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="member_id", referencedColumnName = "member_id", nullable = false)
     private Member member;
-
-    public Pass() {
-    }
 
     public Long getId() {
         return id;

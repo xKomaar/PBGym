@@ -1,9 +1,11 @@
 package pl.pbgym.domain.user.trainer;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import pl.pbgym.domain.statistics.GymEntry;
 import pl.pbgym.domain.user.AbstractUser;
+import pl.pbgym.validator.list.ListSize;
+import pl.pbgym.validator.trainer.TrainerTagSubset;
 
 import java.util.List;
 
@@ -12,22 +14,19 @@ import java.util.List;
 @PrimaryKeyJoinColumn(name = "trainer_id")
 public class Trainer extends AbstractUser {
     @Column(name="description")
+    @Size(min = 2, message = "Description can't be shorter than 2 characters.")
+    @Size(max = 1000, message = "Description can't be longer than 1000 characters.")
     private String description;
     @Column(name="photo")
     private byte[] photo;
-
     @Column(name="visible", nullable = false)
     private boolean visible;
-
     @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<TrainerTag> trainerTags;
-
     @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<TrainerOffer> trainerOffers;
-
     @OneToMany(mappedBy = "abstractUser", cascade = CascadeType.DETACH, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<GymEntry> gymEntries;
-
     @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<GroupClass> groupClasses;
 

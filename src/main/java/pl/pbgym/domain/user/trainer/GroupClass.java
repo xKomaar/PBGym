@@ -1,6 +1,8 @@
 package pl.pbgym.domain.user.trainer;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import pl.pbgym.domain.user.member.Member;
 
 import java.time.LocalDateTime;
@@ -15,12 +17,16 @@ public class GroupClass {
     @Column(name = "id", nullable = false)
     private Long id;
     @Column(name = "title", nullable = false)
+    @Size(min = 3, message = "Title can't be shorter than 3 characters.")
+    @Size(max = 50, message = "Title can't be longer than 50 characters.")
     private String title;
     @Column(name = "date_start", nullable = false)
     private LocalDateTime dateStart;
     @Column(name = "duration", nullable = false)
+    @Positive(message = "Duration in minutes must be positive.")
     private Integer durationInMinutes;
     @Column(name = "member_limit", nullable = false)
+    @Positive(message = "Member limit must be positive.")
     private Integer memberLimit;
     @ManyToOne
     @JoinColumn(name = "trainer_id")

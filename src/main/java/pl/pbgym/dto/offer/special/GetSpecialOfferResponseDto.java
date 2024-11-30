@@ -1,18 +1,11 @@
 package pl.pbgym.dto.offer.special;
 
-import pl.pbgym.domain.offer.OfferType;
 import pl.pbgym.dto.offer.GetOfferResponseDto;
-
-import java.util.List;
 
 public class GetSpecialOfferResponseDto extends GetOfferResponseDto {
     private String specialOfferText;
     private String borderText;
     private String previousPriceInfo;
-
-
-    public GetSpecialOfferResponseDto() {
-    }
 
     public String getSpecialOfferText() {
         return specialOfferText;

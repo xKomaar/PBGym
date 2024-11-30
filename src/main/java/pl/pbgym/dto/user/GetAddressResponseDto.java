@@ -8,9 +8,6 @@ public class GetAddressResponseDto {
     private Integer apartmentNumber;
     private String postalCode;
 
-    public GetAddressResponseDto() {
-    }
-
     public Long getId() {
         return id;
     }

@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class UpdateBlogPostRequestDto {
-
     @NotNull(message = "Id is required")
     private Long id;
     @Size(min = 3, message = "Title can't be shorter than 3 characters.")

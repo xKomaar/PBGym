@@ -3,31 +3,23 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 
 public class PostAddressRequestDto {
-
     @Size(min = 2, message = "City name can't be shorter than 2 characters long.")
     @Size(max = 200, message = "City name can't be longer than 200 characters long.")
     @NotBlank(message = "City name is required.")
     private String city;
-
     @Size(min = 2, message = "Street Name can't be shorter than 2 characters long.")
     @Size(max = 200, message = "Street Name can't be longer than 200 characters long.")
     @NotBlank(message = "Street Name is required.")
     private String streetName;
-
     @NotNull
     @Pattern(regexp="(?i)^[1-9]\\d*(?: ?(?:[a-z]|[/-] ?\\d+[a-z]?))?$", message = "Building must be valid")
     private String buildingNumber;
-
     @Nullable
     @Digits(integer = 5, fraction = 0, message = "Building number must consist of only digits")
     private Integer apartmentNumber;
-
     @NotBlank(message = "Postal Code is required.")
     @Pattern(regexp = "^\\d{2}-\\d{3}$", message = "Postal code must be in the format dd-ddd")
     private String postalCode;
-
-    public PostAddressRequestDto() {
-    }
 
     public String getCity() {
         return city;

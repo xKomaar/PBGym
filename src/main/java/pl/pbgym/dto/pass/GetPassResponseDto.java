@@ -11,9 +11,6 @@ public class GetPassResponseDto {
     private LocalDate dateOfNextPayment;
     private Double monthlyPrice;
 
-    public GetPassResponseDto() {
-    }
-
     public Long getId() {
         return id;
     }

@@ -17,16 +17,13 @@ public class UpdateWorkerAdminRequestDto {
     @Pattern(regexp = "^[A-ZŻŹĆĄŚĘŁÓŃ][a-zżźćńółęąś]*$", message = "Name has to begin with a capital letter and involve only letters.")
     @NotBlank(message = "Name is required.")
     private String name;
-
     @Size(min = 2, message = "Surname can't be shorter than 2 characters.")
     @Size(max = 100, message = "Surname can't be longer than 100 characters.")
     @Pattern(regexp = "^[A-ZŻŹĆĄŚĘŁÓŃ][a-zżźćńółęąś]*$", message = "Surname has to begin with a capital letter and involve only letters.")
     @NotBlank(message = "Surname is required.")
     private String surname;
-
     @NotNull(message = "Birthdate is required.")
     private LocalDate birthdate;
-
     @NotNull(message = "Gender is required.")
     @GenderSubset(anyOf = {
             Gender.FEMALE,
@@ -34,15 +31,12 @@ public class UpdateWorkerAdminRequestDto {
             Gender.OTHER
     }, message = "Gender need to be MALE, FEMALE or OTHER")
     private Gender gender;
-
     @NotBlank(message = "Pesel is required.")
     @Pattern(regexp = "^\\d{11}$", message = "Pesel must consist of 11 digits.")
     private String pesel;
-
     @NotBlank(message = "Phone number is required.")
     @Pattern(regexp = "^\\d{9}$", message = "Phone number must consist of 9 digits.")
     private String phoneNumber;
-
     @Pattern(regexp = "^[A-Z]{3}\\d{6}$", message = "Wrong format of ID card number. Valid format example: XXX000000")
     @NotBlank(message = "ID card number is required.")
     private String idCardNumber;

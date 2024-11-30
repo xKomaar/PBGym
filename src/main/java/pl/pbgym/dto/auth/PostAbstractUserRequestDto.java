@@ -11,27 +11,22 @@ public abstract class PostAbstractUserRequestDto {
     @Email
     @NotBlank(message = "Email is required.")
     private String email;
-
     @Size(min = 8, message = "Password can't be shorter than 8 characters long.")
     @Size(max = 50, message = "Password can't be longer than 50 characters long.")
     @NotBlank(message = "Password is required.")
     private String password;
-
     @Size(min = 2, message = "Name can't be shorter than 2 characters.")
     @Size(max = 50, message = "Name can't be longer than 50 characters.")
     @Pattern(regexp = "^[A-ZŻŹĆĄŚĘŁÓŃ][a-zżźćńółęąś]*$", message = "Name has to begin with a capital letter and involve only letters.")
     @NotBlank(message = "Name is required.")
     private String name;
-
     @Size(min = 2, message = "Surname can't be shorter than 2 characters.")
     @Size(max = 100, message = "Surname can't be longer than 100 characters.")
     @Pattern(regexp = "^[A-ZŻŹĆĄŚĘŁÓŃ][a-zżźćńółęąś]*$", message = "Surname has to begin with a capital letter and involve only letters.")
     @NotBlank(message = "Surname is required.")
     private String surname;
-
     @NotNull(message = "Birthdate is required.")
     private LocalDate birthdate;
-
     @NotNull(message = "Gender is required.")
     @GenderSubset(anyOf = {
             Gender.FEMALE,
@@ -39,20 +34,14 @@ public abstract class PostAbstractUserRequestDto {
             Gender.OTHER
     }, message = "Gender need to be MALE, FEMALE or OTHER")
     private Gender gender;
-
     @NotBlank(message = "Pesel is required.")
     @Pattern(regexp = "^\\d{11}$", message = "Pesel must consist of 11 digits.")
     private String pesel;
-
     @NotBlank(message = "Phone number is required.")
     @Pattern(regexp = "^\\d{9}$", message = "Phone number must consist of 9 digits.")
     private String phoneNumber;
-
     @Valid
     private PostAddressRequestDto address;
-
-    public PostAbstractUserRequestDto() {
-    }
 
     public String getEmail() {
         return email;
