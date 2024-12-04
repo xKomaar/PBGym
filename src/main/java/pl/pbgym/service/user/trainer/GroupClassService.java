@@ -19,6 +19,7 @@ import pl.pbgym.repository.user.trainer.TrainerRepository;
 import pl.pbgym.service.user.member.MemberService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,12 +46,14 @@ public class GroupClassService {
 
     public List<GetGroupClassResponseDto> getAllUpcomingGroupClasses() {
         logger.info("Pobieranie wszystkich nadchodzących zajęć grupowych.");
-        return groupClassRepository.findAllUpcomingGroupClasses(LocalDateTime.now()).stream().map(this::mapGroupClassToDto).toList();
+        return mapGroupClassesToUpcomingClasses(groupClassRepository.findAll()).stream().map(this::mapGroupClassToDto).toList();
+        //return groupClassRepository.findAllUpcomingGroupClasses(LocalDateTime.now()).stream().map(this::mapGroupClassToDto).toList();
     }
 
     public List<GetGroupClassResponseDto> getAllHistoricalGroupClasses() {
         logger.info("Pobieranie wszystkich historycznych zajęć grupowych.");
-        return groupClassRepository.findAllHistoricalGroupClasses(LocalDateTime.now()).stream().map(this::mapGroupClassToDto).toList();
+        return mapGroupClassesToHistoricalClasses(groupClassRepository.findAll()).stream().map(this::mapGroupClassToDto).toList();
+        //return groupClassRepository.findAllHistoricalGroupClasses(LocalDateTime.now()).stream().map(this::mapGroupClassToDto).toList();
     }
 
     public List<GetGroupClassResponseDto> getAllUpcomingGroupClassesByTrainerEmail(String email) {
@@ -249,8 +252,21 @@ public class GroupClassService {
         });
     }
 
+    protected List<GroupClass> mapGroupClassesToUpcomingClasses(List<GroupClass> groupClassesToMap) {
+        return groupClassesToMap.stream()
+                .filter(groupclass -> !isGroupClassHistorical(groupclass))
+                .toList();
+    }
+
+    protected List<GroupClass> mapGroupClassesToHistoricalClasses(List<GroupClass> groupClassesToMap) {
+        return groupClassesToMap.stream()
+                .filter(this::isGroupClassHistorical)
+                .toList();
+    }
+
     protected boolean isGroupClassHistorical(GroupClass groupClass) {
         LocalDateTime now = LocalDateTime.now();
+        logger.info("NOW: " + now);
         return groupClass.getDateStart().isBefore(now) || groupClass.getDateStart().isEqual(now);
     }
 
