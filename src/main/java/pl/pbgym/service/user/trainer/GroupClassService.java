@@ -45,13 +45,11 @@ public class GroupClassService {
 
     public List<GetGroupClassResponseDto> getAllUpcomingGroupClasses() {
         logger.info("Pobieranie wszystkich nadchodzących zajęć grupowych.");
-        logger.info(groupClassRepository.findAllUpcomingGroupClasses(LocalDateTime.now()).stream().map(this::mapGroupClassToDto).toList().toString());
         return groupClassRepository.findAllUpcomingGroupClasses(LocalDateTime.now()).stream().map(this::mapGroupClassToDto).toList();
     }
 
     public List<GetGroupClassResponseDto> getAllHistoricalGroupClasses() {
         logger.info("Pobieranie wszystkich historycznych zajęć grupowych.");
-        logger.info(groupClassRepository.findAllHistoricalGroupClasses(LocalDateTime.now()).stream().map(this::mapGroupClassToDto).toList().toString());
         return groupClassRepository.findAllHistoricalGroupClasses(LocalDateTime.now()).stream().map(this::mapGroupClassToDto).toList();
     }
 
