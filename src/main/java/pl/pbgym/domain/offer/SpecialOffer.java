@@ -14,12 +14,12 @@ public class SpecialOffer extends Offer {
     @Column(name = "special_offer_text")
     @Nullable
     @Size(min = 3, message = "Special Offer Text can't be shorter than 3 characters.")
-    @Size(max = 30, message = "Special Offer Text can't be longer than 30 characters.")
+    @Size(max = 50, message = "Special Offer Text can't be longer than 50 characters.")
     private String specialOfferText;
     @Column(name = "border_text")
     @Nullable
     @Size(min = 3, message = "Border Text can't be shorter than 3 characters.")
-    @Size(max = 20, message = "Border Text can't be longer than 30 characters.")
+    @Size(max = 30, message = "Border Text can't be longer than 30 characters.")
     private String borderText;
     @Column(name = "previous_price_info")
     @Nullable
