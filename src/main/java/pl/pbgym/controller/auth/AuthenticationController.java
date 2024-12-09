@@ -26,14 +26,13 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
         this.abstractUserService = abstractUserService;
     }
-
-    @Operation(summary = "Register a new member", description = "Gender types: MALE, FEMALE, OTHER")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Member registered successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Email already in use", content = @Content)
-    })
     @PostMapping("/registerMember")
+    @Operation(summary = "Rejestracja nowego klienta", description = "Typy płci: MALE, FEMALE, OTHER")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Klient zarejestrowany pomyślnie"),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Email jest już zajęty", content = @Content)
+    })
     public ResponseEntity<String> registerMember(@Valid @RequestBody PostMemberRequestDto request) {
         if (abstractUserService.userExists(request.getEmail())) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -44,14 +43,14 @@ public class AuthenticationController {
         }
     }
 
-    @Operation(summary = "Register a new trainer", description = "Possible for ADMIN and TRAINER_MANAGEMENT workers. " +
-            "Gender types: MALE, FEMALE, OTHER")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Trainer registered successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Email already in use", content = @Content)
-    })
     @PostMapping("/registerTrainer")
+    @Operation(summary = "Rejestracja nowego trenera", description = "Dostępny dla pracowników z rolami: ADMIN, TRAINER_MANAGEMENT. Typy płci: MALE, FEMALE, OTHER.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Trener zarejestrowany pomyślnie"),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Email jest już zajęty", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content)
+    })
     public ResponseEntity<String> registerTrainer(@Valid @RequestBody PostTrainerRequestDto request) {
         if (abstractUserService.userExists(request.getEmail())) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -62,14 +61,14 @@ public class AuthenticationController {
         }
     }
 
-    @Operation(summary = "Register a new worker", description = "Possible only for ADMIN worker. Gender types: MALE, FEMALE, OTHER." +
-            "Permission Types: ADMIN, STATISTICS, MEMBER_MANAGEMENT, TRAINER_MANAGEMENT, PASS_MANAGEMENT, GROUP_CLASS_MANAGEMENT, BLOG,SHOP_MANAGEMENT")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Worker registered successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Email already in use", content = @Content)
-    })
     @PostMapping("/registerWorker")
+    @Operation(summary = "Rejestracja nowego pracownika", description = "Dostępny dla pracowników z rolą ADMIN. Typy płci: MALE, FEMALE, OTHER. Typy uprawnień: {ADMIN, STATISTICS, MEMBER_MANAGEMENT, TRAINER_MANAGEMENT, PASS_MANAGEMENT, GROUP_CLASS_MANAGEMENT, BLOG, SHOP_MANAGEMENT}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Pracownik zarejestrowany pomyślnie"),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Email jest już zajęty", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content)
+    })
     public ResponseEntity<String> registerWorker(@Valid @RequestBody PostWorkerRequestDto request) {
         if (abstractUserService.userExists(request.getEmail())) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -80,13 +79,13 @@ public class AuthenticationController {
         }
     }
 
-    @Operation(summary = "Authenticate a user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Authentication successful"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Authentication not successful", content = @Content)
-    })
     @PostMapping("/authenticate")
+    @Operation(summary = "Autoryzacja użytkownika")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Autoryzacja zakończona sukcesem"),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Autoryzacja nieudana", content = @Content)
+    })
     public ResponseEntity<AuthenticationResponseDto> authenticate(@RequestBody PostAuthenticationRequestDto request) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }

@@ -34,11 +34,10 @@ public class MemberStatisticsController {
     }
 
     @GetMapping("/getMonthlyGymEntries/{email}")
-    @Operation(summary = "Get monthly gym entries by email", description = "Fetches the monthly gym entry counts of a member, " +
-            "possible for ADMIN, MEMBER_MANAGEMENT, and STATISTICS workers and for the member who owns the data.")
+    @Operation(summary = "Pobierz miesięczną liczbę wejść na siłownię", description = "Pobiera miesięczną liczbę wejść klienta na siłownię na podstawie jego adresu e-mail. Dostępny dla klienta oraz pracowników z rolami: ADMIN, MEMBER_MANAGEMENT, STATISTICS.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Monthly Gym Entry counts fetched successfully"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Miesięczna liczba wejść na siłownię pobrana pomyślnie"),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<Map<YearMonth, Integer>> getMonthlyGymEntries(@PathVariable String email) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -50,11 +49,10 @@ public class MemberStatisticsController {
     }
 
     @GetMapping("/getDailyGymMinutes/{email}")
-    @Operation(summary = "Get daily gym minutes by email", description = "Fetches the daily minutes spent in the gym by a member, " +
-            "possible for ADMIN, MEMBER_MANAGEMENT, and STATISTICS workers and for the member who owns the data.")
+    @Operation(summary = "Pobierz dzienny czas spędzony na siłowni", description = "Pobiera dzienny czas (w minutach) spędzony na siłowni przez klienta na podstawie jego adresu e-mail. Dostępny dla klienta oraz pracowników z rolami: ADMIN, MEMBER_MANAGEMENT, STATISTICS.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Daily Gym Minutes fetched successfully"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Dzienny czas na siłowni pobrany pomyślnie"),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<Map<LocalDate, Integer>> getDailyGymMinutes(@PathVariable String email) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -66,12 +64,11 @@ public class MemberStatisticsController {
     }
 
     @GetMapping("/getPaymentHistory/{email}")
-    @Operation(summary = "Get payment history by email", description = "Fetches a payment history of a member, " +
-            "possible for ADMIN, MEMBER_MANAGEMENT and STATISTICS workers and only for the member who owns the data.")
+    @Operation(summary = "Pobierz historię płatności", description = "Pobiera historię płatności klienta na podstawie jego adresu e-mail. Dostępny dla klienta oraz pracowników z rolami: ADMIN, MEMBER_MANAGEMENT, STATISTICS.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Payment history fetched successfully"),
-            @ApiResponse(responseCode = "404", description = "Member not found", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Historia płatności pobrana pomyślnie"),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono klienta", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<List<GetPaymentResponseDto>> getPayments(@PathVariable String email) {
 
@@ -87,11 +84,10 @@ public class MemberStatisticsController {
     }
 
     @GetMapping("/getMonthlyGroupClasses/{email}")
-    @Operation(summary = "Get monthly historical classes by email", description = "Fetches the monthly historical class counts for a member, " +
-            "possible for ADMIN, MEMBER_MANAGEMENT, and STATISTICS workers and for the member who owns the data.")
+    @Operation(summary = "Pobierz miesięczną liczbę zajęć grupowych", description = "Pobiera miesięczną liczbę zajęć grupowych klienta na podstawie jego adresu e-mail. Dostępny dla klienta oraz pracowników z rolami: ADMIN, MEMBER_MANAGEMENT, STATISTICS.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Monthly historical class counts fetched successfully"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Miesięczna liczba zajęć grupowych pobrana pomyślnie"),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<Map<YearMonth, Integer>> getMonthlyGroupClasses(@PathVariable String email) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

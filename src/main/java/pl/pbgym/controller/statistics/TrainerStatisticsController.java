@@ -27,11 +27,11 @@ public class TrainerStatisticsController {
     }
 
     @GetMapping("/getMonthlyGroupClasses/{email}")
-    @Operation(summary = "Get monthly historical classes by email", description = "Fetches the monthly historical class counts for a trainer, " +
-            "possible for ADMIN, TRAINER_MANAGEMENT, and STATISTICS workers and for the trainer who owns the data.")
+    @Operation(summary = "Pobierz miesięczne dane historyczne zajęć grupowych dla trenera",
+            description = "Pobiera miesięczne dane historyczne zajęć grupowych przypisanych do trenera. Dostępny dla pracowników z rolami: ADMIN, TRAINER_MANAGEMENT, STATISTICS oraz dla trenera, którego dane dotyczą.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Monthly historical class counts fetched successfully"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Miesięczne dane historyczne zajęć grupowych pobrane pomyślnie"),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<Map<YearMonth, Integer>> getMonthlyGroupClasses(@PathVariable String email) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

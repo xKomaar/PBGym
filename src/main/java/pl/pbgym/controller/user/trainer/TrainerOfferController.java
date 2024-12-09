@@ -36,12 +36,13 @@ public class TrainerOfferController {
     }
 
     @GetMapping("/{email}")
-    @Operation(summary = "Get trainer's offers by email", description = "Fetches all offers of a trainer by email. " +
-            "possible only for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data.")
+    @Operation(summary = "Pobierz oferty trenera według adresu e-mail",
+            description = "Pobiera wszystkie oferty trenera według jego adresu e-mail. " +
+                    "Dostępne dla pracowników z rolami: ADMIN, TRAINER_MANAGEMENT oraz dla trenera, którego dane dotyczą.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Offers returned successfully"),
-            @ApiResponse(responseCode = "404", description = "Trainer not found", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Oferty pomyślnie zwrócone"),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono trenera", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content)
     })
     public ResponseEntity<List<GetTrainerOfferResponseDto>> getTrainerOffers(@PathVariable String email) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -57,22 +58,25 @@ public class TrainerOfferController {
     }
 
     @GetMapping("/allTrainersWithOffers")
-    @Operation(summary = "Get all trainers with offers (PUBLIC)", description = "Fetches all trainers, POSSIBLE FOR THE PUBLIC.")
+    @Operation(summary = "Pobierz wszystkich trenerów z ofertami (PUBLICZNE)",
+            description = "Pobiera listę wszystkich trenerów wraz z ich ofertami. " +
+                    "Dostępne publicznie.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Trainers returned successfully"),
+            @ApiResponse(responseCode = "200", description = "Pomyślnie zwrócono listę trenerów."),
     })
     public ResponseEntity<List<GetPublicTrainerInfoWithOffersResponseDto>> getAllPublicTrainersWithOffers() {
         return ResponseEntity.ok(trainerOfferService.getAllPublicTrainersWithOffers());
     }
 
     @PostMapping("/{email}")
-    @Operation(summary = "Create a new trainer offer", description = "Creates a new offer for a trainer by email. " +
-            "possible only for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data.")
+    @Operation(summary = "Utwórz nową ofertę trenera",
+            description = "Tworzy nową ofertę dla trenera na podstawie jego adresu e-mail. " +
+                    "Dostępne dla pracowników z rolami: ADMIN, TRAINER_MANAGEMENT oraz dla trenera, którego dane dotyczą.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Offer created successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Trainer not found", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content)
+            @ApiResponse(responseCode = "201", description = "Oferta pomyślnie utworzona"),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono trenera", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content)
     })
     public ResponseEntity<String> createTrainerOffer(@PathVariable String email, @Valid @RequestBody PostTrainerOfferRequestDto dto) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -88,13 +92,14 @@ public class TrainerOfferController {
     }
 
     @PutMapping("/{email}")
-    @Operation(summary = "Update an existing trainer offer", description = "Updates an offer by offer id and trainer email. " +
-            "possible only for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data.")
+    @Operation(summary = "Zaktualizuj istniejącą ofertę trenera",
+            description = "Aktualizuje ofertę trenera według identyfikatora oferty i adresu e-mail trenera. " +
+                    "Dostępne dla pracowników z rolami: ADMIN, TRAINER_MANAGEMENT oraz dla trenera, którego dane dotyczą.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Offer updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - trainer does not own the offer or authenticated user is not authorized to access this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Trainer or offer not found", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Oferta została pomyślnie zaktualizowana"),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu lub trener nie jest właścicielem oferty", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono trenera lub oferty", content = @Content)
     })
     public ResponseEntity<String> updateTrainerOffer(@PathVariable String email, @Valid @RequestBody UpdateTrainerOfferRequestDto dto) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -112,13 +117,14 @@ public class TrainerOfferController {
     }
 
     @DeleteMapping("/{email}")
-    @Operation(summary = "Delete a trainer offer", description = "Deletes an offer by offer id and trainer email." +
-            "possible only for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data.")
+    @Operation(summary = "Usuń ofertę trenera",
+            description = "Usuwa ofertę trenera według identyfikatora oferty i adresu e-mail. " +
+                    "Dostępne dla pracowników z rolami: ADMIN, TRAINER_MANAGEMENT oraz dla trenera, którego dane dotyczą.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Offer deleted successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - trainer does not own the offer or authenticated user is not authorized to access this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Trainer or offer not found", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Oferta została pomyślnie usunięta"),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu lub trener nie jest właścicielem oferty", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono trenera lub oferty", content = @Content)
     })
     public ResponseEntity<String> deleteTrainerOffer(@PathVariable String email, @RequestBody Long offerId) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

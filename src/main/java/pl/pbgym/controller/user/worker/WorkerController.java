@@ -33,7 +33,6 @@ import java.util.List;
 public class WorkerController {
 
     private final WorkerService workerService;
-
     private final AbstractUserService abstractUserService;
 
     @Autowired
@@ -43,26 +42,27 @@ public class WorkerController {
     }
 
     @GetMapping("/all")
-    @Operation(summary = "Get all workers", description = "Fetches all workers, possible only for ADMIN workers.")
+    @Operation(summary = "Pobierz wszystkich pracowników",
+            description = "Pobiera listę wszystkich pracowników. Dostępne dla pracowników z rolą ADMIN.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Workers returned successfully"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Pracownicy zostali pomyślnie zwróceni"),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content)
     })
     public ResponseEntity<List<GetWorkerResponseDto>> getAllWorkers() {
         return ResponseEntity.ok(workerService.getAllWorkers());
     }
 
     @GetMapping("/{email}")
-    @Operation(summary = "Get a worker by email", description = "Fetches the worker details by their email, " +
-            "possible only for ADMIN workers and for the worker who owns the data.")
+    @Operation(summary = "Pobierz pracownika według adresu e-mail",
+            description = "Pobiera szczegóły pracownika według jego adresu e-mail. " +
+                    "Dostępne dla pracowników z rolą ADMIN oraz dla pracownika, którego dane dotyczą.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Worker found and returned successfully"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Worker not found", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Pracownik został pomyślnie znaleziony i zwrócony"),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono pracownika", content = @Content)
     })
     public ResponseEntity<GetWorkerResponseDto> getWorker(@PathVariable String email) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        //if worker isn't an admin, the id must match (he must be himself)
         if (authenticatedUser instanceof Worker) {
             if (!((Worker) authenticatedUser).getMappedPermissions().contains(PermissionType.ADMIN)) {
                 if (!authenticatedUser.getEmail().equals(email)) {
@@ -79,13 +79,14 @@ public class WorkerController {
     }
 
     @PutMapping("/{email}")
-    @Operation(summary = "Update a worker by email", description = "Fetches the worker details by their email and updates their data, " +
-            "possible only for ADMIN workers. Gender types: MALE, FEMALE, OTHER")
+    @Operation(summary = "Zaktualizuj dane pracownika",
+            description = "Aktualizuje dane pracownika według jego adresu e-mail. " +
+                    "Dostępne dla pracowników z rolą ADMIN. Możliwe wartości płci: MALE, FEMALE, OTHER.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Worker found and updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Worker not found", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Pracownik został pomyślnie zaktualizowany."),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono pracownika", content = @Content)
     })
     public ResponseEntity<String> updateWorker(@PathVariable String email,
                                                @Valid @RequestBody UpdateWorkerAdminRequestDto updateWorkerAdminRequestDto) {
@@ -98,16 +99,17 @@ public class WorkerController {
     }
 
     @PutMapping("/authority/{email}")
-    @Operation(summary = "Update a workers position and permissions by email", description = "Fetches the worker details by their email and updates their position and permissions, " +
-            "possible only for ADMIN workers. Permission types: ADMIN, STATISTICS, MEMBER_MANAGEMENT, TRAINER_MANAGEMENT, PASS_MANAGEMENT, GROUP_CLASS_MANAGEMENT, BLOG")
+    @Operation(summary = "Zaktualizuj uprawnienia pracownika",
+            description = "Aktualizuje stanowisko i uprawnienia pracownika według adresu e-mail. " +
+                    "Dostępne dla pracowników z rolą ADMIN. Dostępne uprawnienia: ADMIN, STATISTICS, MEMBER_MANAGEMENT, TRAINER_MANAGEMENT, PASS_MANAGEMENT, GROUP_CLASS_MANAGEMENT, BLOG.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Worker found and updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Worker not found", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Uprawnienia pracownika zostały pomyślnie zaktualizowane."),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono pracownika", content = @Content)
     })
     public ResponseEntity<String> updateWorkerAuthority(@PathVariable String email,
-                                               @Valid @RequestBody UpdateWorkerAuthorityRequestDto updateWorkerAuthorityRequestDto) {
+                                                        @Valid @RequestBody UpdateWorkerAuthorityRequestDto updateWorkerAuthorityRequestDto) {
         try {
             workerService.updateWorkerAuthority(email, updateWorkerAuthorityRequestDto);
             return ResponseEntity.status(HttpStatus.OK).body("Worker updated successfully");
@@ -117,20 +119,20 @@ public class WorkerController {
     }
 
     @PutMapping("/changePassword/{email}")
-    @Operation(summary = "Change a worker password by email", description = "Fetches the worker details by their email and changes their password, " +
-            "possible only for ADMIN workers and for the worker who owns the data. Admin doesn't need to provide the old password (it can be left null or empty)." +
-            "If admin wants to change another admins password, they must provide the old password.")
+    @Operation(summary = "Zmień hasło pracownika",
+            description = "Zmienia hasło pracownika według adresu e-mail. " +
+                    "Dostępne dla pracowników z rolą ADMIN oraz dla pracownika, którego dane dotyczą. " +
+                    "Jeżeli administrator zmienia hasło innego administratora, musi podać stare hasło.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Worker found and updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Worker not found", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Hasło pracownika zostało pomyślnie zaktualizowane."),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono pracownika", content = @Content)
     })
     public ResponseEntity<String> changePassword(@PathVariable String email,
                                                  @Valid @RequestBody ChangePasswordRequestDto changePasswordRequestDto) {
 
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        //if worker isn't an admin, the id must match (he must be himself)
         if (authenticatedUser instanceof Worker) {
             if (!((Worker) authenticatedUser).getMappedPermissions().contains(PermissionType.ADMIN)) {
                 if (!authenticatedUser.getEmail().equals(email)) {
@@ -164,14 +166,15 @@ public class WorkerController {
     }
 
     @PutMapping("/changeEmail/{email}")
-    @Operation(summary = "Change a worker email by email", description = "Fetches the worker details by their email and changes their email, " +
-            "possible only for ADMIN workers.")
+    @Operation(summary = "Zmień adres e-mail pracownika",
+            description = "Zmienia adres e-mail pracownika według jego starego adresu e-mail. " +
+                    "Dostępne dla pracowników z rolą ADMIN.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Worker found and updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Worker not found", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Email already in use", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Adres e-mail pracownika został pomyślnie zaktualizowany."),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono pracownika", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Adres e-mail jest już używany", content = @Content)
     })
     public ResponseEntity<AuthenticationResponseDto> changeEmail(@PathVariable String email,
                                                                  @Valid @RequestBody ChangeEmailRequestDto changeEmailRequestDto) {
