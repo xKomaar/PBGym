@@ -607,6 +607,7 @@ public class TrainerOfferControllerTest {
         assertEquals("Trainer", trainerInfo.getName());
         assertEquals("One", trainerInfo.getSurname());
         assertEquals(Gender.MALE, trainerInfo.getGender());
+        assertFalse(false);
 
         List<GetTrainerOfferResponseDto> offers = trainerWithOffers.getTrainerOffers();
         assertEquals(1, offers.size());
