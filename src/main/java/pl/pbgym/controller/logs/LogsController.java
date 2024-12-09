@@ -23,11 +23,11 @@ public class LogsController {
     private static final String LOG_FILE_PATH = "logs/application.log";
 
     @GetMapping()
-    @Operation(summary = "Fetch system logs", description = "Fetches system logs of the backend. Possible only for ADMIN workers.")
+    @Operation(summary = "Pobierz logi systemowe", description = "Pobiera logi systemowe backendu. Dostępny dla pracowników z rolą ADMIN.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Logs fetched successfully"),
-            @ApiResponse(responseCode = "500", description = "Error reading log file", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Logi pobrano pomyślnie"),
+            @ApiResponse(responseCode = "500", description = "Błąd odczytu pliku z logami", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<String> getLatestLogs() {
         try {

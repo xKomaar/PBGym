@@ -34,55 +34,50 @@ public class OfferController {
     }
 
     @GetMapping("/")
-    @Operation(summary = "Get all offers", description = "Fetches all offers, " +
-            "possible only for ADMIN and PASS_MANAGEMENT workers.")
+    @Operation(summary = "Pobierz wszystkie oferty", description = "Pobiera wszystkie oferty. Dostępny dla pracowników z rolami: ADMIN, PASS_MANAGEMENT.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Offer list fetched"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Lista ofert pobrana pomyślnie"),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<List<GetOfferResponseDto>> getAllOffers() {
         return ResponseEntity.ok(offerService.getAllOffers());
     }
 
     @GetMapping("/public/active")
-    @Operation(summary = "MEANT FOR THE PUBLIC - Get all active offers",
-            description = "Fetches all active offers only with public data")
+    @Operation(summary = "Pobierz wszystkie aktywne oferty", description = "Pobiera wszystkie aktywne oferty zawierające publiczne dane. Dostępny bez uwierzytelnienia.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Offer list fetched"),
+            @ApiResponse(responseCode = "200", description = "Lista aktywnych ofert pobrana pomyślnie"),
     })
     public ResponseEntity<List<GetOfferResponseDto>> getAllActiveOffers() {
         return ResponseEntity.ok(offerService.getAllActiveOffers());
     }
 
     @GetMapping("/standard")
-    @Operation(summary = "Get all standard offers", description = "Fetches all standard offers, " +
-            "possible only for ADMIN and PASS_MANAGEMENT workers.")
+    @Operation(summary = "Pobierz wszystkie standardowe oferty", description = "Pobiera wszystkie standardowe oferty. Dostępny dla pracowników z rolami: ADMIN, PASS_MANAGEMENT.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Standard Offer list fetched"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Lista standardowych ofert pobrana pomyślnie"),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<List<GetStandardOfferResponseDto>> getAllStandardOffers() {
         return ResponseEntity.ok(offerService.getAllStandardOffers());
     }
 
     @GetMapping("/special")
-    @Operation(summary = "Get all special offers", description = "Fetches all special offers, " +
-            "possible only for ADMIN and PASS_MANAGEMENT workers.")
+    @Operation(summary = "Pobierz wszystkie specjalne oferty", description = "Pobiera wszystkie specjalne oferty. Dostępny dla pracowników z rolami: ADMIN, PASS_MANAGEMENT.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Special Offer list fetched"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Lista specjalnych ofert pobrana pomyślnie"),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<List<GetSpecialOfferResponseDto>> getAllSpecialOffers() {
         return ResponseEntity.ok(offerService.getAllSpecialOffers());
     }
 
     @GetMapping("/standard/{title}")
-    @Operation(summary = "Get standard offer by title", description = "Fetches standard offer by its title, " +
-            "possible only for ADMIN and PASS_MANAGEMENT workers.")
+    @Operation(summary = "Pobierz standardową ofertę po tytule", description = "Pobiera standardową ofertę na podstawie tytułu. Dostępny dla pracowników z rolami: ADMIN, PASS_MANAGEMENT.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Standard Offer list fetched"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Standard Offer not found", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Standardowa oferta pobrana pomyślnie"),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono standardowej oferty", content = @Content),
     })
     public ResponseEntity<GetStandardOfferResponseDto> getStandardOfferByTitle(@PathVariable String title) {
         try {
@@ -93,12 +88,11 @@ public class OfferController {
     }
 
     @GetMapping("/special/{title}")
-    @Operation(summary = "Get special offer by title", description = "Fetches special offer by its title, " +
-            "possible only for ADMIN and PASS_MANAGEMENT workers.")
+    @Operation(summary = "Pobierz specjalną ofertę po tytule", description = "Pobiera specjalną ofertę na podstawie tytułu. Dostępny dla pracowników z rolami: ADMIN, PASS_MANAGEMENT.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Special Offer list fetched"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Special Offer not found", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Specjalna oferta pobrana pomyślnie"),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono specjalnej oferty", content = @Content),
     })
     public ResponseEntity<GetSpecialOfferResponseDto> getSpecialOfferByTitle(@PathVariable String title) {
         try {
@@ -109,12 +103,11 @@ public class OfferController {
     }
 
     @PostMapping("/standard")
-    @Operation(summary = "Add an standard offer", description = "Adds a standard offer, " +
-            "possible only for ADMIN and PASS_MANAGEMENT workers. MAX PROPERTIES = 6")
+    @Operation(summary = "Dodaj standardową ofertę", description = "Dodaje standardową ofertę. Dostępny dla pracowników z rolami: ADMIN, PASS_MANAGEMENT. Maksymalna liczba właściwości: 6.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Standard offer added"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Standardowa oferta dodana pomyślnie"),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<String> addStandardOffer(@Valid @RequestBody PostStandardOfferRequestDto postStandardOfferRequestDto) {
         if(offerService.offerExists(postStandardOfferRequestDto.getTitle())) {
@@ -126,12 +119,11 @@ public class OfferController {
     }
 
     @PostMapping("/special")
-    @Operation(summary = "Add an special offer", description = "Adds a special offer, " +
-            "possible only for ADMIN and PASS_MANAGEMENT workers. MAX PROPERTIES = 6")
+    @Operation(summary = "Dodaj specjalną ofertę", description = "Dodaje specjalną ofertę. Dostępny dla pracowników z rolami: ADMIN, PASS_MANAGEMENT. Maksymalna liczba właściwości: 6.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Special offer added"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Specjalna oferta dodana pomyślnie"),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<String> addSpecialOffer(@Valid @RequestBody PostSpecialOfferRequestDto postSpecialOfferRequestDto) {
         if(offerService.offerExists(postSpecialOfferRequestDto.getTitle())) {
@@ -143,14 +135,13 @@ public class OfferController {
     }
 
     @PutMapping("/standard/{title}")
-    @Operation(summary = "Update an standard offer", description = "Updates a standard offer, " +
-            "possible only for ADMIN and PASS_MANAGEMENT workers. MAX PROPERTIES = 6")
+    @Operation(summary = "Zaktualizuj standardową ofertę", description = "Aktualizuje standardową ofertę. Dostępny dla pracowników z rolami: ADMIN, PASS_MANAGEMENT. Maksymalna liczba właściwości: 6.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Standard offer updated"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Standard Offer not found", content = @Content),
-            @ApiResponse(responseCode = "409", description = "New title is already taken", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Standardowa oferta zaktualizowana pomyślnie"),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono standardowej oferty", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Nowy tytuł jest już zajęty", content = @Content),
     })
     public ResponseEntity<String> updateStandardOffer(@PathVariable String title, @Valid @RequestBody PostStandardOfferRequestDto postStandardOfferRequestDto) {
         if(!offerService.offerExists(title)) {
@@ -171,14 +162,13 @@ public class OfferController {
     }
 
     @PutMapping("/special/{title}")
-    @Operation(summary = "Update an special offer", description = "Updates a special offer, " +
-            "possible only for ADMIN and PASS_MANAGEMENT workers. MAX PROPERTIES = 6")
+    @Operation(summary = "Zaktualizuj specjalną ofertę", description = "Aktualizuje specjalną ofertę. Dostępny dla pracowników z rolami: ADMIN, PASS_MANAGEMENT. Maksymalna liczba właściwości: 6.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Special offer updated"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Special Offer not found", content = @Content),
-            @ApiResponse(responseCode = "409", description = "New title is already taken", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Specjalna oferta zaktualizowana pomyślnie"),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono specjalnej oferty", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Nowy tytuł jest już zajęty", content = @Content),
     })
     public ResponseEntity<String> updateSpecialOffer(@PathVariable String title, @Valid @RequestBody PostSpecialOfferRequestDto postSpecialOfferRequestDto) {
         if(!offerService.offerExists(title)) {
@@ -200,13 +190,12 @@ public class OfferController {
     }
 
     @DeleteMapping("/{title}")
-    @Operation(summary = "Delete an offer", description = "Deletes an offer by its title, " +
-            "possible only for ADMIN and PASS_MANAGEMENT workers.")
+    @Operation(summary = "Usuń ofertę", description = "Usuwa ofertę na podstawie tytułu. Dostępny dla pracowników z rolami: ADMIN, PASS_MANAGEMENT.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Offer Deleted"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Offer not found", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Oferta usunięta pomyślnie"),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono oferty", content = @Content),
     })
     public ResponseEntity<String> deleteOffer(@PathVariable String title) {
         try {

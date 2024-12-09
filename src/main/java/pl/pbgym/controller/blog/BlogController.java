@@ -28,20 +28,20 @@ public class BlogController {
     }
 
     @GetMapping("/all")
-    @Operation(summary = "Get all blog posts", description = "Fetches all blog posts. A PUBLIC ENDPOINT.")
+    @Operation(summary = "Pobierz wszystkie wpisy na blogowe", description = "Pobiera wszystkie wpisy blogowe. Dostępny bez autoryzacji.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Blog posts retrieved successfully")
+            @ApiResponse(responseCode = "200", description = "Wpisy blogowe pobrane pomyślnie")
     })
     public ResponseEntity<List<GetBlogPostResponseDto>> getAllBlogPosts() {
         return ResponseEntity.ok(blogService.getAllBlogPosts());
     }
 
     @PostMapping()
-    @Operation(summary = "Create a new blog post", description = "Creates a new blog post. Possible for BLOG and ADMIN workers. Content character limit: 2000")
+    @Operation(summary = "Utwórz nowy wpis blogowy", description = "Tworzy nowy wpis blogowy. Dostępny dla pracowników z rolami: BLOG, ADMIN. Limit znaków w treści: 2000.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Blog post created successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "201", description = "Wpis blogowy utworzony pomyślnie"),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<String> saveBlogPost(@Valid @RequestBody PostBlogPostRequestDto postBlogPostRequestDto) {
         blogService.saveBlogPost(postBlogPostRequestDto);
@@ -49,12 +49,12 @@ public class BlogController {
     }
 
     @PutMapping()
-    @Operation(summary = "Update a blog post", description = "Updates an existing blog post. Possible for BLOG and ADMIN workers.")
+    @Operation(summary = "Zaktualizuj wpis blogowy", description = "Aktualizuje istniejący wpis blogowy. Dostępny dla pracowników z rolami: BLOG, ADMIN.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Blog post updated successfully"),
-            @ApiResponse(responseCode = "404", description = "Not Found - blog post not found", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Wpis blogowy zaktualizowany pomyślnie"),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono wpisu blogowego", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<String> updateBlogPost(@Valid @RequestBody UpdateBlogPostRequestDto updateBlogPostRequestDto) {
         try {
@@ -66,12 +66,12 @@ public class BlogController {
     }
 
     @DeleteMapping("/{blogPostId}")
-    @Operation(summary = "Delete a blog post", description = "Deletes a blog post by its ID. Possible for BLOG and ADMIN workers.")
+    @Operation(summary = "Usuń wpis blogowy", description = "Usuwa wpis blogowy na podstawie jego ID. Dostępny dla pracowników z rolami: BLOG, ADMIN.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Blog post deleted successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Not Found - blog post not found", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Wpis blogowy usunięty pomyślnie"),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono wpisu blogowego", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<String> deleteBlogPost(@PathVariable Long blogPostId) {
         try {

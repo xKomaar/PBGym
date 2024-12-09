@@ -37,34 +37,35 @@ public class GroupClassController {
     }
 
     @GetMapping("/upcoming")
-    @Operation(summary = "Get all upcoming group classes", description = "Fetches all upcoming group classes. " +
-            "POSSIBLE FOR THE PUBLIC.")
+    @Operation(summary = "Pobierz wszystkie nadchodzące zajęcia grupowe",
+            description = "Pobiera wszystkie nadchodzące zajęcia grupowe. Dostępne bez uwierzytelnienia.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Upcoming group classes retrieved successfully")  ,
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Pomyślnie pobrano listę nadchodzących zajęć grupowych."),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu.", content = @Content)
     })
     public ResponseEntity<List<GetGroupClassResponseDto>> getAllUpcomingGroupClasses() {
         return ResponseEntity.ok(groupClassService.getAllUpcomingGroupClasses());
     }
 
     @GetMapping("/historical")
-    @Operation(summary = "Get all historical group classes", description = "Fetches all historical group classes. " +
-            "POSSIBLE FOR THE PUBLIC.")
+    @Operation(summary = "Pobierz wszystkie zakończone zajęcia grupowe",
+            description = "Pobiera wszystkie zakończone zajęcia grupowe. Dostępne bez uwierzytelnienia.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Historical group classes retrieved successfully"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Pomyślnie pobrano listę zakończonych zajęć grupowych."),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu.", content = @Content)
     })
     public ResponseEntity<List<GetGroupClassResponseDto>> getAllHistoricalGroupClasses() {
         return ResponseEntity.ok(groupClassService.getAllHistoricalGroupClasses());
     }
 
     @GetMapping("/{groupClassId}/members")
-    @Operation(summary = "Get all members signed up to a group class", description = "Fetches all members signed up to a group class. " +
-            "Possible for GROUP_CLASS_MANAGEMENT and ADMIN workers and for the trainers assigned to this group class.")
+    @Operation(summary = "Pobierz listę klientów zapisanych na zajęcia grupowe",
+            description = "Pobiera listę klientów zapisanych na określone zajęcia grupowe. " +
+                    "Dostępne dla pracownik z rolami: ADMIN, GROUP_CLASS_MANAGEMENT oraz trenerów przypisanych do zajęć.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Member list retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "Group class not found", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource OR trainer isn't assigned to this class", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Pomyślnie pobrano listę klientów."),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono zajęć grupowych.", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu lub trener nie jest przypisany do zajęć.", content = @Content)
     })
     public ResponseEntity<List<GetGroupClassMemberResponseDto>> getAllSignedUpMembers(@PathVariable Long groupClassId) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -88,14 +89,14 @@ public class GroupClassController {
     }
 
     @PostMapping()
-    @Operation(summary = "Create a new group class", description = "Creates a new group class. " +
-            "Possible for GROUP_CLASS_MANAGEMENT and ADMIN workers.")
+    @Operation(summary = "Utwórz nowe zajęcia grupowe",
+            description = "Tworzy nowe zajęcia grupowe. Dostępne dla pracownik z rolami: ADMIN i GROUP_CLASS_MANAGEMENT.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Group class created successfully"),
-            @ApiResponse(responseCode = "404", description = "Trainer not found", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Group class overlapping with another", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Invalid date - start date is in the past OR invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "201", description = "Pomyślnie utworzono zajęcia grupowe."),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono trenera.", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Zajęcia grupowe kolidują z innymi zajęciami.", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe lub data rozpoczęcia w przeszłości.", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<String> saveGroupClass(@Valid @RequestBody PostGroupClassRequestDto dto) {
         try {
@@ -111,14 +112,14 @@ public class GroupClassController {
     }
 
     @PutMapping()
-    @Operation(summary = "Update an existing group class", description = "Updates an existing group class. " +
-            "Possible for GROUP_CLASS_MANAGEMENT and ADMIN workers.")
+    @Operation(summary = "Zaktualizuj istniejące zajęcia grupowe",
+            description = "Aktualizuje istniejące zajęcia grupowe. Dostępne dla pracownik z rolami: ADMIN i GROUP_CLASS_MANAGEMENT.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Group class updated successfully"),
-            @ApiResponse(responseCode = "404", description = "Group class or trainer not found", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Invalid update - date in the past or member limit conflict OR invalid input data", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Group class overlapping with another", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource OR group class is historical", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Pomyślnie zaktualizowano zajęcia grupowe."),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono zajęć grupowych lub trenera.", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowa data rozpoczęcia lub konflikt limitu klientów.", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Zajęcia grupowe kolidują z innymi zajęciami.", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Zajęcia są historyczne lub brak dostępu do tego zasobu.", content = @Content)
     })
     public ResponseEntity<String> updateGroupClass(@Valid @RequestBody UpdateGroupClassRequestDto dto) {
         try {
@@ -136,13 +137,13 @@ public class GroupClassController {
     }
 
     @DeleteMapping("/{groupClassId}")
-    @Operation(summary = "Delete a group class", description = "Deletes a specified group class. " +
-            "Possible for GROUP_CLASS_MANAGEMENT and ADMIN workers.")
+    @Operation(summary = "Usuń zajęcia grupowe",
+            description = "Usuwa określone zajęcia grupowe. Dostępne dla pracownik z rolami: ADMIN i GROUP_CLASS_MANAGEMENT.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Group class deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Group class not found", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource OR group class is historical", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Pomyślnie usunięto zajęcia grupowe."),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono zajęć grupowych.", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe.", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Zajęcia są historyczne lub brak dostępu do tego zasobu.", content = @Content)
     })
     public ResponseEntity<String> deleteGroupClass(@PathVariable Long groupClassId) {
         try {
@@ -156,12 +157,13 @@ public class GroupClassController {
     }
 
     @GetMapping("/trainer/{email}/upcoming")
-    @Operation(summary = "Get upcoming group classes by trainer email", description = "Fetches all upcoming group classes for a specific trainer. " +
-            "Possible for GROUP_CLASS_MANAGEMENT and ADMIN workers and for and trainers who own the data.")
+    @Operation(summary = "Pobierz nadchodzące zajęcia grupowe według e-maila trenera",
+            description = "Pobiera nadchodzące zajęcia grupowe dla określonego trenera. " +
+                    "Dostępne dla pracownik z rolami: ADMIN, GROUP_CLASS_MANAGEMENT oraz trenerów, których dane dotyczą.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Upcoming group classes retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "Trainer not found", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Pomyślnie pobrano listę nadchodzących zajęć."),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono trenera.", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu.", content = @Content)
     })
     public ResponseEntity<List<GetGroupClassResponseDto>> getAllUpcomingGroupClassesByTrainerEmail(@PathVariable String email) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -176,12 +178,13 @@ public class GroupClassController {
     }
 
     @GetMapping("/trainer/{email}/historical")
-    @Operation(summary = "Get historical group classes by trainer email", description = "Fetches all historical group classes for a specific trainer. " +
-            "Possible for GROUP_CLASS_MANAGEMENT and ADMIN workers and for and trainers who own the data.")
+    @Operation(summary = "Pobierz zakończone zajęcia grupowe według e-maila trenera",
+            description = "Pobiera zakończone zajęcia grupowe dla określonego trenera. " +
+                    "Dostępne dla pracownik z rolami: ADMIN, GROUP_CLASS_MANAGEMENT oraz trenerów, których dane dotyczą.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Historical group classes retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "Trainer not found", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Pomyślnie pobrano listę zakończonych zajęć."),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono trenera.", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu.", content = @Content)
     })
     public ResponseEntity<List<GetGroupClassResponseDto>> getAllHistoricalGroupClassesByTrainerEmail(@PathVariable String email) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -196,12 +199,13 @@ public class GroupClassController {
     }
 
     @GetMapping("/member/{email}/upcoming")
-    @Operation(summary = "Get upcoming group classes by member email", description = "Fetches all upcoming group classes for a specific member. " +
-            "Possible for GROUP_CLASS_MANAGEMENT and ADMIN workers and for and members who own the data.")
+    @Operation(summary = "Pobierz nadchodzące zajęcia grupowe według e-maila klienta",
+            description = "Pobiera nadchodzące zajęcia grupowe dla określonego klienta. " +
+                    "Dostępne dla pracownik z rolami: ADMIN, GROUP_CLASS_MANAGEMENT oraz klientów, których dane dotyczą.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Upcoming group classes retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "Member not found", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Pomyślnie pobrano listę nadchodzących zajęć."),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono klienta.", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu.", content = @Content)
     })
     public ResponseEntity<List<GetGroupClassResponseDto>> getAllUpcomingGroupClassesByMemberEmail(@PathVariable String email) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -216,12 +220,13 @@ public class GroupClassController {
     }
 
     @GetMapping("/member/{email}/historical")
-    @Operation(summary = "Get historical group classes by member email", description = "Fetches all historical group classes for a specific member. " +
-            "Possible for GROUP_CLASS_MANAGEMENT and ADMIN workers and for and members who own the data.")
+    @Operation(summary = "Pobierz zakończone zajęcia grupowe według e-maila klienta",
+            description = "Pobiera zakończone zajęcia grupowe dla określonego klienta. " +
+                    "Dostępne dla pracownik z rolami: ADMIN, GROUP_CLASS_MANAGEMENT oraz klientów, których dane dotyczą.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Historical group classes retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "Member not found", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Pomyślnie pobrano listę zakończonych zajęć."),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono klienta.", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu.", content = @Content)
     })
     public ResponseEntity<List<GetGroupClassResponseDto>> getAllHistoricalGroupClassesByMemberEmail(@PathVariable String email) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -236,15 +241,14 @@ public class GroupClassController {
     }
 
     @PostMapping("/member/{email}/enroll")
-    @Operation(summary = "Enroll to a group class", description = "Enrolls a member to a group class. " +
-            "Possible for GROUP_CLASS_MANAGEMENT and ADMIN workers and for and members who wants to enroll. " +
-            "The body is groupClassId")
+    @Operation(summary = "Zapisz się na zajęcia grupowe",
+            description = "Pozwala klientowi na zapisanie się na określone zajęcia grupowe. Dostępne dla pracownik z rolami: ADMIN, GROUP_CLASS_MANAGEMENT oraz klientów zapisujących się.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Member enrolled successfully"),
-            @ApiResponse(responseCode = "404", description = "Group class or member not found", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Group class full or member already enrolled", content = @Content),
-            @ApiResponse(responseCode = "400", description = "No active pass for the member OR invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource OR group class is historical", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Klient został pomyślnie zapisany."),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono klienta lub zajęć grupowych.", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Zajęcia są pełne lub klient jest już na nie zapisany.", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Klient nie posiada aktywnego karnetu.", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Zajęcia są historyczne lub brak dostępu do tego zasobu.", content = @Content)
     })
     public ResponseEntity<String> enrollToGroupClass(@PathVariable String email, @RequestBody Long groupClassId) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -266,14 +270,13 @@ public class GroupClassController {
     }
 
     @PutMapping("/member/{email}/signOut")
-    @Operation(summary = "Sign out of a group class", description = "Removes a member from a group class. " +
-            "Possible for GROUP_CLASS_MANAGEMENT and ADMIN workers and for and members who wants to sign out. " +
-            "The body is groupClassId")
+    @Operation(summary = "Wypisz się z zajęć grupowych",
+            description = "Usuwa klienta z określonych zajęć grupowych. Dostępne dla pracownik z rolami: ADMIN, GROUP_CLASS_MANAGEMENT oraz klientów wypisujących się.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Member signed out successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Group class or member not found", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource OR group class is historical", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Klient został pomyślnie wypisany."),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe lub data rozpoczęcia w przeszłości.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono klienta lub zajęć grupowych.", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Zajęcia są historyczne lub brak dostępu do tego zasobu.", content = @Content)
     })
     public ResponseEntity<String> signOutOfGroupClass(@PathVariable String email, @RequestBody Long groupClassId) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

@@ -16,17 +16,13 @@ import pl.pbgym.domain.user.member.Member;
 import pl.pbgym.dto.auth.AuthenticationResponseDto;
 import pl.pbgym.dto.auth.ChangeEmailRequestDto;
 import pl.pbgym.dto.auth.ChangePasswordRequestDto;
-import pl.pbgym.dto.statistics.GetGymEntryResponseDto;
 import pl.pbgym.dto.user.member.GetAllMembersResponseDto;
 import pl.pbgym.dto.user.member.GetMemberResponseDto;
-import pl.pbgym.dto.user.member.GetPaymentResponseDto;
 import pl.pbgym.dto.user.member.UpdateMemberRequestDto;
 import pl.pbgym.exception.user.IncorrectPasswordException;
 import pl.pbgym.exception.user.member.MemberNotFoundException;
-import pl.pbgym.service.statistics.StatisticsService;
 import pl.pbgym.service.user.AbstractUserService;
 import pl.pbgym.service.user.member.MemberService;
-import pl.pbgym.service.user.member.PaymentService;
 
 import java.util.List;
 
@@ -45,12 +41,12 @@ public class MemberController {
     }
 
     @GetMapping("/{email}")
-    @Operation(summary = "Get a member by email", description = "Fetches the member details by their email, " +
-            "possible only for ADMIN and MEMBER_MANAGEMENT workers and for the member who owns the data.")
+    @Operation(summary = "Pobierz klienta po adresie e-mail",
+            description = "Pobiera dane klienta na podstawie jego adresu e-mail. Dostępny dla pracowników z rolami: ADMIN, MEMBER_MANAGEMENT oraz dla klienta, którego dane dotyczą.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Member found and returned successfully"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Member not found", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Klient znaleziony i zwrócony pomyślnie."),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono klienta.", content = @Content)
     })
     public ResponseEntity<GetMemberResponseDto> getMember(@PathVariable String email) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -65,23 +61,24 @@ public class MemberController {
     }
 
     @GetMapping("/all")
-    @Operation(summary = "Get all members", description = "Fetches all members, possible for ADMIN and MEMBER_MANAGEMENT workers.")
+    @Operation(summary = "Pobierz wszystkich klientów",
+            description = "Pobiera wszystkich klientów. Dostępny dla pracowników z rolami: ADMIN, MEMBER_MANAGEMENT.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Members returned successfully"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Lista klientów zwrócona pomyślnie."),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu.", content = @Content)
     })
     public ResponseEntity<List<GetAllMembersResponseDto>> getAllMembers() {
         return ResponseEntity.ok(memberService.getAllMembers());
     }
 
     @PutMapping("/{email}")
-    @Operation(summary = "Update a member by email", description = "Fetches the member details by their email and updates their data, " +
-            "possible only for ADMIN and MEMBER_MANAGEMENT workers and for the member who owns the data. Gender types: MALE, FEMALE, OTHER")
+    @Operation(summary = "Zaktualizuj klienta po adresie e-mail",
+            description = "Aktualizuje dane klienta na podstawie jego adresu e-mail. Dostępny dla pracowników z rolami: ADMIN, MEMBER_MANAGEMENT oraz dla klienta, którego dane dotyczą. Typy płci: MALE, FEMALE, OTHER.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Member found and updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Member not found", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Klient zaktualizowany pomyślnie."),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe.", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono klienta.", content = @Content)
     })
     public ResponseEntity<String> updateMember(@PathVariable String email,
                                                @Valid @RequestBody UpdateMemberRequestDto updateMemberRequestDto) {
@@ -99,14 +96,13 @@ public class MemberController {
     }
 
     @PutMapping("/changePassword/{email}")
-    @Operation(summary = "Change a member password by email", description = "Fetches the member details by their email and changes their password, " +
-            "possible only for ADMIN and MEMBER_MANAGEMENT workers and for the member who owns the data. Worker doesn't need to provide the old password (it can be left null or empty).")
+    @Operation(summary = "Zmień hasło klienta",
+            description = "Zmienia hasło klienta na podstawie jego adresu e-mail. Dostępny dla pracowników z rolami: ADMIN, MEMBER_MANAGEMENT oraz dla klienta, którego dane dotyczą. Pracownicy nie muszą podawać starego hasła.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Member found and updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Member not found", content = @Content),
-
+            @ApiResponse(responseCode = "200", description = "Hasło zaktualizowane pomyślnie."),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe.", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono klienta.", content = @Content)
     })
     public ResponseEntity<String> changePassword(@PathVariable String email,
                                                  @Valid @RequestBody ChangePasswordRequestDto changePasswordRequestDto) {
@@ -136,14 +132,13 @@ public class MemberController {
     }
 
     @PutMapping("/changeEmail/{email}")
-    @Operation(summary = "Change a member email by email", description = "Fetches the member details by their email and changes their email, " +
-            "possible only for ADMIN and MEMBER_MANAGEMENT workers and for the member who owns the data. " +
-            "Returns a new JWT, because after changing the email, re-authentication is needed.")
+    @Operation(summary = "Zmień adres e-mail klienta",
+            description = "Zmienia adres e-mail klienta na podstawie jego adresu e-mail. Dostępny dla pracowników z rolami: ADMIN, MEMBER_MANAGEMENT oraz dla klienta, którego dane dotyczą. Po zmianie e-maila generowany jest nowy JWT.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Member found and updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Member not found", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Adres e-mail zaktualizowany pomyślnie."),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe.", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono klienta.", content = @Content)
     })
     public ResponseEntity<AuthenticationResponseDto> changeEmail(@PathVariable String email,
                                                                  @Valid @RequestBody ChangeEmailRequestDto changeEmailRequestDto) {

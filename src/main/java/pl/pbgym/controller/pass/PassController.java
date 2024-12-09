@@ -37,15 +37,13 @@ public class PassController {
     }
 
     @PostMapping("/{email}")
-    @Operation(summary = "Create a pass", description = "Create a pass for a member by email, " +
-            "possible for a member and an ADMIN and PASS_MANAGEMENT workers. (but there is no logic for workers for now). " +
-            "Member MUST have a not expired payment method. If the payment doesn't go through, the pass will not be created.")
+    @Operation(summary = "Utwórz karnet", description = "Utwórz karnet dla klienta na podstawie jego adresu e-mail. Dostępny dla klienta, pracowników z rolami: ADMIN, PASS_MANAGEMENT. Klient musi posiadać aktualną metodę płatności. Jeśli płatność nie powiedzie się, karnet nie zostanie utworzony.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Pass Activated"),
-            @ApiResponse(responseCode = "404", description = "Member OR Offer not found", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Member already has an active pass", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Offer not active OR no payment method OR payment method expired OR authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Karnet aktywowany pomyślnie"),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono klienta lub oferty", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Klient już posiada aktywny karnet", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Oferta nieaktywna lub brak metody płatności lub metoda płatności wygasła lub brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<String> createAndActivatePass(@PathVariable String email, @Valid @RequestBody PostPassRequestDto passRequestDto) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -65,12 +63,11 @@ public class PassController {
     }
 
     @GetMapping("/{email}")
-    @Operation(summary = "Get a pass by email", description = "Fetches a pass for a member by email, " +
-            "possible for a member and an ADMIN and PASS_MANAGEMENT workers. Returns null if member doesn't have a pass")
+    @Operation(summary = "Pobierz karnet klienta", description = "Pobiera karnet klienta na podstawie adresu e-mail. Dostępny dla klienta, pracowników z rolami: ADMIN, PASS_MANAGEMENT. Zwraca null, jeśli klient nie posiada karnetu.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Pass Fetched"),
-            @ApiResponse(responseCode = "404", description = "Member not found", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Karnet pobrany pomyślnie"),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono klienta", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<GetPassResponseDto> getPass(@PathVariable String email) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -85,15 +82,13 @@ public class PassController {
     }
 
     @GetMapping("/passHistory/{email}")
-    @Operation(summary = "Get pass history by email", description = "Fetches a pass history of a member, " +
-            "possible only for ADMIN and PASS_MANAGEMENT workers and for the member who owns the data. ")
+    @Operation(summary = "Pobierz historię karnetów", description = "Pobiera historię karnetów klienta na podstawie adresu e-mail. Dostępny dla klienta oraz pracowników z rolami: ADMIN, PASS_MANAGEMENT.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Payment history fetched successfully"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Member not found", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Historia karnetów pobrana pomyślnie"),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono klienta", content = @Content)
     })
     public ResponseEntity<List<GetHistoricalPassResponseDto>> getPassHistory(@PathVariable String email) {
-
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (authenticatedUser instanceof Member && !authenticatedUser.getEmail().equals(email)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

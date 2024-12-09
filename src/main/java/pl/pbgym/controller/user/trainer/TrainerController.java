@@ -43,12 +43,13 @@ public class TrainerController {
     }
 
     @GetMapping("/{email}")
-    @Operation(summary = "Get a trainer by email", description = "Fetches the trainer details by their email, " +
-            "possible only for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data.")
+    @Operation(summary = "Pobierz dane trenera według adresu e-mail",
+            description = "Pobiera dane trenera według jego adresu e-mail. " +
+                    "Dostępne dla pracowników z rolami: ADMIN, TRAINER_MANAGEMENT oraz dla trenera, którego dane dotyczą.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Trainer found and returned successfully"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Trainer not found", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Pomyślnie pobrano dane trenera"),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono trenera", content = @Content)
     })
     public ResponseEntity<GetTrainerResponseDto> getTrainer(@PathVariable String email) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -64,26 +65,28 @@ public class TrainerController {
     }
 
     @GetMapping("/all")
-    @Operation(summary = "Get all trainers", description = "Fetches all trainers, possible for ADMIN and TRAINER_MANAGEMENT workers.")
+    @Operation(summary = "Pobierz listę wszystkich trenerów",
+            description = "Pobiera listę wszystkich trenerów. Dostępne dla pracowników z rolami: ADMIN, TRAINER_MANAGEMENT.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Trainers returned successfully"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Pomyślnie pobrano listę trenerów"),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<List<GetTrainerResponseDto>> getAllTrainers() {
         return ResponseEntity.ok(trainerService.getAllTrainers());
     }
 
     @PutMapping("/{email}")
-    @Operation(summary = "Update a trainer by email", description = "Fetches the trainer details by their email and updates their data, " +
-            "possible only for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data. Gender types: MALE, FEMALE, OTHER" +
-            "MAX TRAINER TAGS = 6, POSSIBLE TRAINER TAGS: BODYBUILDING, FUNCTIONAL_TRAINING, CROSS_TRAINING, WEIGHT_LOSS, "
-            + "MARTIAL_ARTS, BODYWEIGHT, WEIGHTLIFTING, MOTOR_PREPARATION, MEDICAL_TRAINING, PREGNANT_WOMEN, "
-            + "SENIOR_TRAINING, REDUCTION_TRAINING, PHYSIOTHERAPIST.")
+    @Operation(summary = "Zaktualizuj dane trenera według adresu e-mail",
+            description = "Aktualizuje dane trenera według jego adresu e-mail. " +
+                    "Dostępne dla pracowników z rolami: ADMIN, TRAINER_MANAGEMENT oraz dla trenera, którego dane dotyczą. " +
+                    "Rodzaje płci: MALE, FEMALE, OTHER. Maksymalna liczba tagów: 6. Dostępne tagi: " +
+                    "BODYBUILDING, FUNCTIONAL_TRAINING, CROSS_TRAINING, WEIGHT_LOSS, MARTIAL_ARTS, BODYWEIGHT, WEIGHTLIFTING, " +
+                    "MOTOR_PREPARATION, MEDICAL_TRAINING, PREGNANT_WOMEN, SENIOR_TRAINING, REDUCTION_TRAINING, PHYSIOTHERAPIST.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Trainer found and updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Trainer not found", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Pomyślnie zaktualizowano dane trenera"),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono trenera", content = @Content)
     })
     public ResponseEntity<String> updateTrainer(@PathVariable String email,
                                                 @Valid @RequestBody UpdateTrainerRequestDto updateTrainerRequestDto) {
@@ -101,13 +104,14 @@ public class TrainerController {
     }
 
     @PutMapping("/changePassword/{email}")
-    @Operation(summary = "Change a trainer password by email", description = "Fetches the trainer details by their email and changes their password, " +
-            "possible only for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data. Worker doesn't need to provide the old password (it can be left null or empty).")
+    @Operation(summary = "Zmień hasło trenera według adresu e-mail",
+            description = "Zmienia hasło trenera według jego adresu e-mail. " +
+                    "Dostępne dla pracowników z rolami: ADMIN, TRAINER_MANAGEMENT oraz dla trenera, którego dane dotyczą.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Trainer found and updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Trainer not found", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Hasło trenera zaktualizowano pomyślnie"),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono trenera", content = @Content)
     })
     public ResponseEntity<String> changePassword(@PathVariable String email,
                                                  @Valid @RequestBody ChangePasswordRequestDto changePasswordRequestDto) {
@@ -136,15 +140,15 @@ public class TrainerController {
     }
 
     @PutMapping("/changeEmail/{email}")
-    @Operation(summary = "Change a trainer email by email", description = "Fetches the trainer details by their email and changes their email, " +
-            "possible only for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data. " +
-            "Returns a new JWT, because after changing the email, re-authentication is needed.")
+    @Operation(summary = "Zmień adres e-mail trenera",
+            description = "Zmienia adres e-mail trenera oraz zwraca nowy token JWT. " +
+                    "Dostępne dla pracowników z rolami: ADMIN, TRAINER_MANAGEMENT oraz dla trenera, którego dane dotyczą.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Trainer found and updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Trainer not found", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Email already in use", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Adres e-mail trenera zaktualizowano pomyślnie"),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono trenera", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Podany adres e-mail jest już w użyciu", content = @Content)
     })
     public ResponseEntity<AuthenticationResponseDto> changeEmail(@PathVariable String email,
                                                                  @Valid @RequestBody ChangeEmailRequestDto changeEmailRequestDto) {
@@ -167,11 +171,12 @@ public class TrainerController {
     }
 
     @GetMapping("/getGymEntries/{email}")
-    @Operation(summary = "Get gym entry history by email", description = "Fetches a gym entry history of a trainer, " +
-            "possible for ADMIN and TRAINER_MANAGEMENT workers and for the trainer who owns the data.")
+    @Operation(summary = "Pobierz historię wejść na siłownię według adresu e-mail",
+            description = "Pobiera historię wejść na siłownię dla określonego trenera. " +
+                    "Dostępne dla pracowników z rolami: ADMIN, TRAINER_MANAGEMENT oraz dla trenera, którego dane dotyczą.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Gym Entry history fetched successfully"),
-            @ApiResponse(responseCode = "403", description = "Forbidden - authenticated user is not authorized to edit this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Historia wejść na siłownię pobrana pomyślnie"),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content)
     })
     public ResponseEntity<List<GetGymEntryResponseDto>> getOwnGymEntries(@PathVariable String email) {
 

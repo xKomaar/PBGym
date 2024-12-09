@@ -34,14 +34,14 @@ public class CreditCardInfoController {
     }
 
     @PostMapping("/{email}")
-    @Operation(summary = "Add credit card information", description = "Add credit card information of a member by email, " +
-            "accessible for an ADMIN and MEMBER_MANAGEMENT workers and a member who owns the data. DATE: MM/YY")
+    @Operation(summary = "Dodaj informacje o karcie kredytowej",
+            description = "Dodaje informacje o karcie kredytowej klienta na podstawie adresu e-mail. Dostępny dla pracowników z rolami: ADMIN, MEMBER_MANAGEMENT oraz dla klienta, którego dane dotyczą. Format Daty: MM/YY.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Credit Card information successfully added."),
-            @ApiResponse(responseCode = "404", description = "Member not found", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Member already has added credit card information", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Informacje o karcie kredytowej dodane pomyślnie."),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono klienta", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Informacje o karcie kredytowej już istnieją", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<String> saveCreditCardInfo(@PathVariable String email, @Valid @RequestBody PostCreditCardInfoRequestDto requestDto) {
 
@@ -60,12 +60,12 @@ public class CreditCardInfoController {
     }
 
     @GetMapping("/{email}/hidden")
-    @Operation(summary = "Get hidden credit card information by email", description = "Get hidden credit card information of a member by email, " +
-            "accessible for an ADMIN and MEMBER_MANAGEMENT workers and a member who owns the data.")
+    @Operation(summary = "Pobierz ukryte informacje o karcie kredytowej",
+            description = "Pobiera ukryte informacje o karcie kredytowej klienta na podstawie adresu e-mail. Dostępny dla pracowników z rolami: ADMIN, MEMBER_MANAGEMENT oraz dla klienta, którego dane dotyczą.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Credit Card information successfully fetched."),
-            @ApiResponse(responseCode = "404", description = "Member not found", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Informacje o karcie kredytowej pobrane pomyślnie."),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono klienta", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<GetCreditCardInfoResponseDto> getHiddenCreditCardInfo(@PathVariable String email) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -80,13 +80,13 @@ public class CreditCardInfoController {
     }
 
     @GetMapping("/{email}/full")
-    @Operation(summary = "Get full credit card information by email", description = "Get full credit card information of a member by email, " +
-            "accessible for a member. REQUIRES PASSWORD")
+    @Operation(summary = "Pobierz pełne informacje o karcie kredytowej",
+            description = "Pobiera pełne informacje o karcie kredytowej klienta na podstawie adresu e-mail. Dostępny tylko dla klienta. WYMAGA HASŁA.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Credit Card information successfully fetched."),
-            @ApiResponse(responseCode = "404", description = "Member not found", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Incorrect password", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Informacje o karcie kredytowej pobrane pomyślnie."),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono klienta", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Niepoprawne hasło", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<GetCreditCardInfoResponseDto> getFullCreditCardInfo(@PathVariable String email, @Valid @RequestBody GetFullCreditCardInfoRequest requestDto) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -103,13 +103,13 @@ public class CreditCardInfoController {
     }
 
     @DeleteMapping("/{email}")
-    @Operation(summary = "Delete credit card information by email", description = "Delete credit card information of a member by email, " +
-            "accessible for an ADMIN and MEMBER_MANAGEMENT workers and a member who owns the data.")
+    @Operation(summary = "Usuń informacje o karcie kredytowej",
+            description = "Usuwa informacje o karcie kredytowej klienta na podstawie adresu e-mail. Dostępny dla pracowników z rolami: ADMIN, MEMBER_MANAGEMENT oraz dla klienta, którego dane dotyczą.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Credit Card information successfully deleted."),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Credit Card information not found", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Authenticated user is not authorized to access this resource", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Informacje o karcie kredytowej usunięte pomyślnie."),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono informacji o karcie kredytowej", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Brak dostępu do tego zasobu", content = @Content),
     })
     public ResponseEntity<String> deleteCreditCardInfo(@PathVariable String email) {
         AbstractUser authenticatedUser = (AbstractUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

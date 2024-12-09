@@ -24,14 +24,14 @@ public class GymEntryController {
     }
 
     @PostMapping("/registerQRscan/{email}")
-    @Operation(summary = "Register a scan of users QR code", description = "Gets the id from the QR code and " +
-            "distinguishes if the action is an exit or an entry to the gym. Accessible ONLY FOR WORKERS.")
+    @Operation(summary = "Zarejestruj skan kodu QR użytkownika", description = "Odczytuje identyfikator z kodu QR i rozróżnia, " +
+            "czy działanie to wejście czy wyjście z siłowni. Dostępny tylko dla pracowników.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "QR scan registered successfully"),
-            @ApiResponse(responseCode = "403", description = "Member doesn't have an active pass OR userId is an id of a Worker OR " +
-                    "authenticated user is not authorized to access this resource", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Bad Request - invalid input data", content = @Content),
-            @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Skan kodu QR zarejestrowano pomyślnie"),
+            @ApiResponse(responseCode = "403", description = "Klient nie posiada aktywnego karnetu LUB użytkownik jest pracownikiem LUB " +
+                    "brak dostępu do tego zasobu", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Nie znaleziono użytkownika", content = @Content)
     })
     public ResponseEntity<String> userEnters(@PathVariable String email) {
         try {
@@ -46,10 +46,9 @@ public class GymEntryController {
     }
 
     @GetMapping("/count")
-    @Operation(summary = "Get the user count", description = "Gets the count of " +
-            "users currently at the gym. ACCESSIBLE WITHOUT AUTHENTICATION")
+    @Operation(summary = "Pobierz liczbę osób w obiekcie", description = "Zwraca liczbę osób aktualnie przebywających w obiekcie. Dostępny bez uwierzytelnienia.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User count fetched successfully"),
+            @ApiResponse(responseCode = "200", description = "Liczba użytkowników pobrana pomyślnie")
     })
     public ResponseEntity<Integer> getCurrentUsers() {
         return ResponseEntity.ok(userCounterService.getCurrentUserCount());
