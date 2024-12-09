@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import pl.pbgym.domain.user.Gender;
-import pl.pbgym.domain.user.trainer.Trainer;
 import pl.pbgym.domain.user.worker.PermissionType;
 import pl.pbgym.dto.auth.PostAddressRequestDto;
 import pl.pbgym.dto.auth.PostAuthenticationRequestDto;
@@ -26,7 +25,6 @@ import pl.pbgym.dto.user.trainer.*;
 import pl.pbgym.repository.user.AbstractUserRepository;
 import pl.pbgym.repository.user.AddressRepository;
 import pl.pbgym.repository.user.trainer.TrainerOfferRepository;
-import pl.pbgym.repository.user.trainer.TrainerRepository;
 import pl.pbgym.repository.user.trainer.TrainerTagRepository;
 import pl.pbgym.service.auth.AuthenticationService;
 
@@ -58,8 +56,6 @@ public class TrainerOfferControllerTest {
     private TrainerTagRepository trainerTagRepository;
     @Autowired
     private TrainerOfferRepository trainerOfferRepository;
-    @Autowired
-    private TrainerRepository trainerRepository;
     private String trainerJwt;
     private String trainer2Jwt;
     private String managerJwt;
@@ -96,10 +92,6 @@ public class TrainerOfferControllerTest {
         trainer1Request.setAddress(address1);
 
         authenticationService.registerTrainer(trainer1Request);
-
-        Trainer trainer = trainerRepository.findByEmail(trainerEmail).get();
-        trainer.setVisible(true);
-        trainerRepository.save(trainer);
 
         PostTrainerRequestDto trainer2Request = new PostTrainerRequestDto();
         trainer2Request.setEmail(trainer2Email);
@@ -570,7 +562,7 @@ public class TrainerOfferControllerTest {
     }
 
     @Test
-    public void shouldGetAllVisiblePublicTrainersWithOffersSuccessfully() throws Exception {
+    public void shouldGetAllPublicTrainersWithOffersSuccessfully() throws Exception {
         PostTrainerOfferRequestDto offerRequest1 = new PostTrainerOfferRequestDto();
         offerRequest1.setTitle("Offer 1");
         offerRequest1.setPrice(100);
@@ -583,6 +575,18 @@ public class TrainerOfferControllerTest {
                         .content(objectMapper.writeValueAsString(offerRequest1)))
                 .andExpect(status().isCreated());
 
+        PostTrainerOfferRequestDto offerRequest2 = new PostTrainerOfferRequestDto();
+        offerRequest2.setTitle("Offer 2");
+        offerRequest2.setPrice(200);
+        offerRequest2.setTrainingSessionCount(20);
+        offerRequest2.setTrainingSessionDurationInMinutes(90);
+        offerRequest2.setVisible(true);
+        mockMvc.perform(post("/trainerOffers/{email}", trainer2Email)
+                        .header("Authorization", "Bearer " + trainer2Jwt)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(offerRequest2)))
+                .andExpect(status().isCreated());
+
         MvcResult mvcResult = mockMvc.perform(get("/trainerOffers/allTrainersWithOffers")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -592,7 +596,7 @@ public class TrainerOfferControllerTest {
         List<GetPublicTrainerInfoWithOffersResponseDto> trainersWithOffers = objectMapper.readValue(jsonResponse,
                 objectMapper.getTypeFactory().constructCollectionType(List.class, GetPublicTrainerInfoWithOffersResponseDto.class));
         assertNotNull(trainersWithOffers);
-        assertEquals(1, trainersWithOffers.size());
+        assertEquals(2, trainersWithOffers.size());
 
         GetPublicTrainerInfoWithOffersResponseDto trainerWithOffers = trainersWithOffers.get(0);
         assertNotNull(trainerWithOffers.getTrainerInfo());
