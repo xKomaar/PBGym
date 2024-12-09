@@ -58,9 +58,9 @@ public class TrainerOfferController {
     }
 
     @GetMapping("/allTrainersWithOffers")
-    @Operation(summary = "Pobierz wszystkich trenerów z ofertami (PUBLICZNE)",
+    @Operation(summary = "Pobierz wszystkich widocznych trenerów z ofertami",
             description = "Pobiera listę wszystkich trenerów wraz z ich ofertami. " +
-                    "Dostępne publicznie.")
+                    "Dostępne bez uwierzytelniania.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Pomyślnie zwrócono listę trenerów."),
     })

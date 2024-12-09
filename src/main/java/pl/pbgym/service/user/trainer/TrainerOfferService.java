@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.pbgym.domain.user.trainer.Trainer;
 import pl.pbgym.domain.user.trainer.TrainerOffer;
 import pl.pbgym.dto.user.trainer.GetPublicTrainerInfoWithOffersResponseDto;
 import pl.pbgym.dto.user.trainer.GetTrainerOfferResponseDto;
@@ -45,8 +46,9 @@ public class TrainerOfferService {
     }
 
     public List<GetPublicTrainerInfoWithOffersResponseDto> getAllPublicTrainersWithOffers() {
-        logger.info("Pobieranie wszystkich publicznych trenerów z ich ofertami.");
+        logger.info("Pobieranie wszystkich widocznych trenerów z ich ofertami.");
         return trainerRepository.findAll().stream()
+                .filter(Trainer::isVisible)
                 .map(trainer -> {
                     GetPublicTrainerInfoWithOffersResponseDto getTrainerResponseDto = new GetPublicTrainerInfoWithOffersResponseDto();
                     getTrainerResponseDto.setTrainerInfo(trainerService.mapTrainerToPublicTrainerInfo(trainer));
