@@ -17,8 +17,8 @@ public class Trainer extends AbstractUser {
     @Size(min = 2, message = "Description can't be shorter than 2 characters.")
     @Size(max = 1000, message = "Description can't be longer than 1000 characters.")
     private String description;
-    @Column(name="photo")
-    private byte[] photo;
+    @Column(name = "photo", columnDefinition = "TEXT")
+    private String photo;
     @Column(name="visible", nullable = false)
     private boolean visible;
     @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
@@ -42,11 +42,11 @@ public class Trainer extends AbstractUser {
         this.description = description;
     }
 
-    public byte[] getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(byte[] photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 

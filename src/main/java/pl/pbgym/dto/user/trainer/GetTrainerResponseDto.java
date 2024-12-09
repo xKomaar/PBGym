@@ -17,7 +17,7 @@ public class GetTrainerResponseDto {
     private String phoneNumber;
     private GetAddressResponseDto address;
     private String description;
-    private byte[] photo;
+    private String photo;
     private Gender gender;
     private boolean visible;
     private List<TrainerTagType> trainerTags;
@@ -42,11 +42,11 @@ public class GetTrainerResponseDto {
         this.description = description;
     }
 
-    public byte[] getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(byte[] photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 

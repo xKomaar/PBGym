@@ -12,7 +12,7 @@ public class GetPublicTrainerInfoResponseDto {
     private String surname;
     private String phoneNumber;
     private String description;
-    private byte[] photo;
+    private String photo;
     private Gender gender;
     private List<TrainerTagType> trainerTags;
 
@@ -64,11 +64,11 @@ public class GetPublicTrainerInfoResponseDto {
         this.description = description;
     }
 
-    public byte[] getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(byte[] photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 

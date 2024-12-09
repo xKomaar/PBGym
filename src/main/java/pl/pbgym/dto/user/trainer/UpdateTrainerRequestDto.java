@@ -51,7 +51,7 @@ public class UpdateTrainerRequestDto {
     @Size(max = 1000, message = "Description can't be longer than 1000 characters.")
     private String description;
     @Nullable
-    private byte[] photo;
+    private String photo;
     @NotNull
     private boolean visible;
     @Nullable
@@ -137,11 +137,11 @@ public class UpdateTrainerRequestDto {
         this.description = description;
     }
 
-    public byte[] getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(byte[] photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 
