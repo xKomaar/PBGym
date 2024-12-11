@@ -14,6 +14,7 @@ public class GetPublicTrainerInfoResponseDto {
     private String description;
     private String photo;
     private Gender gender;
+    private boolean isVisible;
     private List<TrainerTagType> trainerTags;
 
     public Long getId() {
@@ -78,6 +79,14 @@ public class GetPublicTrainerInfoResponseDto {
 
     public void setGender(Gender gender) {
         this.gender = gender;
+    }
+
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
     }
 
     public List<TrainerTagType> getTrainerTags() {
