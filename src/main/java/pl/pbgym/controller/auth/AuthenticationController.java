@@ -62,7 +62,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/registerWorker")
-    @Operation(summary = "Rejestracja nowego pracownika", description = "Dostępny dla pracowników z rolą ADMIN. Typy płci: MALE, FEMALE, OTHER. Typy uprawnień: {ADMIN, STATISTICS, MEMBER_MANAGEMENT, TRAINER_MANAGEMENT, PASS_MANAGEMENT, GROUP_CLASS_MANAGEMENT, BLOG, SHOP_MANAGEMENT}")
+    @Operation(summary = "Rejestracja nowego pracownika", description = "Dostępny dla pracowników z rolą ADMIN. Typy płci: MALE, FEMALE, OTHER. Typy uprawnień: {ADMIN, STATISTICS, MEMBER_MANAGEMENT, TRAINER_MANAGEMENT, PASS_MANAGEMENT, GROUP_CLASS_MANAGEMENT, BLOG}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Pracownik zarejestrowany pomyślnie"),
             @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe", content = @Content),
