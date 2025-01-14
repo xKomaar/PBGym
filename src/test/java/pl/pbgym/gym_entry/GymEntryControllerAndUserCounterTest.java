@@ -191,7 +191,6 @@ public class GymEntryControllerAndUserCounterTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        // Check if the user count has increased
         MvcResult resultAfterEntry = mockMvc.perform(get("/gym/count")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -205,7 +204,6 @@ public class GymEntryControllerAndUserCounterTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        // Check if the user count is back to zero
         MvcResult resultAfterExit = mockMvc.perform(get("/gym/count")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -214,7 +212,6 @@ public class GymEntryControllerAndUserCounterTest {
         int countAfterExit = Integer.parseInt(resultAfterExit.getResponse().getContentAsString());
         assertEquals(0, countAfterExit);
 
-        // Verify GymEntry persistance
         Optional<GymEntry> gymEntry = gymEntryRepository.findAll().stream()
                 .filter(entry -> entry.getAbstractUser().getEmail().equals(memberEmail))
                 .findFirst();
@@ -231,7 +228,6 @@ public class GymEntryControllerAndUserCounterTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        // Check if the user count has increased
         MvcResult resultAfterEntry = mockMvc.perform(get("/gym/count")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -245,7 +241,6 @@ public class GymEntryControllerAndUserCounterTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        // Check if the user count is back to zero
         MvcResult resultAfterExit = mockMvc.perform(get("/gym/count")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -254,7 +249,6 @@ public class GymEntryControllerAndUserCounterTest {
         int countAfterExit = Integer.parseInt(resultAfterExit.getResponse().getContentAsString());
         assertEquals(0, countAfterExit);
 
-        // Verify GymEntry persistence
         Optional<GymEntry> gymEntry = gymEntryRepository.findAll().stream()
                 .filter(entry -> entry.getAbstractUser().getEmail().equals(trainerEmail))
                 .findFirst();

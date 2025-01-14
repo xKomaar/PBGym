@@ -263,7 +263,6 @@ public class GroupClassService {
             LocalDateTime existingClassStart = existingClass.getDateStart();
             LocalDateTime existingClassEnd = existingClassStart.plusMinutes(existingClass.getDurationInMinutes());
 
-            //don't compare class to itself when updating
             if (optUpdateId.isPresent()) {
                 if (optUpdateId.get().equals(existingClass.getId())) {
                     continue;

@@ -189,7 +189,6 @@ public class PassControllerAndPaymentTest {
                         .header("Authorization", "Bearer " + memberJwt))
                 .andExpect(status().isOk());
 
-        // Verify payment was made
         List<Payment> payments = paymentRepository.findAllByMemberEmail(memberEmail);
         assertFalse(payments.isEmpty());
         assertEquals(offerPrice + 10.0, payments.get(0).getAmount());
@@ -197,7 +196,6 @@ public class PassControllerAndPaymentTest {
 
     @Test
     public void memberWithExpiredCreditCardBuysPass() throws Exception {
-        // Update the credit card info to set the expiration date in the past
         PostCreditCardInfoRequestDto expiredCardInfo = new PostCreditCardInfoRequestDto();
         expiredCardInfo.setCardNumber("4111111111111111");
         expiredCardInfo.setExpirationMonth("01");
@@ -215,14 +213,12 @@ public class PassControllerAndPaymentTest {
                         .header("Authorization", "Bearer " + memberJwt))
                 .andExpect(status().isForbidden());
 
-        // Verify no payment was made
         List<Payment> payments = paymentRepository.findAllByMemberEmail(memberEmail);
         assertTrue(payments.isEmpty());
     }
 
     @Test
     public void memberWithNoCreditCardBuysPass() throws Exception {
-        // Remove credit card info for the member
         creditCardInfoService.deleteCreditCardInfo(memberEmail);
 
         PostPassRequestDto passRequest = new PostPassRequestDto();
@@ -234,33 +230,28 @@ public class PassControllerAndPaymentTest {
                         .header("Authorization", "Bearer " + memberJwt))
                 .andExpect(status().isForbidden());
 
-        // Verify no payment was made
         List<Payment> payments = paymentRepository.findAllByMemberEmail(memberEmail);
         assertTrue(payments.isEmpty());
     }
 
     @Test
     public void memberWithActivePassBuysAnother() throws Exception {
-        // First, create a pass
         PostPassRequestDto passRequest = new PostPassRequestDto();
         passRequest.setOfferId(offerId);
         passService.createPass(memberEmail, passRequest);
 
-        // Try to create another pass
         mockMvc.perform(post("/passes/" + memberEmail)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(passRequest))
                         .header("Authorization", "Bearer " + memberJwt))
                 .andExpect(status().isConflict());
 
-        // Verify no second pass was created
         List<Pass> passes = passRepository.findAll();
         assertEquals(1, passes.size());
     }
 
     @Test
     public void chargeForActivePasses() {
-        // Create passes with the next payment date set to today
         PostPassRequestDto passRequest = new PostPassRequestDto();
         passRequest.setOfferId(offerId);
         passService.createPass(memberEmail, passRequest);
@@ -268,13 +259,10 @@ public class PassControllerAndPaymentTest {
         pass.setDateOfNextPayment(LocalDate.now());
         passRepository.save(pass);
 
-        // Invoke chargeForActivePasses
         passService.chargeForActivePasses();
 
-        // Verify payment was made and dateOfNextPayment updated
         List<Payment> payments = paymentRepository.findAllByMemberEmail(memberEmail);
         assertFalse(payments.isEmpty());
-        // First payment for activation, second for another month
         assertEquals(2, payments.size());
         assertEquals(offerPrice + 10.0, payments.get(0).getAmount());
         assertEquals(offerPrice, payments.get(1).getAmount());
@@ -283,7 +271,6 @@ public class PassControllerAndPaymentTest {
 
     @Test
     public void shouldDeactivateAPassIfPaymentFails() {
-        // Create passes with the next payment date set to today
         PostPassRequestDto passRequest = new PostPassRequestDto();
         passRequest.setOfferId(offerId);
         passService.createPass(memberEmail, passRequest);
@@ -291,7 +278,6 @@ public class PassControllerAndPaymentTest {
         pass.setDateOfNextPayment(LocalDate.now());
         passRepository.save(pass);
 
-        // Update the credit card info to set the expiration date in the past
         PostCreditCardInfoRequestDto expiredCardInfo = new PostCreditCardInfoRequestDto();
         expiredCardInfo.setCardNumber("4111111111111111");
         expiredCardInfo.setExpirationMonth("01");
@@ -300,12 +286,9 @@ public class PassControllerAndPaymentTest {
         creditCardInfoService.deleteCreditCardInfo(memberEmail);
         creditCardInfoService.saveCreditCardInfo(memberEmail, expiredCardInfo);
 
-        // Invoke chargeForActivePasses
         passService.chargeForActivePasses();
 
-        // Verify payment was not made and dateOfNextPayment updated
         List<Payment> payments = paymentRepository.findAllByMemberEmail(memberEmail);
-        // There should only be payment for activation
         assertEquals(1, payments.size());
         assertEquals(offerPrice + 10.0, payments.get(0).getAmount());
 
@@ -315,7 +298,6 @@ public class PassControllerAndPaymentTest {
 
     @Test
     public void deactivateExpiredPassesAndReadHistory() throws Exception {
-        // Create a pass with the end date set to tomorrow
         PostPassRequestDto passRequest = new PostPassRequestDto();
         passRequest.setOfferId(offerId);
         passService.createPass(memberEmail, passRequest);
@@ -323,10 +305,8 @@ public class PassControllerAndPaymentTest {
         pass.setDateEnd(LocalDateTime.now().minusDays(1));
         passRepository.save(pass);
 
-        // Invoke deactivateExpiredPasses
         passService.deactivateExpiredPasses();
 
-        // Verify pass is deleted (moved to history)
         Optional<Pass> deactivatedPass = passRepository.findById(pass.getId());
         assertFalse(deactivatedPass.isPresent());
 
@@ -358,7 +338,6 @@ public class PassControllerAndPaymentTest {
                         .header("Authorization", "Bearer " + memberJwt))
                 .andExpect(status().isOk());
 
-        // Fetch pass by email
         MvcResult result = mockMvc.perform(get("/passes/" + memberEmail)
                         .header("Authorization", "Bearer " + memberJwt))
                 .andExpect(status().isOk())
@@ -367,7 +346,6 @@ public class PassControllerAndPaymentTest {
         String responseJson = result.getResponse().getContentAsString();
         GetPassResponseDto getPassResponse = objectMapper.readValue(responseJson, GetPassResponseDto.class);
 
-        // Validate the pass details against the offer and the expected values
         assertEquals("Standardowa Oferta 6msc", getPassResponse.getTitle());
         assertEquals(300.0, getPassResponse.getMonthlyPrice(), 0.0);
         assertNotNull(getPassResponse.getDateStart());

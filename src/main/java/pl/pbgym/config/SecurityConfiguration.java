@@ -62,7 +62,6 @@ public class SecurityConfiguration {
                         .requestMatchers( "/creditCardInfo/**").hasAnyAuthority("MEMBER", "ADMIN", "MEMBER_MANAGEMENT")
 
                         .requestMatchers("/gym/count/**").permitAll()
-                        //Workers can let members in and out of the gym
                         .requestMatchers("/gym/**").hasAuthority("WORKER")
 
                         .requestMatchers("/blog/all/**").permitAll()

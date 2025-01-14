@@ -13,7 +13,7 @@ public class CreditCardExpirationDateValidator implements ConstraintValidator<Va
     public boolean isValid(PostCreditCardInfoRequestDto dto, ConstraintValidatorContext context) {
         try {
             int month = Integer.parseInt(dto.getExpirationMonth());
-            int year = Integer.parseInt("20" + dto.getExpirationYear());  // Converts YY to YYYY format
+            int year = Integer.parseInt("20" + dto.getExpirationYear());
 
             YearMonth expirationDate = YearMonth.of(year, month);
             YearMonth currentYearMonth = YearMonth.from(LocalDate.now());

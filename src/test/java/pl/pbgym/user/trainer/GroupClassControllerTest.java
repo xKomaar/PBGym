@@ -781,7 +781,7 @@ public class GroupClassControllerTest {
 
     @Test
     public void shouldReturnConflictWhenMemberTriesToEnrollTwiceInTheSameClass() throws Exception {
-        Long groupClassId = groupClassRepository.findAll().get(1).getId(); // Upcoming class
+        Long groupClassId = groupClassRepository.findAll().get(1).getId();
 
         mockMvc.perform(post("/groupClasses/member/{email}/enroll", memberEmail)
                         .header("Authorization", "Bearer " + memberJwt)
@@ -814,7 +814,7 @@ public class GroupClassControllerTest {
 
     @Test
     public void shouldReturnForbiddenWhenEnrollingToHistoricalClass() throws Exception {
-        Long groupClassId = groupClassRepository.findAll().get(0).getId(); // Historical class
+        Long groupClassId = groupClassRepository.findAll().get(0).getId();
         mockMvc.perform(post("/groupClasses/member/{email}/enroll", memberEmail)
                         .header("Authorization", "Bearer " + memberJwt)
                         .content(String.valueOf(groupClassId))

@@ -320,7 +320,6 @@ public class TrainerControllerTest {
         updateRequest.setAddress(updatedAddress);
         updateRequest.setDescription("Admin updated description");
 
-        // Add trainerTags
         List<TrainerTagType> trainerTags = Arrays.asList(TrainerTagType.MARTIAL_ARTS, TrainerTagType.MEDICAL_TRAINING);
         updateRequest.setTrainerTags(trainerTags);
 
@@ -370,7 +369,6 @@ public class TrainerControllerTest {
         updateRequest.setAddress(updatedAddress);
         updateRequest.setDescription("Manager updated description");
 
-        // Add trainerTags
         List<TrainerTagType> trainerTags = Arrays.asList(TrainerTagType.SENIOR_TRAINING, TrainerTagType.REDUCTION_TRAINING, TrainerTagType.PHYSIOTHERAPIST, TrainerTagType.BODYBUILDING);
         updateRequest.setTrainerTags(trainerTags);
 

@@ -161,7 +161,6 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private void loadOfferData() {
-        //STANDARD
         PostStandardOfferRequestDto postStandardOfferRequest1 = new PostStandardOfferRequestDto();
         postStandardOfferRequest1.setTitle("Standardowa Oferta 6msc");
         postStandardOfferRequest1.setSubtitle("Kup karnet już dzisiaj");
@@ -195,7 +194,6 @@ public class DataSeeder implements CommandLineRunner {
 
         offerService.saveStandardOffer(postStandardOfferRequest3);
 
-        //SPECIAL
         PostSpecialOfferRequestDto postSpecialOfferRequest = new PostSpecialOfferRequestDto();
         postSpecialOfferRequest.setTitle("Oferta Promocyjna 18msc");
         postSpecialOfferRequest.setSubtitle("Kup teraz i zyskaj darmowe 6 miesięcy!");
